@@ -12,6 +12,12 @@
 
 1. `$ ./download_sample_model.sh`
    - Download sample model by using wget.
+   - The model can recognize intent and slot labels described in sample_model.meta.json.
+
+      ```json
+       {intent label(str): [slot label(str)]}
+      ```
+
 1. `$ docker-compose build`
 1. `$ docker-compose up -d`
 1. `$ curl -s -X POST -H 'Content-Type:application/json' -d '{"utterance": "渋谷でカレーがおいしいところ教えて"}' http://localhost:5000/nlu`
