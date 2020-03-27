@@ -15,7 +15,7 @@
    - The model can recognize intent and slot labels described in sample_model.meta.json.
 
       ```json
-       {intent label(str): [slot label(str)]}
+       {"intent label(str)": ["slot label(str)"]}
       ```
 
 1. `$ docker-compose build`
