@@ -1,0 +1,7 @@
+model:
+    intent:  ./models/intent/models/2  # relative path from cwd() stored model data for intent recognition.
+    slot:  ./models/intent/models/4  # relative path from cwd() stored model data for slot recognition.
+
+hydra:
+    run:
+        dir: .  # relative directory path from cwd() to output log file.

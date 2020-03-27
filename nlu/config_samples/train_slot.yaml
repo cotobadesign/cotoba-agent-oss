@@ -1,0 +1,26 @@
+train:
+    data:
+        train: ./data/train.jsonl  # relative path from cwd() to train model.
+        val: ./data/val.jsonl  # relative path from cwd() to validate model.
+    nbatch: 16  # batch size to train model.
+    niter: 5  # number of epoch to train model
+    scheduler:  #  see https://huggingface.co/transformers/main_classes/optimizer_schedules.html#schedules
+        class: transformers.optimization.get_linear_schedule_with_warmup
+        params:
+            num_warmup_steps: 0
+            num_training_steps: 4
+
+model:
+    task: ner 
+    lang:
+        name: ja
+        optimizer:  # see https://huggingface.co/transformers/main_classes/optimizer_schedules.html#
+            class: transformers.optimization.AdamW
+            params:
+                lr: 1e-4
+    labels: ./data/entities.json  # relative path from cwd() to speficy slot labels to train model.
+    pretrained: bert-base-japanese-char-whole-word-masking  #  see https://huggingface.co/transformers/pretrained_models.html
+
+hydra:
+    run:
+        dir: ./models/slot/  # relative directory path from cwd() to output result files.

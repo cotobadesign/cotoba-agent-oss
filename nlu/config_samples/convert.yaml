@@ -1,0 +1,9 @@
+convert:
+    outdir: ./data  # relative path from cwd() to output data.
+    input_file: ./training_data_sample.json # relative path from cwd().
+    n_instances: -1  # number of instances to be read from input_file. -1 means unlimited.
+    seed: 111111  # random seed to sample instances when specifing n_instances.
+
+hydra:
+    run:
+        dir: ./data  # relative directory path from cwd() to output result files.

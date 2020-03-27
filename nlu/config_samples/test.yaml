@@ -1,0 +1,11 @@
+model:
+    intent: ./models/intent/models/2  # relative directory path from cwd() to test model for intent recognition.
+    slot: ./models/slot/models/4  # relative directory path from cwd() to test model for slot recognition.
+
+test:
+    data: './training_data_sample.json'  # relative file path from cwd() to test model.
+    key: 'validation'  # key in the above-specified json to test model.
+
+hydra:
+    run:
+        dir: .  # relative directory path from cwd() to output log file.

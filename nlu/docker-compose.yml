@@ -1,0 +1,19 @@
+version: '3'
+
+services:
+  flask:
+    build: ./nlu_app
+    ports:
+      - "5000:5000"
+    volumes:
+      - "./nlu_app/app.py:/app/app.py"
+      - "./script/util.py:/app/util.py"
+      - "./sample_model:/models"
+    tty: true
+    environment:
+      TZ: Asia/Tokyo
+      INTENT_MODEL_PATH: /models/intent/models/9  # path to stored model data for intent recognition in container.
+      SLOT_MODEL_PATH: /models/slot/models/9  # rpath to stored model data for slot recognition in container.
+      LC_ALL: C.UTF-8
+      LANG: C.UTF-8
+    command: flask run --host 0.0.0.0 --port 5000

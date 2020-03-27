@@ -1,0 +1,5 @@
+camphr==0.5.9
+mecab-python3==0.996.3
+tqdm
+flake8
+docker-compose
