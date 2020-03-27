@@ -1,0 +1,56 @@
+yadlan:
+    description: Restful Client
+    bot:  bot
+    prompt: ">>>"
+
+    storage:
+        entities:
+            categories: file
+            errors: file
+            duplicates: file
+            conversations: file
+            logs: file
+
+            template_nodes: file
+            pattern_nodes: file
+
+        stores:
+            file:
+                type: file
+                config:
+                    categories_storage:
+                        file: ./test/programytest/clients/restful/yadlan/sanic/testdata/yadlantest.aiml
+                        subdirs: false
+                        extension: .aiml
+                    errors_storage:
+                        file: ./test/programytest/clients/restful/yadlan/sanic/testdata/tmp/errors.txt
+                    duplicates_storage:
+                        file: ./test/programytest/clients/restful/yadlan/sanic/testdata/tmp/duplicates.txt
+                    conversations_storage:
+                        dirs: ./test/programytest/clients/restful/yadlan/sanic/testdata/tmp
+                    logs_storage:
+                        dirs: ./test/programytest/clients/restful/yadlan/sanic/testdata/tmp
+
+                    pattern_nodes_storage:
+                        file: ./test/programytest/testdata/nodes/test_pattern_nodes.txt
+                    template_nodes_storage:
+                        file: ./test/programytest/testdata/nodes/test_template_nodes.txt
+
+brain:
+
+    debugfiles:
+        save-errors: true
+        save-duplicates: true
+
+bot:
+    prompt: ">>>"
+    initial_question: ""
+    default_response: "unknown"
+    empty_string: "YEMPTY"
+    exit_response: "exit"
+    override_properties: true
+
+    max_question_recursion: 10
+    max_question_timeout: 10
+    max_search_depth: 10
+    max_search_timeout: 10

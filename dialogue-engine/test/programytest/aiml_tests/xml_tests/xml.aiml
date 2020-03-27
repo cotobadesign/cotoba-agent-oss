@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+File: [filename]
+Author: [botmaster]
+Last modified: [date]
+
+This AIML file is part of the [botname] [version] chat bot knowledge base.
+
+The [botname] brain is Copyright &copy; [YYYY] by [organization].
+
+The [botname] brain is released under the terms of the GNU Lesser General
+Public License, as published by the Free Software Foundation.
+
+This file is distributed WITHOUT ANY WARRANTY; without even the
+implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+
+For more information see [url]
+-->
+
+<aiml>
+
+	<category>
+		<pattern>HELLO</pattern>
+		<template>
+			I said <b>how are you</b> ?
+		</template>
+	</category>
+
+	<category>
+		<pattern>PICTURE</pattern>
+		<template>
+			You can see my picture at <a href="http://someurl/image.png">Here</a>
+		</template>
+	</category>
+
+	<category>
+		<pattern>TEST1</pattern>
+		<template>
+			Line1
+			Line2
+		</template>
+	</category>
+
+	<category>
+		<pattern>TEST2</pattern>
+		<template>
+			Line1
+			<br/>
+			Line2
+		</template>
+	</category>
+
+	<category>
+		<pattern>TEST3</pattern>
+		<template>
+			日本
+			国
+		</template>
+	</category>
+
+	<category>
+		<pattern>TEST4</pattern>
+		<template>
+			日本
+			国
+			<br />
+			Line1
+			Line2
+		</template>
+	</category>
+
+	<category>
+		<pattern>GOOGLE *</pattern>
+		<template>
+			<a target="_new" href="http://www.google.com/search?q=&lt;star /&gt;"> Google Search </a>
+		</template>
+	</category>
+
+</aiml>

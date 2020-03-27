@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<aiml>
+
+	<category>
+		<pattern>
+			<nlu intent="transportation" score="0.9" />
+		</pattern>
+		<template>
+            NLU result <nluintent name="aroundsearch" item="score" />
+        </template>
+    </category>
+
+	<category>
+		<pattern>
+			<nlu intent="transportation" score="0.8" />
+		</pattern>
+		<template>
+			<think>
+            	<set var="intent_name">aroundsearch</set>
+			</think>
+            NLU result <nluintent item="score"><name><get var="intent_name"/></name></nluintent> 
+        </template>
+    </category>
+
+	<category>
+		<pattern>
+			<nlu intent="transportation" score="0.7" />
+		</pattern>
+		<template>
+           NLU result <nluintent name="aroundsearch" index="1" item="score" />
+        </template>
+    </category>
+
+	<category>
+		<pattern>
+			<nlu intent="transportation" score="0.6" />
+		</pattern>
+		<template>
+           NLU result <nluintent name="*" item="score" />
+        </template>
+    </category>
+
+	<category>
+		<pattern>
+			<nlu intent="transportation" score="0.5" />
+		</pattern>
+		<template>
+           NLU result <nluintent name="*" index="1" item="score" />
+        </template>
+    </category>
+
+	<category>
+		<pattern>
+			<nlu intent="transportation" score="0.4" />
+		</pattern>
+		<template>
+           NLU result <nluintent name="arrival_time" item="score" />
+        </template>
+    </category>
+
+</aiml>

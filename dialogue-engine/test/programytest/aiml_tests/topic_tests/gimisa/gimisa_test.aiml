@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<aiml>
+
+   <category>
+       <pattern>
+          hello
+       </pattern>
+
+       <template>hi .. setting topic to blender....
+           <think>
+               <set name="topic">BLENDER</set>
+           </think>
+       </template>
+   </category>
+
+   <category>
+       <pattern>
+          <set>blender</set>
+       </pattern>
+
+       <template>some definition of render as per professor ....
+       </template>
+   </category>
+
+   <topic name="BLENDER">
+
+       <category>
+           <pattern>
+               <set>blender</set>
+           </pattern>
+
+           <template>  the  definition of  <star /> in blender is <map name="blender"><star /></map>
+               <think>
+                   <set name="topic">BLENDER</set>
+               </think>
+           </template>
+       </category>
+
+   </topic>
+
+</aiml>

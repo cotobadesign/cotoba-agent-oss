@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+File: [filename]
+Author: [botmaster]
+Last modified: [date]
+
+This AIML file is part of the [botname] [version] chat bot knowledge base.
+
+The [botname] brain is Copyright &copy; [YYYY] by [organization].
+
+The [botname] brain is released under the terms of the GNU Lesser General
+Public License, as published by the Free Software Foundation.
+
+This file is distributed WITHOUT ANY WARRANTY; without even the
+implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+
+For more information see [url]
+-->
+
+<aiml>
+
+    <category>
+        <pattern>MY FAVORITE COLOR IS <set>color</set>
+        </pattern>
+        <template>
+            <star /> IS A NICE COLOR.
+        </template>
+    </category>
+
+    <category>
+        <pattern>I DO NOT LIKE <set>color</set> *
+        </pattern>
+        <template>
+            IT IS OK, <star/> IS NOT MY BEST COLOUR EITHER
+        </template>
+    </category>
+
+    <category>
+        <pattern><set>color</set> IS A NICE COLOUR
+        </pattern>
+        <template>
+            YES <star /> IS A LOVELY COLOUR.
+        </template>
+    </category>
+
+    <category>
+        <pattern>Is <set name="number" /> a number
+        </pattern>
+        <template>
+            Yes <star/> is a number
+        </template>
+    </category>
+
+</aiml>

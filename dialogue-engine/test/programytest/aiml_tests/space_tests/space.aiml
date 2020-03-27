@@ -1,0 +1,151 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<aiml>
+
+	<category>
+		<pattern>SPACE only</pattern>
+		<template>
+			<space />
+		</template>
+	</category>
+
+	<category>
+		<pattern>en front SPACE</pattern>
+		<template>
+			<space />test
+		</template>
+	</category>
+
+	<category>
+		<pattern>en middle SPACE</pattern>
+		<template>
+			test<space />data
+		</template>
+	</category>
+
+	<category>
+		<pattern>en last SPACE </pattern>
+		<template>
+			test<space />
+		</template>
+	</category>
+
+	<category>
+		<pattern>en SPACE before TAG</pattern>
+		<template>
+			<space /><set var="TEST">test</set>
+		</template>
+	</category>
+
+	<category>
+		<pattern>en no SPACE between TAG</pattern>
+		<template>
+			<set var="TEST">test</set><set var="DATA">data</set>
+		</template>
+	</category>
+
+	<category>
+		<pattern>en SPACE between TAG</pattern>
+		<template>
+			<set var="TEST">test</set><space /><set var="DATA">data</set>
+		</template>
+	</category>
+
+	<category>
+		<pattern>en SPACE after TAG</pattern>
+		<template>
+			<set var="TEST">test</set><space />
+		</template>
+	</category>
+
+	<category>
+		<pattern>jp front SPACE</pattern>
+		<template>
+			<space />日本語
+		</template>
+	</category>
+
+	<category>
+		<pattern>jp middle SPACE</pattern>
+		<template>
+			日本語<space />テスト
+		</template>
+	</category>
+
+	<category>
+		<pattern>jp last SPACE </pattern>
+		<template>
+			日本語<space />
+		</template>
+	</category>
+
+	<category>
+		<pattern>jp SPACE before TAG</pattern>
+		<template>
+			<space /><set var="TEST">日本語</set>
+		</template>
+	</category>
+
+	<category>
+		<pattern>jp no SPACE between TAG</pattern>
+		<template>
+			<set var="TEST">日本語</set><set var="DATA">テスト</set>
+		</template>
+	</category>
+
+	<category>
+		<pattern>jp SPACE between TAG</pattern>
+		<template>
+			<set var="TEST">日本語</set><space /><set var="DATA">テスト</set>
+		</template>
+	</category>
+
+	<category>
+		<pattern>jp SPACE after TAG</pattern>
+		<template>
+			<set var="TEST">日本語</set><space />
+		</template>
+	</category>
+
+	<category>
+		<pattern>en SPACE jp</pattern>
+		<template>
+			test<space />日本語
+		</template>
+	</category>
+
+	<category>
+		<pattern>jp SPACE en</pattern>
+		<template>
+			日本語<space />test
+		</template>
+	</category>
+
+	<category>
+		<pattern>TAG en jp</pattern>
+		<template>
+			<set var="TEST_EN">test</set><set var="TEST_JP">テスト</set>
+		</template>
+	</category>
+
+	<category>
+		<pattern>TAG en SPACE jp</pattern>
+		<template>
+			<set var="TEST_EN">test</set><space /><set var="TEST_JP">テスト</set>
+		</template>
+	</category>
+
+	<category>
+		<pattern>TAG jp en</pattern>
+		<template>
+			<set var="TEST_JP">テスト</set><set var="TEST_EN">test</set>
+		</template>
+	</category>
+
+	<category>
+		<pattern>TAG jp SPACE en</pattern>
+		<template>
+			<set var="TEST_JP">テスト</set><space /><set var="TEST_EN">test</set>
+		</template>
+	</category>
+
+</aiml>

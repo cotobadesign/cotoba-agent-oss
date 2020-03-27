@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<aiml>
+
+	<category>
+		<pattern>
+			<nlu intent="transportation" score="0.9" />
+		</pattern>
+		<template>
+            NLU result <nluslot name="departure" item="entity" />
+        </template>
+    </category>
+
+	<category>
+		<pattern>
+			<nlu intent="transportation" score="0.8" />
+		</pattern>
+		<template>
+			<think>
+            	<set var="slot_name">departure</set>
+			</think>
+            NLU result <nluslot item="entity"><name><get var="slot_name"/></name></nluslot> 
+        </template>
+    </category>
+
+	<category>
+		<pattern>
+			<nlu intent="transportation" score="0.7" />
+		</pattern>
+		<template>
+           NLU result <nluslot name="arrival" index="1" item="entity" />
+        </template>
+    </category>
+
+	<category>
+		<pattern>
+			<nlu intent="transportation" score="0.6" />
+		</pattern>
+		<template>
+           NLU result <nluslot name="*" item="entity" />
+        </template>
+    </category>
+
+	<category>
+		<pattern>
+			<nlu intent="transportation" score="0.5" />
+		</pattern>
+		<template>
+           NLU result <nluslot name="*" index="1" item="entity" />
+        </template>
+    </category>
+
+	<category>
+		<pattern>
+			<nlu intent="transportation" score="0.4" />
+		</pattern>
+		<template>
+           NLU result <nluslot name="arrival_time" item="entity" />
+        </template>
+    </category>
+
+</aiml>

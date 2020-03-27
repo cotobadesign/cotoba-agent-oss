@@ -1,0 +1,5 @@
+nlu:
+  - url: http://localhost:5201/run
+    apikey: test_key1
+  - url: http://localhost:3000/run
+    apikey: test_key2

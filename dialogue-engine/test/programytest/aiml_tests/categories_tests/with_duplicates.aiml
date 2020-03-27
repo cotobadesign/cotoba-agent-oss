@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<aiml version="1.0">
+    <category>
+        <pattern>KINGHORN</pattern>
+        <template>
+            KINGHORN
+        </template>
+    </category>
+
+    <category>
+        <pattern>WHERE IS KINGHORN</pattern>
+        <template>
+            <srai>KINGHORN</srai>
+        </template>
+    </category>
+
+    <category>
+        <pattern>WHERE IS KINGHORN</pattern>
+        <template>
+            <srai>KINGHORN</srai>
+        </template>
+    </category>
+
+    <topic name="morning">
+        <category>
+            <pattern>WHAT IS KINGHORN</pattern>
+            <template>
+                <srai>KINGHORN</srai>
+            </template>
+        </category>
+
+        <category>
+            <pattern>WHERE IS KINGHORN</pattern>
+            <template>
+                <srai>KINGHORN</srai>
+            </template>
+        </category>
+    </topic>
+
+    <category>
+        <pattern>WHAT IS KINGHORN</pattern>
+        <template>
+            <srai>KINGHORN</srai>
+        </template>
+    </category>
+
+    <category>
+        <topic>morning</topic>>
+        <pattern>WHERE IS KINGHORN</pattern>
+        <template>
+            <srai>KINGHORN</srai>
+        </template>
+    </category>
+
+ </aiml>

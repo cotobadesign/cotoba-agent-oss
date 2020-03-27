@@ -1,0 +1,16 @@
+name:basic
+birthdate:March 01, 2020
+
+grammar_version:0.0.1
+app_version: 0.0.1
+
+# splitter_split_chars: 。
+# joiner_join_chars: .?!。？！
+joiner_terminator: 
+# punctuation_chars: ;'",!()[]：’”；、。！（）「」
+# before_concatenation_rule: .*[a-zA-Z]
+# after_concatenation_rule: [a-zA-Z].*
+
+default-response: I can't answer the question because it is too difficult.
+default-get: unknown
+version: v0.0.1

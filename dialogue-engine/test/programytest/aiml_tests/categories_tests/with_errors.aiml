@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<aiml version="1.0">
+
+    <category>
+        <pattern>WHERE IS KINGHORN</pattern>
+        <pattern>WHERE IS KINGHORN</pattern>
+        <template>
+            <srai>KINGHORN</srai>
+        </template>
+    </category>
+
+    <category>
+        <pattern>WHAT IS KINGHORN</pattern>
+    </category>
+
+ </aiml>

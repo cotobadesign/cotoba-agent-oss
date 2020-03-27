@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<aiml>
+    <!-- Free software &copy; 2001-2003 ALICE A.I. Foundation. -->
+    <!-- This program is open source code released under -->
+    <!-- the terms of the GNU General Public License     -->
+    <!-- as published by the Free Software Foundation.   -->
+    <!-- Complies with AIML 1.01 Tag Set Specification -->
+    <!-- as adopted by the ALICE A.I. Foundation.  -->
+    <!-- Annotated Version updated September 2003 -->
+
+    <!-- Modified for Y-Bot by Keith Sterling March 2017 -->
+
+    <category>
+        <pattern>ARE YOU WRITTEN IN C#</pattern>
+        <template>
+            RESULT 3
+        </template>
+    </category>
+
+    <category>
+        <pattern>ARE YOU *</pattern>
+        <template>
+            RESULT 1
+        </template>
+    </category>
+
+    <category>
+        <pattern>ARE YOU * *</pattern>
+        <template>
+            RESULT 2
+        </template>
+    </category>
+
+</aiml>

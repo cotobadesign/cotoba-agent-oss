@@ -1,0 +1,33 @@
+mock:
+  description: Program-Y Console Client
+  bot:  bot
+  prompt: ">>>"
+
+  scheduler:
+    name: Scheduler1
+    debug_level: 50
+    add_listeners: False
+    remove_all_jobs: False
+
+  triggers:
+    manager: programy.triggers.local.LocalTriggerManager
+
+
+brain:
+
+    allow_system_aiml: true
+    allow_learn_aiml: true
+    allow_learnf_aiml: true
+
+bot:
+    prompt: ">>>"
+    initial_question: Hi, how can I help you today?
+    default_response: Sorry, I don't have an answer for that!
+    empty_string: YEMPTY
+    exit_response: So long, and thanks for the fish!
+    override_properties: true
+
+    max_question_recursion: 1000
+    max_question_timeout: 60
+    max_search_depth: 100
+    max_search_timeout: 60

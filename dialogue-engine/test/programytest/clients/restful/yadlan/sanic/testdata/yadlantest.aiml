@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<aiml>
+
+	<category>
+		<pattern>HELLO</pattern>
+		<template>
+			HELLO, WORLD
+		</template>
+	</category>
+
+	<category>
+		<pattern>LOGS</pattern>
+		<template>
+			<log>debug_log</log>
+			Output log
+		</template>
+	</category>
+
+	<category>
+		<pattern>VARIABLES</pattern>
+		<template>
+			<think>
+				<set name="name_key">name_value</set>
+				<set data="data_key">data_value</set>
+				<set var="var_key">var_value</set>
+			</think>
+			Variable datas
+		</template>
+	</category>
+
+</aiml>

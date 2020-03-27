@@ -1,0 +1,81 @@
+"""
+Copyright (c) 2020 COTOBA DESIGN, Inc.
+
+Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated
+documentation files (the "Software"), to deal in the Software without restriction, including without limitation
+the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software,
+and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO
+THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,
+TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+"""
+"""
+Copyright (c) 2016-2019 Keith Sterling http://www.keithsterling.com
+
+Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated
+documentation files (the "Software"), to deal in the Software without restriction, including without limitation
+the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software,
+and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all copies or substantial portions of the
+Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO
+THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,
+TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+"""
+
+from programy.utils.logging.ylogger import YLogger
+
+from programy.parser.template.nodes.indexed import TemplateIndexedNode
+from programy.parser.exceptions import ParserException
+
+
+######################################################################################################################
+#
+# <input index=”n”/> is replaced with the value of the nth previous sentence input to the bot.
+# The input element returns the entire user’s input. This is distinct from the star element,
+# which returns only contents captured by a wildcard in the matched pattern.
+class TemplateInputNode(TemplateIndexedNode):
+
+    def __init__(self, index=0):
+        TemplateIndexedNode.__init__(self, index)
+
+    def get_default_index(self):
+        return 0
+
+    def resolve_to_string(self, client_context):
+        conversation = client_context.bot.get_conversation(client_context)
+        question = conversation.current_question()
+        if self.index == 0:
+            resolved = question.combine_sentences(client_context)
+        else:
+            resolved = question.previous_nth_sentence(self.index).text()
+        YLogger.debug(client_context, "[%s] resolved to [%s]", self.to_string(), resolved)
+        return resolved
+
+    def to_string(self):
+        string = "[INPUT"
+        string += self.get_index_as_str()
+        string += ']'
+        return string
+
+    def to_xml(self, client_context):
+        xml = "<input"
+        xml += self.get_index_as_xml()
+        xml += ">"
+        xml += "</input>"
+        return xml
+
+    #######################################################################################################
+    # INPUT_EXPRESSION ::== <input( INDEX_ATTRIBUTE)/> | <input><index>TEMPLATE_EXPRESSION</index></input>
+
+    def parse_expression(self, graph, expression):
+        self._parse_node_with_attrib(graph, expression, "index", "1")
+        if self.children:
+            raise ParserException("Node should not contain child text", xml_element=expression, nodename='input')

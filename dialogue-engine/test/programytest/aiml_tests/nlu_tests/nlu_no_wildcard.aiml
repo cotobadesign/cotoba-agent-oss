@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<aiml>
+
+    <category>
+        <pattern>
+            None_NLU
+        </pattern>
+        <template>
+            None nlu result
+        </template>
+	</category>
+
+    <category>
+        <pattern>
+            <nlu intent="transportation" />
+        </pattern>
+        <template>
+            NLU transportation
+        </template>
+	</category>
+
+    <category>
+        <pattern>
+            <nlu intent="transportation" scoreGe="0.8" />
+        </pattern>
+        <template>
+            NLU transportation 0.8
+        </template>
+	</category>
+
+</aiml>

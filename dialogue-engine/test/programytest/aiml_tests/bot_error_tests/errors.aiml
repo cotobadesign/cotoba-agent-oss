@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<aiml>
+
+	<category>
+		<pattern>SRAI LOOP-1</pattern>
+		<template>
+			<srai>SRAI LOOP-2</srai>
+		</template>
+	</category>
+
+	<category>
+		<pattern>SRAI LOOP-2</pattern>
+		<template>
+			<srai>SRAI LOOP-1</srai>
+		</template>
+	</category>
+
+	<category>
+		<pattern>SRAI OVER</pattern>
+		<template>
+			<srai>SRAI LOOP-1</srai>
+			exit
+			<srai>TIME OVER</srai>
+		</template>
+	</category>
+
+	<category>
+		<pattern>CONDITION TYPE2 OVER</pattern>
+		<template>
+			<think>
+				<set var="test">1</set>
+			</think>
+			<condition var="test">
+				<li value="1"><set var="test">1</set><loop /></li>
+				<li value="2"><set var="test">3</set></li>
+				<li>exit</li>
+			</condition>
+		</template>
+	</category>
+
+	<category>
+		<pattern>CONDITION TYPE3 OVER</pattern>
+		<template>
+			<think>
+				<set var="test">1</set>
+			</think>
+			<condition>
+				<li var="test" value="1"><set var="test">1</set><loop /></li>
+				<li var="test" value="2"><set var="test">3</set></li>
+				<li>exit</li>
+			</condition>
+		</template>
+	</category>
+
+	<category>
+		<pattern>TIME OVER</pattern>
+		<template>
+			exit
+		</template>
+	</category>
+
+</aiml>

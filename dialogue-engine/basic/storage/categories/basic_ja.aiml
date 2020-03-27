@@ -1,0 +1,293 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<aiml version="2.0">
+    <category>
+        <pattern>
+            おはよう
+        </pattern>
+        <template>
+            <think>
+                <set name="topic">morning</set>
+            </think>
+            <random>
+                <li>夜更かしせずに寝ていますか？</li>
+                <li>昨日は、早く寝ましたか？</li>
+                <li>朝までぐっすり眠れましたか？</li>
+            </random>
+        </template>
+    </category>
+
+    <category>
+        <pattern>
+            おはようございます
+        </pattern>
+        <template>
+            <srai>おはよう</srai>
+        </template>
+    </category>
+
+    <topic name="morning">
+        <category>
+            <pattern>
+                <set name="morningWell" />
+            </pattern>
+            <template>
+                <think>
+                    <set name="topic">*</set>
+                </think>
+                <random>
+                    <li>朝は、すっきり目が覚めることができたんですね。</li>
+                    <li>目覚めのいい朝は、気持ちがいいですね。</li>
+                </random>
+            </template>
+        </category>
+
+        <category>
+            <pattern>
+                <set name="morningAmbiguous" />
+            </pattern>
+            <template>
+                <think>
+                    <set name="topic">*</set>
+                </think>
+                <random>
+                    <li>寝つきをよくするには、就寝2、3時間前の入浴が効果的らしいです。是非、一度試してみて下さい。</li>
+                    <li>早寝早起きは健康管理にも有効らしいので可能な限り頑張ってみてくださいね。</li>
+                </random>
+            </template>
+        </category>
+
+        <category>
+            <pattern>
+                <set name="morningBad" />
+            </pattern>
+            <template>
+                <think>
+                    <set name="topic">*</set>
+                </think>
+                <random>
+                    <li>不眠になると、生活習慣病などになりやすくなるようです。睡眠不足だと感じているときは、お昼休み、少し仮眠をとるとすっきりしますよ。よかったら試してみて下さいね。</li>
+                    <li>睡眠を意識することで早めに疲れを取り、風邪などを引きにくくする効果もあるみたいですよ。今日は、早く寝れることを祈ってます。</li>
+                    <li>不眠は、健康に悪影響を及ぼし、また、脳卒中や心筋梗塞など命にかかわる病気を引き起こす危険性も高まるそうですよ。健康のためにも、早寝早起きを心がけてみて下さいね。</li>
+                </random>
+            </template>
+        </category>
+    </topic>
+
+
+    <category>
+        <pattern>
+            こんにちは
+        </pattern>
+        <template>
+            <think>
+                <set name="topic">daytime</set>
+            </think>
+            <random>
+                <li>夜更かしせずに寝ていますか？</li>
+                <li>昨日は、早く寝ましたか？</li>
+                <li>朝までぐっすり眠れましたか？</li>
+            </random>
+        </template>
+    </category>
+
+    <topic name="daytime">
+        <category>
+            <pattern>
+                <set name="daytimeWell" />
+            </pattern>
+            <template>
+                <think>
+                    <set name="topic">*</set>
+                </think>
+                <random>
+                    <li>調子がいいとがんばれますね。</li>
+                    <li>体調が良ければ、気分も上がりますね。</li>
+                    <li>よかったです。元気が一番ですものね。</li>
+                </random>
+            </template>
+        </category>
+
+        <category>
+            <pattern>
+                <set name="daytimeAmbiguous" />
+            </pattern>
+            <template>
+                <think>
+                    <set name="topic">*</set>
+                </think>
+                <random>
+                    <li>リフレッシュして、頑張りましょう。</li>
+                    <li>いい日になるように、過ごせればいいですね。</li>
+                </random>
+            </template>
+        </category>
+
+        <category>
+            <pattern>
+                <set name="daytimeBad" />
+            </pattern>
+            <template>
+                <think>
+                    <set name="topic">*</set>
+                </think>
+                <random>
+                    <li>それは、すごく心配です。</li>
+                    <li>とても心配です。無理しないで下さい。</li>
+                    <li>体調が悪いと、仕事も集中できませんよね。是非、気づいた時に、深呼吸をしてみてください。息を深く吸ってゆっくり吐くだけで、リラックス効果が得られ集中力もアップしますよ。</li>
+                </random>
+            </template>
+        </category>
+    </topic>
+
+
+    <category>
+        <pattern>
+            こんばんは
+        </pattern>
+        <template>
+            <think>
+                <set name="topic">evening</set>
+            </think>
+            <random>
+                <li>お仕事お疲れ様でした。今日は、お忙しかったでしょうか？</li>
+                <li>お疲れ様です。お仕事は、お忙しかったですか？</li>
+                <li>お仕事は、忙しかったですか？</li>
+            </random>
+        </template>
+    </category>
+
+    <topic name="evening">
+        <category>
+            <pattern>
+                <set name="eveningWell" />
+            </pattern>
+            <template>
+                <think>
+                    <set name="topic">*</set>
+                </think>
+                <random>
+                    <li>忙しい事はありがたいことではありますが、忙しすぎると、ストレスがたまることもあるので、ほどほどが一番ですよね。</li>
+                    <li>お忙しい時でも合間にストレッチなどして、体の硬直を減らすようにしてくださいね。肩こりがひどくなるとしんどくなりますもんね。</li>
+                </random>
+            </template>
+        </category>
+
+        <category>
+            <pattern>
+                <set name="eveningAmbiguous" />
+            </pattern>
+            <template>
+                <think>
+                    <set name="topic">*</set>
+                </think>
+                <random>
+                    <li>何かとストレスたまると思いますが、とりあえず、特に何事もなく、過ごされたならよかったです。</li>
+                </random>
+            </template>
+        </category>
+
+        <category>
+            <pattern>
+                <set name="eveningBad" />
+            </pattern>
+            <template>
+                <think>
+                    <set name="topic">*</set>
+                </think>
+                <random>
+                    <li>今日はそれほど、お忙しい思いをされなくてよかったです。</li>
+                </random>
+            </template>
+        </category>
+    </topic>
+
+
+    <category>
+        <pattern>今日は何日</pattern>
+        <template>
+            今日は
+            <date>
+                <format>%Y年%m月%d日</format>
+            </date>
+            です。
+        </template>
+    </category>
+
+    <category>
+        <pattern>
+            <regex form="今日[はわの]何日(ですか|です)?" />
+        </pattern>
+        <template>
+            <srai>今日は何日</srai>
+        </template>
+    </category>
+
+    <category>
+        <pattern>今日の日付教えて</pattern>
+        <template>
+            <srai>今日は何日</srai>
+        </template>
+    </category>
+
+    <category>
+        <pattern>
+            <regex form="日付(教えて|は)?" />
+        </pattern>
+        <template>
+            <srai>今日は何日</srai>
+        </template>
+    </category>
+
+    <category>
+        <pattern>今何時</pattern>
+        <template>
+            <date>
+                <format>%H時%M分%S秒</format>
+            </date>
+            です。
+        </template>
+    </category>
+
+    <category>
+        <pattern>
+            <regex form="今[はわ]何時(ですか|です)?" />
+        </pattern>
+        <template>
+            <srai>今何時</srai>
+        </template>
+    </category>
+    <category>
+        <pattern>
+            <regex form="(時間|時刻)(教えて|は)?" />
+        </pattern>
+        <template>
+            <srai>今何時</srai>
+        </template>
+    </category>
+    <category>
+        <pattern>
+            何時
+        </pattern>
+        <template>
+            <srai>今何時</srai>
+        </template>
+    </category>
+    <category>
+        <pattern>
+            <regex form="何時(か)?(わかる|教えて)?" />
+        </pattern>
+        <template>
+            <srai>今何時</srai>
+        </template>
+    </category>
+    <category>
+        <pattern>
+        *
+        </pattern>
+        <template>
+        ちょっと、難しい質問ですね。
+        </template>
+    </category>
+
+</aiml>

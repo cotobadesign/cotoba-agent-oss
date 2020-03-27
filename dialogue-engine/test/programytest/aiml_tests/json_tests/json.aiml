@@ -1,0 +1,286 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<aiml>
+
+	<category>
+		<pattern>JSON KEY</pattern>
+		<template>
+			<think>
+				<set var="test">{"json": {"key1": "data1", "key2": "data2"}}</set>
+				<set var="json_key">key2</set>
+			</think>
+			<json var="test.json"><key><get var="json_key" /></key></json>
+		</template>
+	</category>
+
+	<category>
+		<pattern>JSON JOINT</pattern>
+		<template>
+			<think>
+				<set var="test">{"json": {"key1": "data1", "key2": "data2"}}</set>
+				<json var="test.json.key3"><json var="test.json" /></json>
+			</think>
+			<json var="test.json" />
+		</template>
+	</category>
+
+	<category>
+		<pattern>JSON get data</pattern>
+		<template>
+			<think>
+				<set var="data">set</set>
+				<json var="test.json.key"><get var="data" /></json>
+			</think>
+			<json var="test.json" />
+		</template>
+	</category>
+
+	<category>
+		<pattern>JSON get data TOP</pattern>
+		<template>
+			<think>
+				<set var="data">set_data</set>
+				<json var="test.json"><get var="data" />Test</json>
+			</think>
+			<json var="test.json" />
+		</template>
+	</category>
+
+	<category>
+		<pattern>JSON get data MIDDLE</pattern>
+		<template>
+			<think>
+				<set var="data">set_data</set>
+				<json var="test.json">Test<get var="data" />Test</json>
+			</think>
+			<json var="test.json" />
+		</template>
+	</category>
+
+	<category>
+		<pattern>JSON get data BOTTOM</pattern>
+		<template>
+			<think>
+				<set var="data">set_data</set>
+				<json var="test.json">Test<get var="data" /></json>
+			</think>
+			<json var="test.json" />
+		</template>
+	</category>
+
+	<category>
+		<pattern>JSON get quote data</pattern>
+		<template>
+			<think>
+				<set var="data">"set"</set>
+				<json var="test.json.key"><get var="data" /></json>
+			</think>
+			<json var="test.json" />
+		</template>
+	</category>
+
+	<category>
+		<pattern>JSON get quote TOP</pattern>
+		<template>
+			<think>
+				<set var="data">"set" quote data</set>
+				<json var="test.json.key"><get var="data" /></json>
+			</think>
+			<json var="test.json" />
+		</template>
+	</category>
+
+	<category>
+		<pattern>JSON get quote MIDDLE</pattern>
+		<template>
+			<think>
+				<set var="data">set "quote" data</set>
+				<json var="test.json.key"><get var="data" /></json>
+			</think>
+			<json var="test.json" />
+		</template>
+	</category>
+
+	<category>
+		<pattern>JSON get quote BOTTOM</pattern>
+		<template>
+			<think>
+				<set var="data">set quote "data"</set>
+				<json var="test.json.key"><get var="data" /></json>
+			</think>
+			<json var="test.json" />
+		</template>
+	</category>
+
+	<category>
+		<pattern>JSON get escape data</pattern>
+		<template>
+			<think>
+				<set var="data">\"escape\"</set>
+				<json var="test.json.key"><get var="data" /></json>
+			</think>
+			<json var="test.json" />
+		</template>
+	</category>
+
+	<category>
+		<pattern>JSON get quote BOTTOM</pattern>
+		<template>
+			<think>
+				<set var="data">set quote "data"</set>
+				<json var="test.json.key"><get var="data" /></json>
+			</think>
+			<json var="test.json" />
+		</template>
+	</category>
+
+	<category>
+		<pattern>JSON get list TAG</pattern>
+		<template>
+			<think>
+				<set var="data1">set</set>
+				<set var="data2">quote</set>
+				<set var="data3">data</set>
+				<json var="test.json.key">"<get var="data1" />", "<get var="data2" />", "<get var="data3" />"</json>
+			</think>
+			<json var="test.json" />
+		</template>
+	</category>
+
+	<category>
+		<pattern>JSON get list JSON</pattern>
+		<template>
+			<think>
+				<set var="data">{"key": ["set", "quote", "data"]}</set>
+				<json var="test.json"><get var="data" /></json>
+			</think>
+			<json var="test.json" />
+		</template>
+	</category>
+
+	<category>
+		<pattern>JSON get list TEXT</pattern>
+		<template>
+			<think>
+				<set var="data">"set", "quote", "data"</set>
+				<json var="test.json.key"><get var="data" /></json>
+			</think>
+			<json var="test.json" />
+		</template>
+	</category>
+
+	<category>
+		<pattern>JSON get joint TAG</pattern>
+		<template>
+			<think>
+				<set var="data1">set</set>
+				<set var="data2">data</set>
+				<json var="test.json.key"><get var="data1" /><get var="data2" /></json>
+			</think>
+			<json var="test.json" />
+		</template>
+	</category>
+
+	<category>
+		<pattern>JSON get joint TAG with sp</pattern>
+		<template>
+			<think>
+				<set var="data1">set</set>
+				<set var="data2">data</set>
+				<json var="test.json.key"><get var="data1" /><space /><get var="data2" /></json>
+			</think>
+			<json var="test.json" />
+		</template>
+	</category>
+
+	<category>
+		<pattern>JSON get joint QUOTE</pattern>
+		<template>
+			<think>
+				<set var="data1">set</set>
+				<set var="data2">"data"</set>
+				<json var="test.json.key"><get var="data1" /><get var="data2" /></json>
+			</think>
+			<json var="test.json" />
+		</template>
+	</category>
+
+	<category>
+		<pattern>JSON get joint QUOTE with sp</pattern>
+		<template>
+			<think>
+				<set var="data1">set</set>
+				<set var="data2">"data"</set>
+				<json var="test.json.key"><get var="data1" /><space /><get var="data2" /></json>
+			</think>
+			<json var="test.json" />
+		</template>
+	</category>
+
+	<category>
+		<pattern>JSON get TEXT TAG</pattern>
+		<template>
+			<think>
+				<set var="data">set</set>
+				<json var="test.json.key">answer<get var="data" /></json>
+			</think>
+			<json var="test.json" />
+		</template>
+	</category>
+
+	<category>
+		<pattern>JSON get TEXT TAG with sp</pattern>
+		<template>
+			<think>
+				<set var="data">set</set>
+				<json var="test.json.key">answer<space /><get var="data" /></json>
+			</think>
+			<json var="test.json" />
+		</template>
+	</category>
+
+	<category>
+		<pattern>JSON get TEXT space TAG</pattern>
+		<template>
+			<think>
+				<set var="data">set</set>
+				<json var="test.json.key">answer <get var="data" /></json>
+			</think>
+			<json var="test.json" />
+		</template>
+	</category>
+
+	<category>
+		<pattern>JSON get TEXT quote TAG</pattern>
+		<template>
+			<think>
+				<set var="data">set</set>
+				<json var="test.json.key">answer"<get var="data" />"</json>
+			</think>
+			<json var="test.json" />
+		</template>
+	</category>
+
+	<category>
+		<pattern>JSON get TEXT quote TAG with sp</pattern>
+		<template>
+			<think>
+				<set var="data">set</set>
+				<json var="test.json.key">answer"<space /><get var="data" />"</json>
+			</think>
+			<json var="test.json" />
+		</template>
+	</category>
+
+	<category>
+		<pattern>JSON get TEXT space quote TAG</pattern>
+		<template>
+			<think>
+				<set var="data">set</set>
+				<json var="test.json.key">answer "<get var="data" />"</json>
+			</think>
+			<json var="test.json" />
+		</template>
+	</category>
+
+</aiml>

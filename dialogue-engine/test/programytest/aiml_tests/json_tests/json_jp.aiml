@@ -1,0 +1,286 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<aiml>
+
+	<category>
+		<pattern>JSON KEY</pattern>
+		<template>
+			<think>
+				<set var="テスト">{"JSONデータ": {"キー１": "データ１", "キー２": "データ２"}}</set>
+				<set var="json_キー">キー２</set>
+			</think>
+			<json var="テスト.JSONデータ"><key><get var="json_キー" /></key></json>
+		</template>
+	</category>
+
+	<category>
+		<pattern>JSON JOINT</pattern>
+		<template>
+			<think>
+				<set var="テスト">{"JSONデータ": {"キー1": "データ1", "キー2": "データ2"}}</set>
+				<json var="テスト.JSONデータ.キー３"><json var="テスト.JSONデータ" /></json>
+			</think>
+			<json var="テスト.JSONデータ" />
+		</template>
+	</category>
+
+	<category>
+		<pattern>JSON get data</pattern>
+		<template>
+			<think>
+				<set var="データ">設定値</set>
+				<json var="テスト.JSONデータ.キー"><get var="データ" /></json>
+			</think>
+			<json var="テスト.JSONデータ" />
+		</template>
+	</category>
+
+	<category>
+		<pattern>JSON get data TOP</pattern>
+		<template>
+			<think>
+				<set var="データ">設定値</set>
+				<json var="テスト.JSONデータ"><get var="データ" />テスト</json>
+			</think>
+			<json var="テスト.JSONデータ" />
+		</template>
+	</category>
+
+	<category>
+		<pattern>JSON get data MIDDLE</pattern>
+		<template>
+			<think>
+				<set var="データ">設定値</set>
+				<json var="テスト.JSONデータ">テスト<get var="データ" />テスト</json>
+			</think>
+			<json var="テスト.JSONデータ" />
+		</template>
+	</category>
+
+	<category>
+		<pattern>JSON get data BOTTOM</pattern>
+		<template>
+			<think>
+				<set var="データ">設定値</set>
+				<json var="テスト.JSONデータ">テスト<get var="データ" /></json>
+			</think>
+			<json var="テスト.JSONデータ" />
+		</template>
+	</category>
+
+	<category>
+		<pattern>JSON get quote data</pattern>
+		<template>
+			<think>
+				<set var="データ">"設定値"</set>
+				<json var="テスト.JSONデータ.キー"><get var="データ" /></json>
+			</think>
+			<json var="テスト.JSONデータ" />
+		</template>
+	</category>
+
+	<category>
+		<pattern>JSON get quote TOP</pattern>
+		<template>
+			<think>
+				<set var="データ">"設定値" クォート データ</set>
+				<json var="テスト.JSONデータ.キー"><get var="データ" /></json>
+			</think>
+			<json var="テスト.JSONデータ" />
+		</template>
+	</category>
+
+	<category>
+		<pattern>JSON get quote MIDDLE</pattern>
+		<template>
+			<think>
+				<set var="データ">設定値 "クォート" データ</set>
+				<json var="テスト.JSONデータ.キー"><get var="データ" /></json>
+			</think>
+			<json var="テスト.JSONデータ" />
+		</template>
+	</category>
+
+	<category>
+		<pattern>JSON get quote BOTTOM</pattern>
+		<template>
+			<think>
+				<set var="データ">設定値 クォート "データ"</set>
+				<json var="テスト.JSONデータ.キー"><get var="データ" /></json>
+			</think>
+			<json var="テスト.JSONデータ" />
+		</template>
+	</category>
+
+	<category>
+		<pattern>JSON get quote BOTTOM</pattern>
+		<template>
+			<think>
+				<set var="データ">設定値 クォート "データ"</set>
+				<json var="テスト.JSONデータ.キー"><get var="データ" /></json>
+			</think>
+			<json var="テスト.JSONデータ" />
+		</template>
+	</category>
+
+	<category>
+		<pattern>JSON get escape data</pattern>
+		<template>
+			<think>
+				<set var="データ">\"エスケープ\"</set>
+				<json var="テスト.JSONデータ.キー"><get var="データ" /></json>
+			</think>
+			<json var="テスト.JSONデータ" />
+		</template>
+	</category>
+
+	<category>
+		<pattern>JSON get list TAG</pattern>
+		<template>
+			<think>
+				<set var="データ１">設定値</set>
+				<set var="データ２">クォート</set>
+				<set var="データ３">データ</set>
+				<json var="テスト.JSONデータ.キー">"<get var="データ１" />","<get var="データ２" />", "<get var="データ３" />"</json>
+			</think>
+			<json var="テスト.JSONデータ" />
+		</template>
+	</category>
+
+	<category>
+		<pattern>JSON get list JSON</pattern>
+		<template>
+			<think>
+				<set var="データ">{"キー": ["設定値", "クォート", "データ"]}</set>
+				<json var="テスト.JSONデータ"><get var="データ" /></json>
+			</think>
+			<json var="テスト.JSONデータ" />
+		</template>
+	</category>
+
+	<category>
+		<pattern>JSON get list TEXT</pattern>
+		<template>
+			<think>
+				<set var="データ">"設定値", "クォート", "データ"</set>
+				<json var="テスト.JSONデータ.キー"><get var="データ" /></json>
+			</think>
+			<json var="テスト.JSONデータ" />
+		</template>
+	</category>
+
+	<category>
+		<pattern>JSON get joint TAG</pattern>
+		<template>
+			<think>
+				<set var="データ1">設定値</set>
+				<set var="データ2">データ</set>
+				<json var="テスト.JSONデータ.キー"><get var="データ1" /><get var="データ2" /></json>
+			</think>
+			<json var="テスト.JSONデータ" />
+		</template>
+	</category>
+
+	<category>
+		<pattern>JSON get joint TAG sp</pattern>
+		<template>
+			<think>
+				<set var="データ1">設定値</set>
+				<set var="データ2">データ</set>
+				<json var="テスト.JSONデータ.キー"><get var="データ1" /><space /><get var="データ2" /></json>
+			</think>
+			<json var="テスト.JSONデータ" />
+		</template>
+	</category>
+
+	<category>
+		<pattern>JSON get joint QUOTE</pattern>
+		<template>
+			<think>
+				<set var="データ1">設定値</set>
+				<set var="データ2">"データ"</set>
+				<json var="テスト.JSONデータ.キー"><get var="データ1" /><get var="データ2" /></json>
+			</think>
+			<json var="テスト.JSONデータ" />
+		</template>
+	</category>
+
+	<category>
+		<pattern>JSON get joint QUOTE sp</pattern>
+		<template>
+			<think>
+				<set var="データ1">設定値</set>
+				<set var="データ2">"データ"</set>
+				<json var="テスト.JSONデータ.キー"><get var="データ1" /><space /><get var="データ2" /></json>
+			</think>
+			<json var="テスト.JSONデータ" />
+		</template>
+	</category>
+
+	<category>
+		<pattern>JSON get TEXT TAG</pattern>
+		<template>
+			<think>
+				<set var="データ">設定値</set>
+				<json var="テスト.JSONデータ.キー">答えは<get var="データ" /></json>
+			</think>
+			<json var="テスト.JSONデータ" />
+		</template>
+	</category>
+
+	<category>
+		<pattern>JSON get TEXT TAG sp</pattern>
+		<template>
+			<think>
+				<set var="データ">設定値</set>
+				<json var="テスト.JSONデータ.キー">答えは<space /><get var="データ" /></json>
+			</think>
+			<json var="テスト.JSONデータ" />
+		</template>
+	</category>
+
+	<category>
+		<pattern>JSON get TEXT space TAG</pattern>
+		<template>
+			<think>
+				<set var="データ">設定値</set>
+				<json var="テスト.JSONデータ.キー">答えは <get var="データ" /></json>
+			</think>
+			<json var="テスト.JSONデータ" />
+		</template>
+	</category>
+
+	<category>
+		<pattern>JSON get TEXT quote TAG</pattern>
+		<template>
+			<think>
+				<set var="データ">設定値</set>
+				<json var="テスト.JSONデータ.キー">答えは"<get var="データ" />"</json>
+			</think>
+			<json var="テスト.JSONデータ" />
+		</template>
+	</category>
+
+	<category>
+		<pattern>JSON get TEXT quote TAG sp</pattern>
+		<template>
+			<think>
+				<set var="データ">設定値</set>
+				<json var="テスト.JSONデータ.キー">答えは"<space /><get var="データ" />"</json>
+			</think>
+			<json var="テスト.JSONデータ" />
+		</template>
+	</category>
+
+	<category>
+		<pattern>JSON get TEXT space quote TAG</pattern>
+		<template>
+			<think>
+				<set var="データ">設定値</set>
+				<json var="テスト.JSONデータ.キー">答えは "<get var="データ" />"</json>
+			</think>
+			<json var="テスト.JSONデータ" />
+		</template>
+	</category>
+
+</aiml>

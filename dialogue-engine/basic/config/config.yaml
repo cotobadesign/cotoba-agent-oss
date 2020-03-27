@@ -1,0 +1,405 @@
+yadlan:
+    host: 0.0.0.0
+    port: 5100
+    debug: false
+    workers: 10
+    description: Yadlan dialog engine
+
+    storage:
+        entities:
+            categories: file
+            errors: file
+            duplicates: file
+            learnf: file
+            conversations: file
+            logs: file
+
+            maps: file
+            sets: file
+            rdf: file
+            rdf_updates: file
+
+            denormal: file
+            normal: file
+            gender: file
+            person: file
+            person2: file
+            regex_templates: file
+
+            properties: file
+            defaults: file
+            nlu_servers: file
+
+            spelling_corpus: file
+            license_keys: file
+
+            template_nodes: file
+            pattern_nodes: file
+
+            binaries: file
+            braintree: file
+
+            preprocessors: file
+            postprocessors: file
+
+            usergroups: file
+
+        stores:
+            file:
+                type:   file
+                config:
+                    categories_storage:
+                        dirs: ../storage/categories
+                        subdirs: true
+                        extension: .aiml
+                    errors_storage:
+                        file: ../storage/debug/errors.txt
+                    duplicates_storage:
+                        file: ../storage/debug/duplicates.txt
+                    learnf_storage:
+                        dirs: ../storage/learnf
+
+                    conversations_storage:
+                        dirs: ../storage/conversations
+                    logs_storage:
+                        dirs: ../storage/debug
+
+                    sets_storage:
+                        dirs: ../storage/sets
+                        extension: txt
+                    maps_storage:
+                        dirs: ../storage/maps
+                        extension: txt
+                    rdf_storage:
+                        dirs: ../storage/rdfs
+                        subdirs: true
+                        extension: txt
+                    rdf_updates_storage:
+                        dirs: ../storage/rdf_updates
+
+                    denormal_storage:
+                        file: ../storage/lookups/denormal.txt
+                    normal_storage:
+                        file: ../storage/lookups/normal.txt
+                    gender_storage:
+                        file: ../storage/lookups/gender.txt
+                    person_storage:
+                        file: ../storage/lookups/person.txt
+                    person2_storage:
+                        file: ../storage/lookups/person2.txt
+                    regex_templates_storage:
+                        file: ../storage/lookups/regex.txt
+
+                    properties_storage:
+                        file: ../storage/properties/properties.txt
+                    defaults_storage:
+                        file: ../storage/properties/defaults.txt
+                    nlu_servers_storage:
+                        file: ../storage/properties/nlu_servers.yaml
+    
+                    spelling_corpus_storage:
+                        file: ../storage/spelling/corpus.txt
+
+                    license_keys_storage:
+                        file: ../storage/licenses/license.keys
+
+                    pattern_nodes_storage:
+                        file: ../storage/nodes/pattern_nodes.conf
+                    template_nodes_storage:
+                        file: ../storage/nodes/template_nodes.conf
+
+                    binaries_storage:
+                        file: ../storage/braintree/braintree.bin
+                    braintree_storage:
+                        file: ../storage/braintree/braintree.xml
+                        format: xml
+                        encoding: utf-8
+                    preprocessors_storage:
+                        file: ../storage/processing/preprocessors.conf
+                    postprocessors_storage:
+                        file: ../storage/processing/postprocessors.conf
+
+                    usergroups_storage:
+                        file: ../storage/security/usergroups.yaml
+
+            logger:
+                type:   logger
+                config:
+                    conversation_logger: conversation
+
+console:
+    description: Program-Y Console Client
+    bot:  bot
+    prompt: ">>>"
+
+    storage:
+        entities:
+            categories: file
+            errors: file
+            duplicates: file
+            learnf: file
+            conversations:   file
+
+            maps: file
+            sets: file
+            rdf: file
+            rdf_updates: file
+
+            denormal: file
+            normal: file
+            gender: file
+            person: file
+            person2: file
+            regex_templates: file
+
+            properties: file
+            defaults: file
+            nlu_servers: file
+
+            spelling_corpus: file
+            license_keys: file
+
+            template_nodes: file
+            pattern_nodes: file
+
+            binaries: file
+            braintree: file
+
+            preprocessors: file
+            postprocessors: file
+
+            usergroups: file
+
+        stores:
+            file:
+                type:   file
+                config:
+                    categories_storage:
+                        dirs: ../storage/categories
+                        subdirs: true
+                        extension: .aiml
+                    errors_storage:
+                        file: ../storage/debug/errors.txt
+                    duplicates_storage:
+                        file: ../storage/debug/duplicates.txt
+                    learnf_storage:
+                        dirs: ../storage/learnf
+
+                    conversations_storage:
+                        dirs: ../storage/conversations
+
+                    sets_storage:
+                        dirs: ../storage/sets
+                        extension: txt
+                    maps_storage:
+                        dirs: ../storage/maps
+                        extension: txt
+                    rdf_storage:
+                        dirs: ../storage/rdfs
+                        subdirs: true
+                        extension: txt
+                    rdf_updates_storage:
+                        dirs: ../storage/rdf_updates
+
+                    denormal_storage:
+                        file: ../storage/lookups/denormal.txt
+                    normal_storage:
+                        file: ../storage/lookups/normal.txt
+                    gender_storage:
+                        file: ../storage/lookups/gender.txt
+                    person_storage:
+                        file: ../storage/lookups/person.txt
+                    person2_storage:
+                        file: ../storage/lookups/person2.txt
+                    regex_templates_storage:
+                        file: ../storage/lookups/regex.txt
+
+                    properties_storage:
+                        file: ../storage/properties/properties.txt
+                    defaults_storage:
+                        file: ../storage/properties/defaults.txt
+                    nlu_servers_storage:
+                        file: ../storage/properties/nlu_servers.yaml
+    
+                    spelling_corpus_storage:
+                        file: ../storage/spelling/corpus.txt
+
+                    license_keys_storage:
+                        file: ../storage/licenses/license.keys
+
+                    pattern_nodes_storage:
+                        file: ../storage/nodes/pattern_nodes.conf
+                    template_nodes_storage:
+                        file: ../storage/nodes/template_nodes.conf
+
+                    binaries_storage:
+                        file: ../storage/braintree/braintree.bin
+                    braintree_storage:
+                        file: ../storage/braintree/braintree.xml
+                        format: xml
+                        encoding: utf-8
+
+                    preprocessors_storage:
+                        file: ../storage/processing/preprocessors.conf
+                    postprocessors_storage:
+                        file: ../storage/processing/postprocessors.conf
+
+                    usergroups_storage:
+                        file: ../storage/security/usergroups.yaml
+
+            logger:
+                type:   logger
+                config:
+                    conversation_logger: conversation
+
+
+#####################################################################################################
+#
+
+bot:
+    version: v1.0
+
+    brain: brain
+
+    initial_question: おはよう。
+    initial_question_srai: コンバンワ
+    default_response: unknown
+    default_response_srai: YEMPTY
+    empty_string: YEMPTY
+    exit_response: 終了します。
+    exit_response_srai: YEXITRESPONSE
+
+    override_properties: true
+
+    max_question_recursion: 1000
+    max_question_timeout: 60
+    max_search_depth: 100
+    max_search_timeout: 60
+    max_search_condition: 20
+    max_search_srai: 50
+    max_categories: 20000
+    max_properties: 10000
+
+    spelling:
+        load: false
+        classname: programy.spelling.norvig.NorvigSpellingChecker
+        corpus: file
+        check_before: false
+        check_and_retry: false
+
+    conversations:
+      save: true
+      load: false
+      max_histories: 10
+
+    joiner:
+        classname: programy.dialog.joiner.joiner_jp.SentenceJoiner
+        join_chars: .?!。？！
+        terminator: 。
+
+    splitter:
+        classname: programy.dialog.splitter.splitter_jp.SentenceSplitter
+        split_chars: 。
+
+#####################################################################################################
+#
+
+brain:
+    bot_name: BOT_XXXX
+    manager_name: API_KEY_XXXX
+
+    # Overrides
+    overrides:
+      allow_system_aiml: false
+      allow_learn_aiml: true
+      allow_learnf_aiml: true
+
+    # Defaults
+    defaults:
+      default-get: unknown
+      default-property: unknown
+      default-map: unknown
+
+    # Binary
+    binaries:
+      save_binary: true
+      load_binary: false
+      load_aiml_on_binary_fail: true
+
+    # debugfiles
+    debugfiles:
+        save-errors: true
+        save-duplicates: true
+
+
+    # Braintree
+    braintree:
+        create: true
+
+    services:
+        REST:
+            classname: programy.services.rest.GenericRESTService
+            method: GET
+            host: 0.0.0.0
+        __PublishedREST__:
+            classname: programy.services.publishedrest.PublishedRestService
+        __PublishedBot__:
+            classname: programy.services.publishedbot.PublishedBotService
+            host: 'http://localhost:5200'
+
+    security:
+        authentication:
+            classname: programy.security.authenticate.passthrough.BasicPassThroughAuthenticationService
+            denied_srai: AUTHENTICATION_FAILED
+        authorisation:
+            classname: programy.security.authorise.usergroupsauthorisor.BasicUserGroupAuthorisationService
+            denied_srai: AUTHORISATION_FAILED
+            usergroups: ./storage/security/usergroups.yaml
+    
+    oob:
+      default:
+        classname: programy.oob.defaults.default.DefaultOutOfBandProcessor
+      alarm:
+        classname: programy.oob.defaults.alarm.AlarmOutOfBandProcessor
+      camera:
+        classname: programy.oob.defaults.camera.CameraOutOfBandProcessor
+      clear:
+        classname: programy.oob.defaults.clear.ClearOutOfBandProcessor
+      dial:
+        classname: programy.oob.defaults.dial.DialOutOfBandProcessor
+      dialog:
+        classname: programy.oob.defaults.dialog.DialogOutOfBandProcessor
+      email:
+        classname: programy.oob.defaults.email.EmailOutOfBandProcessor
+      geomap:
+        classname: programy.oob.defaults.map.MapOutOfBandProcessor
+      schedule:
+        classname: programy.oob.defaults.schedule.ScheduleOutOfBandProcessor
+      search:
+        classname: programy.oob.defaults.search.SearchOutOfBandProcessor
+      sms:
+        classname: programy.oob.defaults.sms.SMSOutOfBandProcessor
+      url:
+        classname: programy.oob.defaults.url.URLOutOfBandProcessor
+      wifi:
+        classname: programy.oob.defaults.wifi.WifiOutOfBandProcessor
+
+    dynamic:
+        variables:
+            gettime: programy.dynamic.variables.datetime.GetTime
+        sets:
+            numeric: programy.dynamic.sets.numeric.IsNumeric
+            roman:   programy.dynamic.sets.roman.IsRomanNumeral
+        maps:
+            romantodec: programy.dynamic.maps.roman.MapRomanToDecimal
+            dectoroman: programy.dynamic.maps.roman.MapDecimalToRoman
+
+    nlu:
+        classname: programy.nlu.cotobadesignNlu.CotobadesignNlu
+        use_file: true
+        url: 
+        apikey: 
+
+    tokenizer:
+        classname: programy.dialog.tokenizer.tokenizer_jp.TokenizerJP
+        punctuation_chars: ;'",!()[]：’”；、。！（）「」

@@ -1,0 +1,256 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<aiml version="2.0">
+    <category>
+        <pattern>
+            Good morning
+        </pattern>
+        <template>
+            <think>
+                <set name="topic">morning</set>
+            </think>
+            <random>
+                <li>Are you sleeping without staying up late? </li>
+                <li>Did you sleep early yesterday?</li>
+                <li>Did you sleep well until morning?</li>
+            </random>
+        </template>
+    </category>
+
+    <topic name="morning">
+        <category>
+            <pattern>
+                <set name="morningWell_en" />
+            </pattern>
+            <template>
+                <think>
+                    <set name="topic">*</set>
+                </think>
+                <random>
+                    <li>In the morning, I was able to wake up clearly. Good morning</li>
+                    <li>It's nice to wake up in the morning.</li>
+                </random>
+            </template>
+        </category>
+
+        <category>
+            <pattern>
+                <set name="morningAmbiguous_en" />
+            </pattern>
+            <template>
+                <think>
+                    <set name="topic">*</set>
+                </think>
+                <random>
+                    <li>To get to bed well, it seems that bathing two or three hours before going to bed is effective. By all means, please try once.</li>
+                    <li>Early sleep early and get up early seems to be effective for health care, so please try to do your best as much as possible.</li>
+                </random>
+            </template>
+        </category>
+
+        <category>
+            <pattern>
+                <set name="morningBad_en" />
+            </pattern>
+            <template>
+                <think>
+                    <set name="topic">*</set>
+                </think>
+                <random>
+                    <li>When you become sleepless, it seems to become easy to become lifestyle-related diseases. If you feel like you're sleep deprived, take a little nap during your lunch break and it's refreshing. Please try it if you like.</li>
+                    <li>It seems to have the effect of taking tiredness early by being conscious of sleep, and making it difficult to catch a cold. I hope you can go to bed early today.</li>
+                    <li>Insomnia can have a negative health effect and increase the risk of causing life-threatening diseases such as stroke and myocardial infarction. For your health, try to go to bed early and get up early.</li>
+                </random>
+            </template>
+        </category>
+    </topic>
+
+
+    <category>
+        <pattern>
+            Hello
+        </pattern>
+        <template>
+            <think>
+                <set name="topic">daytime</set>
+            </think>
+            <random>
+                <li>Do you sleep late at night?</li>
+                <li>Did you go to bed early yesterday?</li>
+                <li>Did you get a good night's sleep until morning?</li>
+            </random>
+        </template>
+    </category>
+
+    <topic name="daytime">
+        <category>
+            <pattern>
+                <set name="daytimeWell_en" />
+            </pattern>
+            <template>
+                <think>
+                    <set name="topic">*</set>
+                </think>
+                <random>
+                    <li>If you're in good shape, you'll get cancer.</li>
+                    <li>If you're in good shape, you'll feel better.</li>
+                    <li>It was good. Energy is the best thing.</li>
+                </random>
+            </template>
+        </category>
+
+        <category>
+            <pattern>
+                <set name="daytimeAmbiguous_en" />
+            </pattern>
+            <template>
+                <think>
+                    <set name="topic">*</set>
+                </think>
+                <random>
+                    <li>Let's refresh and do our best.</li>
+                    <li>I hope you can have a good day.</li>
+                </random>
+            </template>
+        </category>
+
+        <category>
+            <pattern>
+                <set name="daytimeBad_en" />
+            </pattern>
+            <template>
+                <think>
+                    <set name="topic">*</set>
+                </think>
+                <random>
+                    <li>I'm very worried about that.</li>
+                    <li>I'm very worried. Please do not overdo it.</li>
+                    <li>If you're not feeling well, you can't concentrate on your work. By all means, when you notice, please take a deep breath. Just breathe deeply and exhale slowly, and you'll get a relaxing effect and improve your concentration.</li>
+                </random>
+            </template>
+        </category>
+    </topic>
+
+
+    <category>
+        <pattern>
+            Good evening
+        </pattern>
+        <template>
+            <think>
+                <set name="topic">evening</set>
+            </think>
+            <random>
+                <li>Thank you for your work. Were you busy today?</li>
+                <li>Thank you for your good work. Were you busy with your work?</li>
+                <li>Were you busy with your work?</li>
+            </random>
+        </template>
+    </category>
+
+    <topic name="evening">
+        <category>
+            <pattern>
+                <set name="eveningWell_en" />
+            </pattern>
+            <template>
+                <think>
+                    <set name="topic">*</set>
+                </think>
+                <random>
+                    <li>It's nice to be busy, but if you're too busy, you can get stressed out, so it's the best.</li>
+                    <li>Even when you are busy, please stretch in between to reduce the stiffness of your body. It becomes hard when the stiff neck becomes awful.</li>
+                </random>
+            </template>
+        </category>
+
+        <category>
+            <pattern>
+                <set name="eveningAmbiguous_en" />
+            </pattern>
+            <template>
+                <think>
+                    <set name="topic">*</set>
+                </think>
+                <random>
+                    <li>I think it's going to be a lot of stress, but for the time being, it would have been nice if i had spent time without anything.</li>
+                </random>
+            </template>
+        </category>
+
+        <category>
+            <pattern>
+                <set name="eveningBad_en" />
+            </pattern>
+            <template>
+                <think>
+                    <set name="topic">*</set>
+                </think>
+                <random>
+                    <li>I'm glad i didn't feel so busy today.</li>
+                </random>
+            </template>
+        </category>
+    </topic>
+
+
+    <category>
+        <pattern>today</pattern>
+        <template>
+            <date>
+                <format>%m/%d/%Y</format>
+            </date>
+        </template>
+    </category>
+
+    <category>
+        <pattern>
+            What day is it today
+        </pattern>
+        <template>
+            <srai>today</srai>
+        </template>
+    </category>
+
+    <category>
+        <pattern>Tell me today's date</pattern>
+        <template>
+            <srai>today</srai>
+        </template>
+    </category>
+
+    <category>
+        <pattern>
+            time
+        </pattern>
+        <template>
+            <date>
+                <format>%H:%M:%S</format>
+            </date>
+        </template>
+    </category>
+
+    <category>
+        <pattern>
+            Tell me the time
+        </pattern>
+        <template>
+            <srai>time</srai>
+        </template>
+    </category>
+    <category>
+        <pattern>What time is it now</pattern>
+        <template>
+            <srai>time</srai>
+        </template>
+    </category>
+    <category>
+        <pattern>
+        *
+        </pattern>
+        <template>
+        That's a difficult question.
+        </template>
+    </category>
+
+</aiml>

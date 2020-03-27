@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<aiml>
+
+    <category>
+        <pattern>
+            None_NLU
+        </pattern>
+        <template>
+            None nlu result
+        </template>
+	</category>
+
+    <category>
+        <pattern>
+            <nlu intent="transportation" scoreLt="0.9" />
+        </pattern>
+        <template>
+            NLU transportation LT 0.9
+        </template>
+	</category>
+
+    <category>
+        <pattern>
+            <nlu intent="transportation" scoreGt="0.9" />
+        </pattern>
+        <template>
+            NLU transportation GT 0.9
+        </template>
+	</category>
+
+    <category>
+        <pattern>
+            <nlu intent="transportation" />
+        </pattern>
+        <template>
+            NLU transportation
+        </template>
+	</category>
+
+    <category>
+        <pattern>
+            <nlu intent="*" />
+        </pattern>
+        <template>
+            NLU wild-card
+        </template>
+	</category>
+
+    <category>
+        <pattern>
+            *
+        </pattern>
+        <template>
+            Not NLU wild-card
+        </template>
+	</category>
+
+</aiml>
