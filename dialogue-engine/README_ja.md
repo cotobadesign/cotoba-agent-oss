@@ -99,5 +99,5 @@ $ python3 -m programy.clients.restful.yadlan.sanic.client  --config ../config/co
 本ソフトウェアはMITライセンスです。詳細は[COPYRIGHT](https://github.com/cotobadesign/cotoba-agent-dialogue-engine/blob/master/dialogue-engine/COPYRIGHT.txt)を参照してください。
 
 # Contact
-* [Web site](https://cotoba.net)  
+* [Web site](https://www.cotoba.net)  
 * [issue](https://github.com/cotobadesign/cotoba-agent-dialogue-engine/issues) Raise an issue directly  

@@ -95,5 +95,5 @@ By launching the dialogue engine on the Internet, you can also be called from sm
 This software is released under the MIT License, see [COPYRIGHT](https://github.com/cotobadesign/cotoba-agent-dialogue-engine/blob/master/dialogue-engine/COPYRIGHT.txt).
 
 # Contact
-* [Web site](https://cotoba.net)  
+* [Web site](https://www.cotoba.net/en/)  
 * [issue](https://github.com/cotobadesign/cotoba-agent-dialogue-engine/issues) Raise an issue directly  
