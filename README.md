@@ -11,5 +11,5 @@ Please refer to [document site](https://cotoba-agent-oss-docs.readthedocs.io/en/
 This software is released under the MIT License, see LICENSE.
 
 # Contact
-* [Web site](https://cotoba.net)  
+* [Web site](https://www.cotoba.net/en/)  
 * [issue](https://github.com/cotobadesign/cotoba-agent-oss/issues) Raise an issue directly  
