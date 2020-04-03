@@ -12,7 +12,7 @@ RUN apt-get update && apt-get upgrade -y \
     && rm -rf /var/lib/apt/lists/* /var/cache/apt/archives/*
 
 RUN pip3 install pip --upgrade && \
-    pip3 install flask camphr==0.5.9 mecab-python3==0.996.3 Cython
-RUN pip3 install fugashi
+    pip3 install Flask==1.1.1 camphr==0.5.9 mecab-python3==0.996.5 Cython==0.29.16
+RUN pip3 install fugashi==0.1.9
 
 WORKDIR /app

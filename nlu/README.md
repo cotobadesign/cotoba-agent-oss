@@ -2,14 +2,16 @@
 
 ## Installation
 
-1. Install MeCab.
+1. Install MeCab with unidic.
 1. Install Docker. (to run nlu service in localhost.)
-1. Install python 3.6 (and above)
+1. Install python 3.7
    - It is recommended to use virtual environment such as venv.
 1. `$ pip install -r requirements.txt`
 
 ## Quick demo
 
+1. `$ docker-compose build`
+   - The size of the docker image will be around 4 GB.
 1. `$ ./download_sample_model.sh`
    - Download sample model by using wget.
    - The model can recognize intent and slot labels described in sample_model.meta.json.
@@ -18,7 +20,7 @@
        {"intent label(str)": ["slot label(str)"]}
       ```
 
-1. `$ docker-compose build`
+1. `$ tar xf sample_model.tar.bz2`
 1. `$ docker-compose up -d`
 1. `$ curl -s -X POST -H 'Content-Type:application/json' -d '{"utterance": "渋谷でカレーがおいしいところ教えて"}' http://localhost:5000/nlu`
 

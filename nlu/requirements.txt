@@ -1,5 +1,5 @@
 camphr==0.5.9
-mecab-python3==0.996.3
+mecab-python3==0.996.5
 tqdm
-flake8
 docker-compose
+fugashi==0.1.9
