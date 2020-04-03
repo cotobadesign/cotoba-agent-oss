@@ -40,7 +40,7 @@ You need to install the tokenizer [mecab](https://taku910.github.io/mecab/) for 
 ## Installation
 
 ```
-$ git clone https://github.com/cotobadesign/cotoba-agent-dialogue-engine.git
+$ git clone https://github.com/cotobadesign/cotoba-agent-oss.git
 $ cd cotoba-agent-dialogue-engine
 $ pip3 install -r requirements.txt
 ```

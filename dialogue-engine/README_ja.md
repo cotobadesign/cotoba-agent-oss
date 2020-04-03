@@ -42,7 +42,7 @@ COTOBA Agent dialogue engineはMac OSX,Linux,Windowsのクロスプラットフ�
 ## インストール
 
 ```
-$ git clone https://github.com/cotobadesign/cotoba-agent-dialogue-engine.git
+$ git clone https://github.com/cotobadesign/cotoba-agent-oss.git
 $ cd cotoba-agent-dialogue-engine
 $ pip3 install -r requirements.txt
 ```
