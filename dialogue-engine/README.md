@@ -84,16 +84,16 @@ $ python3 -m programy.clients.restful.yadlan.sanic.client  --config ../config/co
 
 ```
 
-After launching the interactive application, run [simple_request.py](https://github.com/cotobadesign/cotoba-agent-dialogue-engine/blob/master/dialogue-engine/basic/script/simple_request.py) on a different console.
+After launching the interactive application, run [simple_request.py](https://github.com/cotobadesign/cotoba-agent-oss/blob/master/dialogue-engine/basic/script/simple_request.py) on a different console.
 
 ### Dialogue processing by REST interface
-When the [simple_request.py](https://github.com/cotobadesign/cotoba-agent-dialogue-engine/blob/master/dialogue-engine/basic/script/simple_request.py) starts, as with console applications, you can enter utterances to see the response statements in the scenario.
+When the [simple_request.py](https://github.com/cotobadesign/cotoba-agent-oss/blob/master/dialogue-engine/basic/script/simple_request.py) starts, as with console applications, you can enter utterances to see the response statements in the scenario.
 
 By launching the dialogue engine on the Internet, you can also be called from smartphone applications.
 
 # License
-This software is released under the MIT License, see [COPYRIGHT](https://github.com/cotobadesign/cotoba-agent-dialogue-engine/blob/master/dialogue-engine/COPYRIGHT.txt).
+This software is released under the MIT License, see [COPYRIGHT](https://github.com/cotobadesign/cotoba-agent-oss/blob/master/dialogue-engine/COPYRIGHT.txt).
 
 # Contact
 * [Web site](https://www.cotoba.net/en/)  
-* [issue](https://github.com/cotobadesign/cotoba-agent-dialogue-engine/issues) Raise an issue directly  
+* [issue](https://github.com/cotobadesign/cotoba-agent-oss/issues) Raise an issue directly  
