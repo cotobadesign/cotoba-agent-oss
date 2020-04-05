@@ -88,16 +88,16 @@ $ python3 -m programy.clients.restful.yadlan.sanic.client  --config ../config/co
 
 ```
 
-別途クライアントアプリケーション、 [simple_request.py](https://github.com/cotobadesign/cotoba-agent-dialogue-engine/blob/master/dialogue-engine/basic/script/simple_request.py)を実行して、RESTアクセス待ちを行っている対話エンジンにアクセスを行ってください。
+別途クライアントアプリケーション、 [simple_request.py](https://github.com/cotobadesign/cotoba-agent-oss/blob/master/dialogue-engine/basic/script/simple_request.py)を実行して、RESTアクセス待ちを行っている対話エンジンにアクセスを行ってください。
 
 ### RESTインタフェースアクライアントプリケーションの使用方法
-[simple_request.py](https://github.com/cotobadesign/cotoba-agent-dialogue-engine/blob/master/dialogue-engine/basic/script/simple_request.py) が起動すると、コンソールアプリ同様プロンプトが表示されるので、文章を入力してください。
+[simple_request.py](https://github.com/cotobadesign/cotoba-agent-oss/blob/master/dialogue-engine/basic/script/simple_request.py) が起動すると、コンソールアプリ同様プロンプトが表示されるので、文章を入力してください。
 
 対話エンジンをインターネットサーバ上で起動することで、スマートフォン用アプリケーションなどからも呼び出すことができます。
 
 # ライセンス
-本ソフトウェアはMITライセンスです。詳細は[COPYRIGHT](https://github.com/cotobadesign/cotoba-agent-dialogue-engine/blob/master/dialogue-engine/COPYRIGHT.txt)を参照してください。
+本ソフトウェアはMITライセンスです。詳細は[COPYRIGHT](https://github.com/cotobadesign/cotoba-agent-oss/blob/master/dialogue-engine/COPYRIGHT.txt)を参照してください。
 
 # Contact
-* [Web site](https://www.cotoba.net)  
-* [issue](https://github.com/cotobadesign/cotoba-agent-dialogue-engine/issues) Raise an issue directly  
+* [Web site](https://www.cotoba.net)
+* [issue](https://github.com/cotobadesign/cotoba-agent-oss/issues) Raise an issue directly  
