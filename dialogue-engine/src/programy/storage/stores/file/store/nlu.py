@@ -58,11 +58,19 @@ class FileNLUStore(FileStore, NLUStore):
                             if url is not None:
                                 apikey = self._get_yaml_option(server_info, "apikey")
                                 server_name = str(server_index)
-                                nlu_collection.add_server(server_name, url, apikey)
-                                server_index += 1
+                                nlu_collection.add_server(server_name, url, apikey, filename, server_index)
+                            else:
+                                error_info = "url parameter not found"
+                                nlu_collection.set_error_info(filename, server_index, error_info)
+                            server_index += 1
+                    else:
+                        error_info = "nlu section not found"
+                        nlu_collection.set_error_info(filename, None, error_info)
 
         except Exception as excep:
             YLogger.exception(self, "Failed to load NLU_Servers [%s]", excep, filename)
+            error_info = "illegal yaml format"
+            nlu_collection.set_error_info(filename, 0, error_info)
 
     def _get_section(self, yaml_data, section_name):
         if section_name in yaml_data:

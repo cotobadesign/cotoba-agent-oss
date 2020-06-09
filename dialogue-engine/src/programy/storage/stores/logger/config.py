@@ -68,6 +68,9 @@ class LoggerStorageConfiguration(BaseConfigurationData):
         return None
 
     def to_yaml(self, data, defaults=True):
+        data['type'] = 'logger'
+        data['config'] = {}
+        data = data['config']
         if defaults is True:
             data['conversation_logger'] = "conversation"
         else:

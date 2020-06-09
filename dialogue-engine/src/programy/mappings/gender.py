@@ -37,8 +37,13 @@ from programy.storage.factory import StorageFactory
 
 class GenderCollection(PersonalPronounCollection):
 
-    def __init__(self):
-        PersonalPronounCollection.__init__(self)
+    def __init__(self, errors_dict=None):
+        if errors_dict is None:
+            self._errors = None
+        else:
+            errors_dict['genders'] = []
+            self._errors = errors_dict['genders']
+        PersonalPronounCollection.__init__(self, self._errors)
 
     def gender(self, gender):
         if self.has_keyVal(gender):

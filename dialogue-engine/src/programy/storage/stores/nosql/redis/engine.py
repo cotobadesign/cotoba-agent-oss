@@ -40,8 +40,8 @@ from programy.storage.stores.nosql.redis.store.conversations import RedisConvers
 from programy.storage.stores.nosql.redis.store.logs import RedisLogsStore
 from programy.storage.stores.nosql.redis.store.duplicates import RedisDuplicatesStore
 from programy.storage.stores.nosql.redis.store.errors import RedisErrorsStore
+from programy.storage.stores.nosql.redis.store.errors_collection import RedisErrorsCollectionStore
 from programy.storage.stores.nosql.redis.store.learnf import RedisLearnfStore
-from programy.storage.stores.nosql.redis.store.variables import RedisVariableStore
 
 
 class RedisStorageEngine(StorageEngine):
@@ -68,7 +68,7 @@ class RedisStorageEngine(StorageEngine):
 
         if self.configuration.drop_all_first is True:
             try:
-                self.variables_store().empty()  # TODO move class
+                self.conversation_store().empty()
             except Exception as e:
                 YLogger.exception(self, "Failed deleting conversation redis data - ", e)
 
@@ -87,11 +87,11 @@ class RedisStorageEngine(StorageEngine):
     def duplicates_store(self):
         return RedisDuplicatesStore(self)
 
+    def errors_collection_store(self):
+        return RedisErrorsCollectionStore(self)
+
     def conversation_store(self):
         return RedisConversationStore(self)
 
     def logs_store(self):
         return RedisLogsStore(self)
-
-    def variables_store(self):
-        return RedisVariableStore(self)

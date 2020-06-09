@@ -45,16 +45,25 @@ class FileLookupsStore(FileStore, LookupsStore):
     def _load_file_contents(self, lookup_collection, filename):
         YLogger.debug(self, "Loading lookup [%s]", filename)
         try:
+            line_no = 0
             with open(filename, 'r', encoding='utf8') as my_file:
                 for line in my_file:
+                    line_no += 1
+                    line = line.strip()
                     if line:
+                        if line[0] == '#':
+                            continue
                         splits = DoubleStringPatternSplitCollection.split_line_by_pattern(line, DoubleStringPatternSplitCollection.RE_OF_SPLIT_PATTERN)
                         if splits and len(splits) > 1:
                             if type(lookup_collection) is DoubleStringPatternSplitCollection:
                                 index, pattern = self.process_key_value(splits[0], splits[1])
                                 lookup_collection.add_to_lookup(index, pattern)
                             else:
-                                lookup_collection.add_to_lookup(splits[0], splits[1])
+                                lookup_collection.add_to_lookup(splits[0], splits[1], filename, line_no)
+                        else:
+                            if type(lookup_collection) is not DoubleStringPatternSplitCollection:
+                                error_info = "illegal format [%s]" % line
+                                lookup_collection.set_error_info(filename, line_no, error_info)
 
         except Exception as excep:
             YLogger.exception(self, "Failed to load lookup [%s]", excep, filename)

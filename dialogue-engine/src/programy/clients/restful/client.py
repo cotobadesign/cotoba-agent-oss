@@ -65,6 +65,10 @@ class RestBotClient(BotClient):
         self.load_api_keys()
 
     @abstractmethod
+    def get_request_body(self, rest_request):
+        return None
+
+    @abstractmethod
     def get_api_key(self, rest_request):
         raise NotImplementedError()
 
@@ -106,6 +110,10 @@ class RestBotClient(BotClient):
 
     @abstractmethod
     def get_reset_param(self, rest_request):
+        return None
+
+    @abstractmethod
+    def get_errors_param(self, rest_request):
         return None
 
     @abstractmethod
@@ -226,14 +234,18 @@ class RestBotClient(BotClient):
         userid = 'None'
         variables = 'None'
         reset_data = 'None'
+        errors_param = False
         debugInfo = {}
         self._status_code = 200
         self._error_msg = ''
 
         try:
-            userid = self.get_userid(request)
-            variables = self.get_variables(request)
-            reset_data = self.get_reset_param(request)
+            bodydata = self.get_request_body(request)
+            if len(bodydata) > 0:
+                userid = self.get_userid(request)
+                variables = self.get_variables(request)
+                reset_data = self.get_reset_param(request)
+                errors_param = self.get_errors_param(request)
         except Exception:
             pass
 
@@ -287,8 +299,19 @@ class RestBotClient(BotClient):
         except Exception:
             return {'error': 'Load duplicates failed'}, 500
 
+        if errors_param is True:
+            try:
+                errors_collection = self.get_errors_collection(client_context)
+                if errors_collection is not None:
+                    debugInfo.update(errors_collection)
+            except Exception:
+                pass
+
+        if userid == 'None':
+            return debugInfo, 200
+
         try:
-            conversations = self.get_conversations(client_context, userid)
+            conversations, current_data = self.get_conversations(client_context)
             if conversations is not None and len(conversations) > 0:
                 for key, val in conversations["conversations"]["properties"].items():
                     try:
@@ -328,18 +351,16 @@ class RestBotClient(BotClient):
                         pass
 
                 debugInfo.update(conversations)
+
+            if current_data is not None and len(current_data) > 0:
+                current_info = {'current_conversation': current_data}
+                debugInfo.update(current_info)
+
         except Exception:
             return {'error': 'Load conversations failed'}, 500
 
         try:
-            current_data = self.get_current_conversation(client_context, userid)
-            if current_data is not None:
-                debugInfo.update(current_data)
-        except Exception:
-            return {'error': 'Load current_conversation failed'}, 500
-
-        try:
-            logs = self.get_logs(client_context, userid)
+            logs = self.get_logs(client_context)
             if logs is not None:
                 debugInfo.update(logs)
         except Exception:
@@ -369,25 +390,29 @@ class RestBotClient(BotClient):
 
         return duplicates
 
-    def get_conversations(self, client_context, userid):
+    def get_errors_collection(self, client_context):
+        errors_collection = None
+        if client_context.brain.configuration.debugfiles.save_errors_collection is True:
+            if self.storage_factory.entity_storage_engine_available(StorageFactory.ERRORS_COLLECTION) is True:
+                errors_collection_engine = self.storage_factory.entity_storage_engine(StorageFactory.ERRORS_COLLECTION)
+                if errors_collection_engine:
+                    errors_collection_store = errors_collection_engine.errors_collection_store()
+                    errors_collection = errors_collection_store.load_errors_collection()
+
+        return errors_collection
+
+    def get_conversations(self, client_context):
         conversations = None
+        current_info = None
         if self.storage_factory.entity_storage_engine_available(StorageFactory.CONVERSATIONS) is True:
             converstion_engine = self.storage_factory.entity_storage_engine(StorageFactory.CONVERSATIONS)
             if converstion_engine:
                 conversation_store = converstion_engine.conversation_store()
-                conversations = conversation_store.debug_conversation_data(client_context)
+                conversations, current_info = conversation_store.debug_conversation_data(client_context)
 
-        return conversations
+        return conversations, current_info
 
-    def get_current_conversation(self, client_context, userid):
-        current_info = None
-        current_data = client_context.bot.conversations.get_internal_data(client_context)
-        if current_data != 'None':
-            current_info = {'current_conversation': current_data}
-
-        return current_info
-
-    def get_logs(self, client_context, userid):
+    def get_logs(self, client_context):
         logs = None
         if self.storage_factory.entity_storage_engine_available(StorageFactory.LOGS) is True:
             logs_engine = self.storage_factory.entity_storage_engine(StorageFactory.LOGS)
@@ -490,16 +515,20 @@ class UserInfo(RestBotClient):
                 if key == 'topic':
                     userInfoDict[key] = conversation.property(key)
                 elif key == '__SYSTEM_METADATA__':
+                    metadata = conversation.current_question().property(key)
+                    if metadata is None:
+                        metadata = ''
                     try:
-                        metadata = conversation.current_question().property(key)
                         userInfoDict[key] = json.loads(metadata)
                         if type(userInfoDict[key]) is str:
                             userInfoDict[key] = metadata
                     except Exception:
                         userInfoDict[key] = metadata
                 else:
-                    variableName = key
-                    userInfoDict[key] = conversation.current_question().property(variableName)
+                    value = conversation.current_question().property(key)
+                    if value is None:
+                        value = ''
+                    userInfoDict[key] = value
         except Exception as e:
             YLogger.exception(self, "UserInfoPostProcessor Reason: ", e)
 

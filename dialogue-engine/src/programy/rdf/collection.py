@@ -37,6 +37,8 @@ from programy.utils.language.japanese import JapaneseLanguage
 
 from datetime import datetime
 
+import re
+
 
 class RDFEntity(object):
 
@@ -49,7 +51,7 @@ class RDFCollection(BaseCollection):
 
     RDFS = "rdfs"
 
-    def __init__(self):
+    def __init__(self, errors_dict=None):
         BaseCollection.__init__(self)
         self._entities = {}
         self._stores = {}
@@ -58,6 +60,12 @@ class RDFCollection(BaseCollection):
         self._load_file = False
         self._storage_factory = None
         self._update_Date = None
+
+        if errors_dict is None:
+            self._errors_dict = None
+        else:
+            errors_dict['rdfs'] = []
+            self._errors_dict = errors_dict['rdfs']
 
     @property
     def entities(self):
@@ -141,8 +149,27 @@ class RDFCollection(BaseCollection):
                 return [self._entities[subject]._predicates[predicate]]
         return []
 
-    def add_entity(self, subject, predicate, obj, rdf_name, rdf_store=None, id=None):
-        YLogger.debug(self, "Adding RDF Entity [%s] [%s] [%s] [%s]", subject, predicate, obj, rdf_name)
+    def set_error_info(self, filename, line, description):
+        if self._errors_dict is not None:
+            error_info = {'file': filename, 'line': line, 'description': description}
+            self._errors_dict.append(error_info)
+
+    def add_entity(self, subject, predicate, obj, rdf_name, rdf_store=None, id=None, line_no=0):
+        if subject == '':
+            YLogger.debug(self, "invalid subject : Entity [%s] [%s] [%s] (%s)", subject, predicate, obj, rdf_name)
+            error_info = "invalid subject entry=['%s':'%s':'%s']" % (subject, predicate, obj)
+            self.set_error_info(rdf_store, line_no, error_info)
+            return
+        if predicate == '':
+            YLogger.debug(self, "invalid predicate : Entity [%s] [%s] [%s] (%s)", subject, predicate, obj, rdf_name)
+            error_info = "invalid predicate entry=['%s':'%s':'%s']" % (subject, predicate, obj)
+            self.set_error_info(rdf_store, line_no, error_info)
+            return
+        if obj == '':
+            YLogger.debug(self, "invalid object : Entity [%s] [%s] [%s] (%s)", subject, predicate, obj, rdf_name)
+            error_info = "invalid object entry=['%s':'%s':'%s']" % (subject, predicate, obj)
+            self.set_error_info(rdf_store, line_no, error_info)
+            return
 
         is_add = True
         subject = self.convert_key(subject)
@@ -167,13 +194,18 @@ class RDFCollection(BaseCollection):
         if predicate in entity._predicates:
             sub_entity = self._entities[subject]._predicates[predicate]
             if obj in sub_entity:
+                YLogger.debug(self, "Duplicate RDF Entity ['%s':'%s':'%s'] (%s)", subject, predicate, obj, rdf_name)
                 is_add = False
+                if self._load_file is True:
+                    error_info = "duplicate entry=['%s':'%s':'%s']" % (subject, predicate, obj)
+                    self.set_error_info(rdf_store, line_no, error_info)
             else:
                 entity._predicates[predicate].append(obj)
         else:
             entity._predicates[predicate] = [obj]
 
         if is_add is True:
+            YLogger.debug(self, "Adding RDF Entity ['%s':'%s':'%s'] (%s)", subject, predicate, obj, rdf_name)
             self._write_updates('add', subject, predicate, obj)
 
     def has_subject(self, subject):
@@ -576,6 +608,7 @@ class RDFCollection(BaseCollection):
     def convert_key(self, key_item):
         if key_item is not None:
             key_item = JapaneseLanguage.zenhan_normalize(key_item)
+            key_item = re.sub(' +', ' ', key_item)
             if key_item.startswith("?") is False:
                 key_item = key_item.upper()
 

@@ -44,16 +44,22 @@ class FileProcessorsStore(FileStore, ProcessorStore):
     def _load_file_contents(self, processor_collection, filename):
         YLogger.debug(self, "Loading processors from file [%s]", filename)
         count = 0
+        line_no = 0
         try:
             with open(filename, "r", encoding="utf-8") as file:
                 for line in file:
+                    line_no += 1
                     line = line.strip()
                     if line:
                         if line[0] != '#':
-                            new_class = ClassLoader.instantiate_class(line)
-                            if new_class is not None:
+                            class_name = line.split()
+                            try:
+                                new_class = ClassLoader.instantiate_class(class_name[0])
                                 processor_collection.add_processor(new_class())
                                 count += 1
+                            except Exception:
+                                error_info = "processor [%s] not found" % line
+                                processor_collection.set_error_info(filename, line_no, error_info)
         except FileNotFoundError:
             YLogger.error(self, "File not found [%s]", filename)
 

@@ -38,10 +38,15 @@ from programy.utils.language.japanese import JapaneseLanguage
 
 class DenormalCollection(DoubleStringPatternSplitCollection):
 
-    def __init__(self):
+    def __init__(self, errors_dict=None):
         DoubleStringPatternSplitCollection.__init__(self)
         self._match = {}
         self._match_jp = {}
+        if errors_dict is None:
+            self._errors_dict = None
+        else:
+            errors_dict['denormals'] = []
+            self._errors_dict = errors_dict['denormals']
 
     def denormalise(self, normal):
         if self.has_keyVal(normal):
@@ -69,13 +74,24 @@ class DenormalCollection(DoubleStringPatternSplitCollection):
         self._match.clear()
         self._match_jp.clear()
 
-    def add_to_lookup(self, org_key, org_value):
+    def set_error_info(self, filename, line, description):
+        if self._errors_dict is not None:
+            error_info = {'file': filename, 'line': line, 'description': description}
+            self._errors_dict.append(error_info)
+
+    def add_to_lookup(self, org_key, org_value, filename=None, line=0):
         key = org_key.strip()
         value = org_value
 
+        if key == '':
+            error_info = "key is empty"
+            self.set_error_info(filename, line, error_info)
+            return
         if JapaneseLanguage.is_CJKword(org_key) is True:
             if key in self._pairs_jp:
                 YLogger.error(self, "%s = %s already exists in jp_collection", key, value)
+                error_info = "duplicate key='%s' (value='%s' is invalid)" % (key, value)
+                self.set_error_info(filename, line, error_info)
                 return
             else:
                 matchs = self._match_jp
@@ -85,6 +101,8 @@ class DenormalCollection(DoubleStringPatternSplitCollection):
         else:
             if key in self._pairs:
                 YLogger.error(self, "%s = %s already exists in en_collection", key, value)
+                error_info = "duplicate key='%s' (value='%s' is invalid)" % (key, value)
+                self.set_error_info(filename, line, error_info)
                 return
             else:
                 matchs = self._match
@@ -191,10 +209,12 @@ class DenormalCollection(DoubleStringPatternSplitCollection):
     def load_from_text(self, text):
         lines = text.split("\n")
         count = 0
+        line_no = 0
         for line in lines:
+            line_no += 1
             line = line.strip()
             split = self.split_line_by_pattern(line, DoubleStringPatternSplitCollection.RE_OF_SPLIT_PATTERN)
             if split is not None:
-                self.add_to_lookup(split[0], split[1])
+                self.add_to_lookup(split[0], split[1], 'text', line_no)
                 count += 1
         return count

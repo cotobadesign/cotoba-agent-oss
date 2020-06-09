@@ -53,10 +53,7 @@ class StorageConfigurationTests(unittest.TestCase):
                     regex_templates: file
 
                     properties: file
-                    variables: file
                     defaults: file
-
-                    twitter: file
 
                     spelling_corpus: file
 
@@ -172,9 +169,7 @@ class StorageConfigurationTests(unittest.TestCase):
         self.assertEqual(storage_config.entity_store[StorageFactory.REGEX_TEMPLATES], 'file')
 
         self.assertEqual(storage_config.entity_store[StorageFactory.PROPERTIES], 'file')
-        self.assertEqual(storage_config.entity_store[StorageFactory.VARIABLES], 'file')
-
-        self.assertEqual(storage_config.entity_store[StorageFactory.TWITTER], 'file')
+        self.assertEqual(storage_config.entity_store[StorageFactory.DEFAULTS], 'file')
 
         self.assertEqual(storage_config.entity_store[StorageFactory.SPELLING_CORPUS], 'file')
 

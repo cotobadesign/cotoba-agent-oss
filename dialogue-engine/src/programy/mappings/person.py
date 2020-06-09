@@ -37,8 +37,8 @@ from programy.storage.factory import StorageFactory
 
 class BasePersonCollection(PersonalPronounCollection):
 
-    def __init__(self):
-        PersonalPronounCollection.__init__(self)
+    def __init__(self, errors_dict=None):
+        PersonalPronounCollection.__init__(self, errors_dict)
 
     def person(self, person):
         if self.has_keyVal(person):
@@ -70,8 +70,13 @@ class BasePersonCollection(PersonalPronounCollection):
 
 class PersonCollection(BasePersonCollection):
 
-    def __init__(self):
-        BasePersonCollection.__init__(self)
+    def __init__(self, errors_dict=None):
+        if errors_dict is None:
+            self._errors = None
+        else:
+            errors_dict['persons'] = []
+            self._errors = errors_dict['persons']
+        BasePersonCollection.__init__(self, self._errors)
 
     def get_storage_name(self):
         return StorageFactory.PERSON
@@ -82,8 +87,13 @@ class PersonCollection(BasePersonCollection):
 
 class Person2Collection(BasePersonCollection):
 
-    def __init__(self):
-        BasePersonCollection.__init__(self)
+    def __init__(self, errors_dict=None):
+        if errors_dict is None:
+            self._errors = None
+        else:
+            errors_dict['person2s'] = []
+            self._errors = errors_dict['person2s']
+        BasePersonCollection.__init__(self, self._errors)
 
     def get_storage_name(self):
         return StorageFactory.PERSON2

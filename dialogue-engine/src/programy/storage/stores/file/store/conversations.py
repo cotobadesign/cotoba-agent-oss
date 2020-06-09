@@ -62,7 +62,10 @@ class FileConversationStore(FileStore, ConversationStore):
         conversation.questions[len(conversation.questions)-1]._name_properties = copy.copy(conversation.properties)
         conversation.questions[len(conversation.questions)-1]._data_properties = copy.copy(conversation.data_properties)
 
-        convo_json = conversation.to_json()
+        convo_json = {'conversations': conversation.to_json()}
+        if len(conversation.internal_data) > 0:
+            convo_json['current_conversation'] = conversation.internal_data
+
         json_text = json.dumps(convo_json, ensure_ascii=False, indent=4)
 
         try:
@@ -80,7 +83,8 @@ class FileConversationStore(FileStore, ConversationStore):
                 with open(conversation_filepath, "r+", encoding="utf-8") as convo_file:
                     json_text = convo_file.read()
                     json_data = json.loads(json_text)
-                    conversation.from_json(client_context, json_data)
+                    if 'conversations' in json_data:
+                        conversation.from_json(client_context, json_data['conversations'])
 
             except Exception as excep:
                 YLogger.exception(self, "Failed to read conversation file [%s]", excep, conversation_filepath)
@@ -96,6 +100,7 @@ class FileConversationStore(FileStore, ConversationStore):
     def debug_conversation_data(self, client_context):
         conversation_filepath = self._conversations_filename(self._storage_engine.configuration.conversation_storage.dirs[0], client_context.client.id, client_context.userid)
         conversations = {}
+        current_info = {}
         conversation = None
         if self._file_exists(conversation_filepath):
             try:
@@ -108,9 +113,12 @@ class FileConversationStore(FileStore, ConversationStore):
                 YLogger.exception(self, "Failed to read conversation file [%s]", excep, conversation_filepath)
 
         if conversation is not None:
-            conversations['conversations'] = conversation
+            if 'conversations' in conversation:
+                conversations['conversations'] = conversation['conversations']
+            if 'current_conversation' in conversation:
+                current_info = conversation['current_conversation']
 
-        return conversations
+        return conversations, current_info
 
     def modify_conversation_data(self, client_context, conversation):
         self._ensure_dir_exists(self._storage_engine.configuration.conversation_storage.dirs[0])
@@ -119,7 +127,7 @@ class FileConversationStore(FileStore, ConversationStore):
 
         YLogger.debug(self, "Modify conversation to [%s]", conversation_filepath)
 
-        convo_json = conversation.to_json()
+        convo_json = {'conversations': conversation.to_json()}
         json_text = json.dumps(convo_json, ensure_ascii=False, indent=4)
 
         try:

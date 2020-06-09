@@ -108,7 +108,7 @@ class BotConfiguration(BaseContainerConfigurationData):
         bot = configuration_file.get_section(self.section_name)
         if bot is not None:
 
-            self._version = configuration_file.get_option(bot, "version")
+            self._version = configuration_file.get_option(bot, "version", subs=subs)
 
             self._default_response = configuration_file.get_option(bot, "default_response",
                                                                    BotConfiguration.DEFAULT_RESPONSE, subs=subs)
@@ -340,30 +340,64 @@ class BotConfiguration(BaseContainerConfigurationData):
         return self._sentiment
 
     def to_yaml(self, data, defaults=True):
+        if defaults is True:
+            data['version'] = None
+            data['bot_root'] = BotConfiguration.DEFAULT_ROOT
+            data['brain'] = 'brain'
+            data['brain_selector'] = None
+            data['default_response'] = BotConfiguration.DEFAULT_RESPONSE
+            data['default_response_srai'] = BotConfiguration.DEFAULT_RESPONSE_SRAI
+            data['exit_response'] = BotConfiguration.DEFAULT_EXIT_RESPONSE
+            data['exit_response_srai'] = BotConfiguration.DEFAULT_EXIT_RESPONSE_SRAI
+            data['exception_response'] = BotConfiguration.DEFAULT_EXCEPTION_RESPONSE
+            data['initial_question'] = BotConfiguration.DEFAULT_INITIAL_QUESTION
+            data['initial_question_srai'] = BotConfiguration.DEFAULT_INITIAL_QUESTION_SRAI
+            data['empty_string'] = BotConfiguration.DEFAULT_EMPTY_STRING
+            data['override_properties'] = BotConfiguration.DEFAULT_OVERRIDE_PREDICATES
+            data['max_question_recursion'] = BotConfiguration.DEFAULT_MAX_QUESTION_RECURSION
+            data['max_question_timeout'] = BotConfiguration.DEFAULT_MAX_QUESTION_TIMEOUT
+            data['max_search_depth'] = BotConfiguration.DEFAULT_MAX_SEARCH_DEPTH
+            data['max_search_timeout'] = BotConfiguration.DEFAULT_MAX_SEARCH_TIMEOUT
+            data['max_search_condition'] = BotConfiguration.DEFAULT_MAX_SEARCH_CONDITION
+            data['max_search_srai'] = BotConfiguration.DEFAULT_MAX_SEARCH_SRAI
+            data['max_categories'] = BotConfiguration.DEFAULT_MAX_CATEGORIES
+            data['max_properties'] = BotConfiguration.DEFAULT_MAX_PROPERTIES
+            data['tab_parse_output'] = BotConfiguration.DEFAULT_TAB_PARSE_OUTPUT
+        else:
+            data['version'] = self._version
+            data['bot_root'] = self.bot_root
+            brains = []
+            for config in self._brain_configs:
+                brains.append(config.id)
+            if len(brains) > 0:
+                if len(brains) == 1:
+                    data['brain'] = brains[0]
+                else:
+                    data['brain'] = brains
+            data['brain_selector'] = self._brain_selector
+            data['default_response'] = self.default_response
+            data['default_response_srai'] = self.default_response_srai
+            data['exit_response'] = self.exit_response
+            data['exit_response_srai'] = self.exit_response_srai
+            data['exception_response'] = self.exception_response
+            data['initial_question'] = self.initial_question
+            data['initial_question_srai'] = self.initial_question_srai
+            data['empty_string'] = self.empty_string
+            data['override_properties'] = self.override_properties
+            data['max_question_recursion'] = self.max_question_recursion
+            data['max_question_timeout'] = self.max_question_timeout
+            data['max_search_depth'] = self.max_search_depth
+            data['max_search_timeout'] = self.max_search_timeout
+            data['max_search_condition'] = self.max_search_condition
+            data['max_search_srai'] = self.max_search_srai
+            data['max_categories'] = self.max_categories
+            data['max_properties'] = self.max_properties
+            data['tab_parse_output'] = self.tab_parse_output
 
-        data['bot_root'] = self.bot_root
-        data['default_response'] = self.default_response
-        data['default_response_srai'] = self.default_response_srai
-        data['exit_response'] = self.exit_response
-        data['exit_response_srai'] = self.exit_response_srai
-        data['exception_response'] = self.exception_response
-        data['initial_question'] = self.initial_question
-        data['initial_question_srai'] = self.initial_question_srai
-        data['empty_string'] = self.empty_string
-        data['override_properties'] = self.override_properties
-        data['max_question_recursion'] = self.max_question_recursion
-        data['max_question_timeout'] = self.max_question_timeout
-        data['max_search_depth'] = self.max_search_depth
-        data['max_search_timeout'] = self.max_search_timeout
-        data['max_search_condition'] = self.max_search_condition
-        data['max_search_srai'] = self.max_search_srai
-        data['max_categories'] = self.max_categories
-        data['max_properties'] = self.max_properties
-        data['tab_parse_output'] = self.tab_parse_output
-        self.config_to_yaml(data, BotSpellingConfiguration(), defaults)
-        self.config_to_yaml(data, BotConversationsConfiguration(), defaults)
-        self.config_to_yaml(data, BotSentenceSplitterConfiguration(), defaults)
-        self.config_to_yaml(data, BotSentenceJoinerConfiguration(), defaults)
-        self.config_to_yaml(data, BotTranslatorConfiguration(name="from_translator"), defaults)
-        self.config_to_yaml(data, BotTranslatorConfiguration(name="to_translator"), defaults)
-        self.config_to_yaml(data, BotSentimentAnalyserConfiguration(), defaults)
+        self.config_to_yaml(data, self._spelling, defaults)
+        self.config_to_yaml(data, self._conversations, defaults)
+        self.config_to_yaml(data, self._splitter, defaults)
+        self.config_to_yaml(data, self._joiner, defaults)
+        self.config_to_yaml(data, self._from_translator, defaults)
+        self.config_to_yaml(data, self._to_translator, defaults)
+        self.config_to_yaml(data, self._sentiment, defaults)

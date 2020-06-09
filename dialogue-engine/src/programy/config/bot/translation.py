@@ -70,7 +70,7 @@ class BotTranslatorConfiguration(BaseConfigurationData):
 
     def to_yaml(self, data, defaults=True):
         if defaults is True:
-            data['classname'] = "programy.translation.textblob.TextBlobTranslator"
+            data['classname'] = "programy.translate.textblob_translator.TextBlobTranslator"
             data['from'] = None
             data['to'] = None
         else:

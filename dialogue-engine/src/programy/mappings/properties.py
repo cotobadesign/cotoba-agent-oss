@@ -37,8 +37,9 @@ from programy.storage.factory import StorageFactory
 
 class BasePropertiesCollection(DoubleStringCharSplitCollection):
 
-    def __init__(self):
+    def __init__(self, errors_dict=None):
         DoubleStringCharSplitCollection.__init__(self)
+        self._errors_dict = errors_dict
 
     def get_split_char(self):
         return ":"
@@ -49,9 +50,22 @@ class BasePropertiesCollection(DoubleStringCharSplitCollection):
     def property(self, key):
         return self.value(key)
 
-    def add_property(self, key, value):
+    def set_error_info(self, filename, line, description):
+        if self._errors_dict is not None:
+            error_info = {'file': filename, 'line': line, 'description': description}
+            self._errors_dict.append(error_info)
+
+    def add_property(self, key, value, filename=None, line=0):
+        if key == '':
+            error_info = "key is empty"
+            self.set_error_info(filename, line, error_info)
+            return
+
         if self.has_property(key) is False:
             self.pairs.append([key, value])
+        else:
+            error_info = "duplicate key='%s' (value='%s' is invalid)" % (key, value)
+            self.set_error_info(filename, line, error_info)
 
     def set_property(self, key, value):
         if self.has_property(key):
@@ -82,8 +96,13 @@ class BasePropertiesCollection(DoubleStringCharSplitCollection):
 
 class PropertiesCollection(BasePropertiesCollection):
 
-    def __init__(self):
-        BasePropertiesCollection.__init__(self)
+    def __init__(self, errors_dict=None):
+        if errors_dict is None:
+            self._errors = None
+        else:
+            errors_dict['properties'] = []
+            self._errors = errors_dict['properties']
+        BasePropertiesCollection.__init__(self, self._errors)
 
     def get_storage_name(self):
         return StorageFactory.PROPERTIES
@@ -94,8 +113,13 @@ class PropertiesCollection(BasePropertiesCollection):
 
 class DefaultVariablesCollection(BasePropertiesCollection):
 
-    def __init__(self):
-        BasePropertiesCollection.__init__(self)
+    def __init__(self, errors_dict=None):
+        if errors_dict is None:
+            self._errors = None
+        else:
+            errors_dict['defaults'] = []
+            self._errors = errors_dict['defaults']
+        BasePropertiesCollection.__init__(self, self._errors)
 
     def get_storage_name(self):
         return StorageFactory.DEFAULTS
@@ -115,8 +139,13 @@ class DefaultVariablesCollection(BasePropertiesCollection):
 
 class RegexTemplatesCollection(BasePropertiesCollection):
 
-    def __init__(self):
-        BasePropertiesCollection.__init__(self)
+    def __init__(self, errors_dict=None):
+        if errors_dict is None:
+            self._errors = None
+        else:
+            errors_dict['regex_templates'] = []
+            self._errors = errors_dict['regex_templates']
+        BasePropertiesCollection.__init__(self, self._errors)
 
     def get_storage_name(self):
         return StorageFactory.REGEX_TEMPLATES

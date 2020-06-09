@@ -402,7 +402,7 @@ class FlaskYadlanClientTests(unittest.TestCase):
         request.data = b'{"userId": "1234567890", "variables": [{"type": "name", "key": "testname", "value": "value1"}]}'
 
         debugInfo, status = client.process_debug_request(request)
-        self.assertEqual(5, len(debugInfo))
+        self.assertEqual(4, len(debugInfo))
         self.assertEqual(200, status)
 
         self.assertEqual("value1", debugInfo['conversations']['properties']['testname'])
@@ -431,7 +431,7 @@ class FlaskYadlanClientTests(unittest.TestCase):
         request.data = b'{"userId": "1234567890", "variables": [{"type": "data", "key": "testdata", "value": "value1"}]}'
 
         debugInfo, status = client.process_debug_request(request)
-        self.assertEqual(5, len(debugInfo))
+        self.assertEqual(4, len(debugInfo))
         self.assertEqual(200, status)
 
         self.assertEqual("value1", debugInfo['conversations']['data_properties']['testdata'])
@@ -460,7 +460,7 @@ class FlaskYadlanClientTests(unittest.TestCase):
         request.data = b'{"userId": "1234567890", "variables": [{"type": "name", "key": "testname", "value": "value1"}, {"type": "data", "key": "testdata", "value": "value2"}]}'
 
         debugInfo, status = client.process_debug_request(request)
-        self.assertEqual(5, len(debugInfo))
+        self.assertEqual(4, len(debugInfo))
         self.assertEqual(200, status)
 
         self.assertEqual("value1", debugInfo['conversations']['properties']['testname'])
@@ -503,7 +503,7 @@ class FlaskYadlanClientTests(unittest.TestCase):
         request.data = b'{"userId": "1234567890", "variables": [{"type": "name", "key": "testname", "value": "value1"}]}'
 
         debugInfo, status = client.process_debug_request(request)
-        self.assertEqual(4, len(debugInfo))
+        self.assertEqual(3, len(debugInfo))
         self.assertEqual(200, status)
 
         if os.path.exists(tmp_dir):

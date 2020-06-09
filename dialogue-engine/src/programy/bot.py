@@ -345,8 +345,15 @@ class Bot(object):
         assert (client_context is not None)
 
         if self.initial_question_srai is not None:
+            conversation = client_context.bot.get_conversation(client_context)
+            question = self.get_question(client_context, self.initial_question_srai, True)
+            conversation.record_dialog(question)
             sentence = Sentence(client_context.brain.tokenizer, self.initial_question_srai)
-            initial_question = client_context.brain.ask_question(client_context, sentence)
+            try:
+                initial_question = client_context.brain.ask_question(client_context, sentence)
+            except Exception:
+                initial_question = None
+            conversation.pop_dialog()
             if initial_question is None or not initial_question:
                 initial_question = self.initial_question
             return initial_question
@@ -469,7 +476,6 @@ class Bot(object):
                 YLogger.exception(client_context, "Limit-Over Exception", excep)
                 base = conversation.internal_base
                 conversation.add_internal_data(base, 'exception', conversation.exception)
-                conversation.add_internal_variables(base, 'after_variables')
             if srai is True:
                 conversation.pop_dialog()
                 raise
@@ -480,7 +486,6 @@ class Bot(object):
                 YLogger.exception(client_context, "Exception", excep)
                 base = conversation.internal_base
                 conversation.add_internal_data(base, 'exception', conversation.exception)
-                conversation.add_internal_variables(base, 'after_variables')
             if srai is True:
                 conversation.pop_dialog()
                 raise

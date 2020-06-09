@@ -37,11 +37,17 @@ from programy.storage.factory import StorageFactory
 
 class SetCollection(object):
 
-    def __init__(self):
+    def __init__(self, errors_dict=None):
         self._sets = {}
         self._stores = {}
         self._is_cjk = {}
         self._values = {}
+
+        if errors_dict is None:
+            self._errors_dict = None
+        else:
+            errors_dict['sets'] = []
+            self._errors_dict = errors_dict['sets']
 
     @property
     def sets(self):
@@ -68,13 +74,20 @@ class SetCollection(object):
         self._is_cjk.pop(set_name, None)
         self._values.pop(set_name, None)
 
+    def set_error_info(self, filename, line, description):
+        if self._errors_dict is not None:
+            error_info = {'file': filename, 'line': line, 'description': description}
+            self._errors_dict.append(error_info)
+
     def add_set(self, set_name, the_set, set_store, is_cjk, values):
 
         # Set names always stored in upper case to handle ambiquity
         set_name = set_name.upper()
 
         if set_name in self._sets:
-            raise Exception("Set %s already exists" % set_name)
+            error_info = "duplicate set_name='%s' (set_list is invalid)" % set_name
+            self.set_error_info(set_store, 0, error_info)
+            return
 
         YLogger.debug(self, "Adding set [%s][%s] to set group", set_name, set_store)
         self._sets[set_name] = the_set

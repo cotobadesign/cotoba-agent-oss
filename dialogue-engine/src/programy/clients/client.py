@@ -51,6 +51,8 @@ from programy.utils.email.sender import EmailSender
 from programy.triggers.manager import TriggerManager
 from programy.triggers.system import SystemTriggers
 
+from programy.config.writer import ConfigurationWriter
+
 
 class ResponseLogger(object):
 
@@ -127,6 +129,7 @@ class BotClient(ResponseLogger):
         self._email = None
         self._trigger_mgr = None
         self._configuration = None
+        self._bot_root = '.'
 
         self._arguments = self.parse_arguments(argument_parser=argument_parser)
 
@@ -258,6 +261,7 @@ class BotClient(ResponseLogger):
             else:
                 arguments.bot_root = "."
             YLogger.debug(None, "No bot root argument set, defaulting to [%s]" % arguments.bot_root)
+        self._bot_root = arguments.bot_root
 
         if arguments.config_filename is not None:
             self._configuration = ConfigurationFactory.load_configuration_from_file(self.get_client_configuration(),
@@ -335,3 +339,12 @@ class BotClient(ResponseLogger):
 
     def run(self):
         raise NotImplementedError("You must override this and implement the logic to run the client")
+
+    def dump_client_config(self):
+        filename = '%s/dump_%s_config.yaml' % (self._bot_root, self._id)
+        if filename is not None:
+            config_writer = ConfigurationWriter()
+            try:
+                config_writer.executing_confiuguration(self._configuration, filename)
+            except Exception:
+                pass

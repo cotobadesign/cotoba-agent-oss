@@ -32,8 +32,11 @@ TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR TH
 from programy.utils.logging.ylogger import YLogger
 
 from programy.storage.stores.file.store.filestore import FileStore
+from programy.utils.language.japanese import JapaneseLanguage
 
 from programy.storage.entities.sets import SetsStore
+
+import re
 
 
 class FileSetsStore(FileStore, SetsStore):
@@ -46,14 +49,32 @@ class FileSetsStore(FileStore, SetsStore):
         try:
             the_set = {}
             set_list = []
+            check_list = []
             is_cjk = False
             values = {}
+            line_no = 0
             with open(filename, 'r', encoding='utf8') as my_file:
                 for line in my_file:
+                    line_no += 1
                     line = line.strip()
                     if line:
-                        is_cjk = self.check_cjk(is_cjk, line)
-                        set_list.append(line)
+                        if line[0] == '#':
+                            continue
+                        chk_words = JapaneseLanguage.zenhan_normalize(line)
+                        chk_words = chk_words.upper()
+                        cjk = self.check_cjk(is_cjk, chk_words)
+                        if cjk is True:
+                            chk_words = re.sub(' ', '', chk_words)
+                            if is_cjk is False:
+                                is_cjk = True
+                        else:
+                            chk_words = re.sub(' +', ' ', chk_words)
+                        if chk_words in check_list:
+                            error_info = "duplicate value='%s'" % line
+                            set_collection.set_error_info(filename, line_no, error_info)
+                        else:
+                            set_list.append(line)
+                            check_list.append(chk_words)
             the_set, values = self.make_set_table(is_cjk, set_list)
 
         except Exception as excep:

@@ -35,7 +35,6 @@ from programy.storage.stores.file.store.properties import FilePropertyStore
 from programy.storage.stores.file.store.properties import FileDefaultVariablesStore
 from programy.storage.stores.file.store.conversations import FileConversationStore
 from programy.storage.stores.file.store.logs import FileLogsStore
-from programy.storage.stores.file.store.twitter import FileTwitterStore
 from programy.storage.stores.file.store.nlu import FileNLUStore
 from programy.storage.stores.file.store.sets import FileSetsStore
 from programy.storage.stores.file.store.maps import FileMapsStore
@@ -48,9 +47,9 @@ from programy.storage.stores.file.store.lookups import FilePerson2Store
 from programy.storage.stores.file.store.properties import FileRegexStore
 from programy.storage.stores.file.store.errors import FileErrorsStore
 from programy.storage.stores.file.store.duplicates import FileDuplicatesStore
+from programy.storage.stores.file.store.errors_collection import FileErrorsCollectionStore
 from programy.storage.stores.file.store.categories import FileCategoryStore
 from programy.storage.stores.file.store.learnf import FileLearnfStore
-from programy.storage.stores.file.store.variables import FileVariablesStore
 from programy.storage.stores.file.store.spelling import FileSpellingStore
 from programy.storage.stores.file.store.licensekeys import FileLicenseStore
 from programy.storage.stores.file.store.nodes import FilePatternNodeStore
@@ -82,6 +81,9 @@ class FileStorageEngine(StorageEngine):
 
     def duplicates_store(self):
         return FileDuplicatesStore(self)
+
+    def errors_collection_store(self):
+        return FileErrorsCollectionStore(self)
 
     def learnf_store(self):
         return FileLearnfStore(self)
@@ -127,12 +129,6 @@ class FileStorageEngine(StorageEngine):
 
     def defaults_store(self):
         return FileDefaultVariablesStore(self)
-
-    def variables_store(self):
-        return FileVariablesStore(self)
-
-    def twitter_store(self):
-        return FileTwitterStore(self)
 
     def spelling_store(self):
         return FileSpellingStore(self)

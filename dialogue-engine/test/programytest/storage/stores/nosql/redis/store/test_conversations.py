@@ -19,7 +19,6 @@ from programy.storage.stores.nosql.redis.store.conversations import RedisConvers
 from programy.storage.stores.nosql.redis.engine import RedisStorageEngine
 from programy.storage.stores.nosql.redis.config import RedisStorageConfiguration
 
-from programy.dialog.question import Question
 from programy.dialog.conversation import Conversation
 
 from programytest.client import TestClient
@@ -76,10 +75,10 @@ class RedisConversationStoreTests(ConverstionStoreAsserts):
         client = TestClient()
         client_context = client.create_client_context("user1")
 
-        debugInfo = store.debug_conversation_data(client_context)
+        debugInfo, _ = store.debug_conversation_data(client_context)
         self.assertEqual(0, len(debugInfo))
 
-    def tests_odify_conversation(self):
+    def tests_modify_conversation(self):
         config = RedisStorageConfiguration()
         engine = RedisStorageEngine(config)
         engine.initialise()

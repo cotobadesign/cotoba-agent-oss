@@ -42,6 +42,7 @@ class StorageFactory(object):
     CATEGORIES = "categories"
     ERRORS = "errors"
     DUPLICATES = "duplicates"
+    ERRORS_COLLECTION = "errors_collection"
     LEARNF = "learnf"
     CONVERSATIONS = "conversations"
     LOGS = "logs"
@@ -60,9 +61,6 @@ class StorageFactory(object):
 
     PROPERTIES = "properties"
     DEFAULTS = "defaults"
-    VARIABLES = "variables"
-
-    TWITTER = "twitter"
 
     SPELLING_CORPUS = "spelling_corpus"
     LICENSE_KEYS = "license_keys"

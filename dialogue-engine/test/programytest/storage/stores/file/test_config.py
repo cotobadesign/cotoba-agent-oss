@@ -49,9 +49,6 @@ class FileStorageConfigurationTests(unittest.TestCase):
 
         self.assertIsNotNone(config.properties_storage)
         self.assertIsNotNone(config.defaults_storage)
-        self.assertIsNotNone(config.variables_storage)
-
-        self.assertIsNotNone(config.twitter_storage)
 
         self.assertIsNotNone(config.spelling_storage)
         self.assertIsNotNone(config.license_storage)
@@ -160,19 +157,6 @@ class FileStorageConfigurationTests(unittest.TestCase):
                       format: text
                       encoding: utf-8
                       delete_on_start: false
-                    variables_storage:
-                      dirs: ./storage/variables
-                      extension: txt
-                      format: text
-                      encoding: utf-8
-                      delete_on_start: false
-
-                    twitter_storage:
-                      dirs: ./storage/twitter
-                      extension: txt
-                      format: text
-                      encoding: utf-8
-                      delete_on_start: false
 
                     spelling_corpus_storage:
                       file: ./storage/spelling/corpus.txt
@@ -250,9 +234,6 @@ class FileStorageConfigurationTests(unittest.TestCase):
 
         self.assert_config(config.properties_storage, file="./storage/properties.txt", format="text", encoding="utf-8", delete_on_start=False)
         self.assert_config(config.defaults_storage, file="./storage/defaults.txt", format="text", encoding="utf-8", delete_on_start=False)
-        self.assert_config(config.variables_storage, dirs=["./storage/variables"], extension="txt", subdirs=False, format="text", encoding="utf-8", delete_on_start=False)
-
-        self.assert_config(config.twitter_storage, dirs=["./storage/twitter"], extension="txt", subdirs=False, format="text", encoding="utf-8", delete_on_start=False)
 
         self.assert_config(config.spelling_storage, file="./storage/spelling/corpus.txt", format="text", encoding="utf-8", delete_on_start=False)
 
@@ -285,7 +266,7 @@ class FileStorageConfigurationTests(unittest.TestCase):
 
         self.assert_config(config.categories_storage, dirs=[tmpdir + os.sep + "categories"], extension="aiml", subdirs=True,
                            format="xml", encoding="utf-8", delete_on_start=False)
-        self.assert_config(config.learnf_storage, dirs=[tmpdir + os.sep + "categories/learnf"], extension="aiml", subdirs=False,
+        self.assert_config(config.learnf_storage, dirs=[tmpdir + os.sep + "learnf"], extension="aiml", subdirs=False,
                            format="xml", encoding="utf-8", delete_on_start=False)
 
         self.assert_config(config.conversation_storage, dirs=[tmpdir + os.sep + "conversations"], extension="txt", subdirs=False,
@@ -302,13 +283,8 @@ class FileStorageConfigurationTests(unittest.TestCase):
         self.assert_config(config.person2_storage, file=tmpdir + os.sep + "lookups/person2.txt", format="text", encoding="utf-8", delete_on_start=False)
         self.assert_config(config.regex_storage, file=tmpdir + os.sep + "lookups/regex.txt", format="text", encoding="utf-8", delete_on_start=False)
 
-        self.assert_config(config.properties_storage, file=tmpdir + os.sep + "properties.txt", format="text", encoding="utf-8", delete_on_start=False)
-        self.assert_config(config.defaults_storage, file=tmpdir + os.sep + "defaults.txt", format="text", encoding="utf-8", delete_on_start=False)
-        self.assert_config(config.variables_storage, dirs=[tmpdir + os.sep + "variables"], extension="txt", subdirs=False,
-                           format="text", encoding="utf-8", delete_on_start=False)
-
-        self.assert_config(config.twitter_storage, dirs=[tmpdir + os.sep + "twitter"], extension="txt", subdirs=False,
-                           format="text", encoding="utf-8", delete_on_start=False)
+        self.assert_config(config.properties_storage, file=tmpdir + os.sep + "properties/properties.txt", format="text", encoding="utf-8", delete_on_start=False)
+        self.assert_config(config.defaults_storage, file=tmpdir + os.sep + "properties/defaults.txt", format="text", encoding="utf-8", delete_on_start=False)
 
         self.assert_config(config.spelling_storage, file=tmpdir + os.sep + "spelling/corpus.txt", format="text", encoding="utf-8", delete_on_start=False)
 
@@ -335,7 +311,7 @@ class FileStorageConfigurationTests(unittest.TestCase):
 
         self.assert_config(amap['categories_storage'], dirs=[tmpdir + os.sep + "categories"], extension="aiml", subdirs=True,
                            format="xml", encoding="utf-8", delete_on_start=False)
-        self.assert_config(amap['learnf_storage'], dirs=[tmpdir + os.sep + "categories/learnf"], extension="aiml", subdirs=False,
+        self.assert_config(amap['learnf_storage'], dirs=[tmpdir + os.sep + "learnf"], extension="aiml", subdirs=False,
                            format="xml", encoding="utf-8", delete_on_start=False)
 
         self.assert_config(amap['conversations_storage'], dirs=[tmpdir + os.sep + "conversations"], extension="txt", subdirs=False,
@@ -352,12 +328,8 @@ class FileStorageConfigurationTests(unittest.TestCase):
         self.assert_config(amap['person2_storage'], file=tmpdir + os.sep + "lookups/person2.txt", format="text", encoding="utf-8", delete_on_start=False)
         self.assert_config(amap['regex_templates_storage'], file=tmpdir + os.sep + "lookups/regex.txt", format="text", encoding="utf-8", delete_on_start=False)
 
-        self.assert_config(amap['properties_storage'], file=tmpdir + os.sep + "properties.txt", format="text", encoding="utf-8", delete_on_start=False)
-        self.assert_config(amap['defaults_storage'], file=tmpdir + os.sep + "defaults.txt", format="text", encoding="utf-8", delete_on_start=False)
-        self.assert_config(amap['variables_storage'], dirs=[tmpdir + os.sep + "variables"], extension="txt", subdirs=False,
-                           format="text", encoding="utf-8", delete_on_start=False)
-
-        self.assert_config(amap['twitter_storage'], dirs=[tmpdir + os.sep + "twitter"], extension="txt", subdirs=False, format="text", encoding="utf-8", delete_on_start=False)
+        self.assert_config(amap['properties_storage'], file=tmpdir + os.sep + "properties/properties.txt", format="text", encoding="utf-8", delete_on_start=False)
+        self.assert_config(amap['defaults_storage'], file=tmpdir + os.sep + "properties/defaults.txt", format="text", encoding="utf-8", delete_on_start=False)
 
         self.assert_config(amap['spelling_corpus_storage'], file=tmpdir + os.sep + "spelling/corpus.txt", format="text", encoding="utf-8", delete_on_start=False)
 

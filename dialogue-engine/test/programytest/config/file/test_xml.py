@@ -138,7 +138,6 @@ class XMLConfigurationFileTests(ConfigurationBaseFileTests):
         <gender>file</gender>
         <person>file</person>
         <person2>file</person2>
-        <twitter>file</twitter>
         <spelling_corpus>file</spelling_corpus>
         <license_keys>file</license_keys>
         <nodes>file</nodes>
@@ -147,7 +146,6 @@ class XMLConfigurationFileTests(ConfigurationBaseFileTests):
         <preprocessors>file</preprocessors>
         <postprocessors>file</postprocessors>
         <regex_templates>file</regex_templates>
-        <variables>file</variables>
         <usergroups>file</usergroups>
         <learnf>file</learnf>
       </entities>
@@ -218,17 +216,11 @@ class XMLConfigurationFileTests(ConfigurationBaseFileTests):
             <defaults_storage>
               <file>./storage/defaults.txt</file>
             </defaults_storage>
-            <variables>
-              <files>./storage/variables</files>
-            </variables>
             <rdf_storage>
               <files>./storage/rdfs</files>
               <extension>.txt</extension>
               <directories>true</directories>
             </rdf_storage>
-            <twitter_storage>
-              <files>./storage/twitter</files>
-            </twitter_storage>
             <spelling_corpus>
               <file>./storage/spelling/corpus.txt</file>
             </spelling_corpus>

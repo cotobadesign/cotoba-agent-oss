@@ -38,4 +38,8 @@ if __name__ == '__main__':
         utterance = input('>>>')
         result = dialogue(utterance)
         dict = json.loads(result)
-        print(dict["response"])
+        try:
+            print(dict["response"])
+        except Exception:
+            print(dict["error"])
+            pass

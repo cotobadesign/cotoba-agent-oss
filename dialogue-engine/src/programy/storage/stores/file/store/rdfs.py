@@ -50,18 +50,26 @@ class FileRDFStore(FileStore, RDFStore):
     def _load_file_contents(self, rdf_collection, filename):
         YLogger.debug(self, "Loading rdf [%s]", filename)
         try:
+            line_no = 0
             with open(filename, 'r', encoding='utf8') as my_file:
                 for line in my_file:
+                    line_no += 1
+                    line = line.strip()
                     if line:
+                        if line[0] == '#':
+                            continue
                         splits = line.split(":")
                         if len(splits) > 2:
-                            subj = splits[0].upper()
-                            pred = splits[1].upper()
+                            subj = splits[0].strip()
+                            pred = splits[1].strip()
                             obj = (":".join(splits[2:])).strip()
 
                             rdf_name = self.get_just_filename_from_filepath(filename)
 
-                            rdf_collection.add_entity(subj, pred, obj, rdf_name, filename)
+                            rdf_collection.add_entity(subj, pred, obj, rdf_name, filename, line_no=line_no)
+                        else:
+                            error_info = "illegal format [%s]" % line
+                            rdf_collection.set_error_info(filename, line_no, error_info)
 
         except Exception as excep:
             YLogger.exception(self, "Failed to load rdf [%s]", excep, filename)

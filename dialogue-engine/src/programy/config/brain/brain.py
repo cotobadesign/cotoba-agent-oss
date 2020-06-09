@@ -148,14 +148,21 @@ class BrainConfiguration(BaseContainerConfigurationData):
             self._nlu.load_config_section(configuration_file, brain_config, bot_root, subs=subs)
 
     def to_yaml(self, data, defaults=True):
-        self.config_to_yaml(data, BrainOverridesConfiguration(), defaults)
-        self.config_to_yaml(data, BrainDefaultsConfiguration(), defaults)
-        self.config_to_yaml(data, BrainBinariesConfiguration(), defaults)
-        self.config_to_yaml(data, BrainBraintreeConfiguration(), defaults)
-        self.config_to_yaml(data, BrainServicesConfiguration(), defaults)
-        self.config_to_yaml(data, BrainSecuritiesConfiguration(), defaults)
-        self.config_to_yaml(data, BrainOOBSConfiguration(), defaults)
-        self.config_to_yaml(data, BrainDynamicsConfiguration(), defaults)
-        self.config_to_yaml(data, BrainTokenizerConfiguration(), defaults)
-        self.config_to_yaml(data, BrainDebugFilesConfiguration(), defaults)
-        self.config_to_yaml(data, BrainNluConfiguration(), defaults)
+        if defaults is True:
+            data['bot_name'] = None
+            data['manager_name'] = None
+        else:
+            data['bot_name'] = self._bot_name
+            data['manager_name'] = self._manager_name
+
+        self.config_to_yaml(data, self._overrides, defaults)
+        self.config_to_yaml(data, self._defaults, defaults)
+        self.config_to_yaml(data, self._binaries, defaults)
+        self.config_to_yaml(data, self._braintree, defaults)
+        self.config_to_yaml(data, self._services, defaults)
+        self.config_to_yaml(data, self._security, defaults)
+        self.config_to_yaml(data, self._oob, defaults)
+        self.config_to_yaml(data, self._dynamics, defaults)
+        self.config_to_yaml(data, self._tokenizer, defaults)
+        self.config_to_yaml(data, self._debugfiles, defaults)
+        self.config_to_yaml(data, self._nlu, defaults)

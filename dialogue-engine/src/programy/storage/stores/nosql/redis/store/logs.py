@@ -60,7 +60,7 @@ class RedisLogsStore(RedisStore, LogsStore):
             logs_json = {}
             logs_json['logs'] = conversation.logs
 
-            json_text = json.dumps(logs_json, ensure_ascii=False, indent=4)
+            json_text = json.dumps(logs_json, ensure_ascii=False)
 
             self.store(h_key, s_key, client_context.client.id, json_text, ex=self._storage_engine._expiretime)
 

@@ -113,8 +113,10 @@ class FileStoreConfiguration(BaseSectionConfigurationData):
         dirs = configuration_file.get_multi_file_option(files_config, "dirs", bot_root, subs=subs)
         if dirs is not None and dirs:
             self._dirs = dirs
-            self._extension = configuration_file.get_option(files_config, "extension", subs=subs)
-            self._subdirs = configuration_file.get_bool_option(files_config, "subdirs", False, subs=subs)
+            if "extension" in files_config:
+                self._extension = configuration_file.get_option(files_config, "extension", subs=subs)
+            if "subdirs" in files_config:
+                self._subdirs = configuration_file.get_bool_option(files_config, "subdirs", False, subs=subs)
             self._has_single_file = False
         else:
             file = configuration_file.get_option(files_config, "file", subs=subs)
@@ -122,12 +124,15 @@ class FileStoreConfiguration(BaseSectionConfigurationData):
                 self._dirs = [self.sub_bot_root(file, bot_root)]
                 self._has_single_file = True
 
-        self._format = configuration_file.get_option(files_config, "format", None, subs=subs)
-        self._encoding = configuration_file.get_option(files_config, "encoding", None, subs=subs)
+        if "format" in files_config:
+            self._format = configuration_file.get_option(files_config, "format", None, subs=subs)
+        if "encoding" in files_config:
+            self._encoding = configuration_file.get_option(files_config, "encoding", None, subs=subs)
 
-        self._delete_on_start = configuration_file.get_bool_option(files_config, "delete_on_start", False, subs=subs)
+        if "delete_on_start" in files_config:
+            self._delete_on_start = configuration_file.get_bool_option(files_config, "delete_on_start", False, subs=subs)
 
-    def to_yaml(self, data, defaults=True):
+    def to_yaml(self, data, defaults=False):
         if defaults is True:
             data['dirs'] = "./storage/%s" % self.id
             data['extension'] = ".txt"
@@ -139,11 +144,15 @@ class FileStoreConfiguration(BaseSectionConfigurationData):
             data['encoding'] = None
             data['delete_on_start'] = False
         else:
-            data['dirs'] = self._dirs
-            data['extension'] = self._extension
-            data['subdirs'] = self._subdirs
-
-            data['file'] = None
+            if self._has_single_file is True:
+                data['file'] = self._dirs[0]
+            else:
+                if len(self._dirs) == 1:
+                    data['dirs'] = self._dirs[0]
+                else:
+                    data['dirs'] = self._dirs
+                data['extension'] = self._extension
+                data['subdirs'] = self._subdirs
 
             data['format'] = self._format
             data['encoding'] = self._encoding

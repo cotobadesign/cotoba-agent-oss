@@ -59,7 +59,9 @@ class FileStorageConfiguration(BaseConfigurationData):
                                                           encoding="utf-8", delete_on_start=False)
         self._errors_storage = FileStoreConfiguration(file=tmpdir + os.sep + "debug/errors.txt", format="text", encoding="utf-8", delete_on_start=False)
         self._duplicates_storage = FileStoreConfiguration(file=tmpdir + os.sep + "debug/duplicates.txt", format="text", encoding="utf-8", delete_on_start=False)
-        self._learnf_storage = FileStoreConfiguration(dirs=[tmpdir + os.sep + "categories/learnf"], extension="aiml", subdirs=False, format="xml",
+        self._errors_collection_storage = FileStoreConfiguration(file=tmpdir + os.sep + "debug/errors_collection.txt", format="text",
+                                                                 encoding="utf-8", delete_on_start=False)
+        self._learnf_storage = FileStoreConfiguration(dirs=[tmpdir + os.sep + "learnf"], extension="aiml", subdirs=False, format="xml",
                                                       encoding="utf-8", delete_on_start=False)
 
         self._conversation_storage = FileStoreConfiguration(dirs=[tmpdir + os.sep + "conversations"], extension="txt", subdirs=False, format="text",
@@ -78,14 +80,10 @@ class FileStorageConfiguration(BaseConfigurationData):
         self._person2_storage = FileStoreConfiguration(file=tmpdir + os.sep + "lookups/person2.txt", format="text", encoding="utf-8", delete_on_start=False)
         self._regex_storage = FileStoreConfiguration(file=tmpdir + os.sep + "lookups/regex.txt", format="text", encoding="utf-8", delete_on_start=False)
 
-        self._properties_storage = FileStoreConfiguration(file=tmpdir + os.sep + "properties.txt", format="text", encoding="utf-8", delete_on_start=False)
-        self._defaults_storage = FileStoreConfiguration(file=tmpdir + os.sep + "defaults.txt", format="text", encoding="utf-8", delete_on_start=False)
-        self._variables_storage = FileStoreConfiguration(dirs=[tmpdir + os.sep + "variables"], extension="txt", subdirs=False, format="text",
-                                                         encoding="utf-8", delete_on_start=False)
-        self._nlu_servers_storage = FileStoreConfiguration(file=tmpdir + os.sep + "nlu_servers.yaml", format="yaml", encoding="utf-8", delete_on_start=False)
+        self._properties_storage = FileStoreConfiguration(file=tmpdir + os.sep + "properties/properties.txt", format="text", encoding="utf-8", delete_on_start=False)
+        self._defaults_storage = FileStoreConfiguration(file=tmpdir + os.sep + "properties/defaults.txt", format="text", encoding="utf-8", delete_on_start=False)
+        self._nlu_servers_storage = FileStoreConfiguration(file=tmpdir + os.sep + "properties/nlu_servers.yaml", format="yaml", encoding="utf-8", delete_on_start=False)
 
-        self._twitter_storage = FileStoreConfiguration(dirs=[tmpdir + os.sep + "twitter"], extension="txt", subdirs=False, format="text",
-                                                       encoding="utf-8", delete_on_start=False)
 
         self._spelling_storage = FileStoreConfiguration(file=tmpdir + os.sep + "spelling/corpus.txt", format="text", encoding="utf-8", delete_on_start=False)
 
@@ -102,7 +100,7 @@ class FileStorageConfiguration(BaseConfigurationData):
 
         self._usergroups_storage = FileStoreConfiguration(file=tmpdir + os.sep + "security/usergroups.yaml", format="yaml", encoding="utf-8", delete_on_start=False)
 
-        self._triggers_storage = FileStoreConfiguration(file=tmpdir + os.sep + "triggers.txt", format="text", encoding="utf-8", delete_on_start=False)
+        self._triggers_storage = FileStoreConfiguration(file=tmpdir + os.sep + "properties/triggers.txt", format="text", encoding="utf-8", delete_on_start=False)
 
         self._rdf_updates_storage = FileStoreConfiguration(dirs=[tmpdir + os.sep + "rdf_updates"], extension="txt", subdirs=False, format="text",
                                                            encoding="utf-8", delete_on_start=False)
@@ -118,6 +116,10 @@ class FileStorageConfiguration(BaseConfigurationData):
     @property
     def duplicates_storage(self):
         return self._duplicates_storage
+
+    @property
+    def errors_collection_storage(self):
+        return self._errors_collection_storage
 
     @property
     def learnf_storage(self):
@@ -172,16 +174,8 @@ class FileStorageConfiguration(BaseConfigurationData):
         return self._properties_storage
 
     @property
-    def variables_storage(self):
-        return self._variables_storage
-
-    @property
     def defaults_storage(self):
         return self._defaults_storage
-
-    @property
-    def twitter_storage(self):
-        return self._twitter_storage
 
     @property
     def nlu_servers_storage(self):
@@ -245,6 +239,7 @@ class FileStorageConfiguration(BaseConfigurationData):
             self.load_storage_config(self._categories_storage, FileStore.CATEGORIES_STORAGE, configuration_file, storage, bot_root, subs=subs)
             self.load_storage_config(self._errors_storage, FileStore.ERRORS_STORAGE, configuration_file, storage, bot_root, subs=subs)
             self.load_storage_config(self._duplicates_storage, FileStore.DUPLICATES_STORAGE, configuration_file, storage, bot_root, subs=subs)
+            self.load_storage_config(self._errors_collection_storage, FileStore.ERRORS_COLLECTION_STORAGE, configuration_file, storage, bot_root, subs=subs)
             self.load_storage_config(self._learnf_storage, FileStore.LEARNF_STORAGE, configuration_file, storage, bot_root, subs=subs)
 
             self.load_storage_config(self._conversation_storage, FileStore.CONVERSATION_STORAGE, configuration_file, storage, bot_root, subs=subs)
@@ -262,11 +257,8 @@ class FileStorageConfiguration(BaseConfigurationData):
             self.load_storage_config(self._regex_storage, FileStore.REGEX_STORAGE, configuration_file, storage, bot_root, subs=subs)
 
             self.load_storage_config(self._properties_storage, FileStore.PROPERTIES_STORAGE, configuration_file, storage, bot_root, subs=subs)
-            self.load_storage_config(self._variables_storage, FileStore.VARIABLES_STORAGE, configuration_file, storage, bot_root, subs=subs)
             self.load_storage_config(self._defaults_storage, FileStore.DEFAULTS_STORAGE, configuration_file, storage, bot_root, subs=subs)
             self.load_storage_config(self._nlu_servers_storage, FileStore.NLU_SERVERS_STORAGE, configuration_file, storage, bot_root, subs=subs)
-
-            self.load_storage_config(self._twitter_storage, FileStore.TWITTER_STORAGE, configuration_file, storage, bot_root, subs=subs)
 
             self.load_storage_config(self._spelling_storage, FileStore.SPELLING_STORAGE, configuration_file, storage, bot_root, subs=subs)
 
@@ -297,10 +289,18 @@ class FileStorageConfiguration(BaseConfigurationData):
         return None
 
     def to_yaml(self, data, defaults=True):
+        storage_map = {}
         if defaults is True:
-            self._create_storage_defaults(data)
+            self._create_storage_defaults(storage_map)
         else:
-            self._create_storage_map(data)
+            self._create_storage_map(storage_map)
+
+        data['type'] = 'file'
+        data['config'] = {}
+        data = data['config']
+        for name, storage in storage_map.items():
+            data[name] = {}
+            storage.to_yaml(data[name], False)
 
     def create_engine(self):
         engine = FileStorageEngine(self)
@@ -312,6 +312,7 @@ class FileStorageConfiguration(BaseConfigurationData):
         amap[FileStore.CATEGORIES_STORAGE] = self._categories_storage
         amap[FileStore.ERRORS_STORAGE] = self._errors_storage
         amap[FileStore.DUPLICATES_STORAGE] = self._duplicates_storage
+        amap[FileStore.ERRORS_COLLECTION_STORAGE] = self._errors_collection_storage
         amap[FileStore.LEARNF_STORAGE] = self._learnf_storage
 
         amap[FileStore.CONVERSATION_STORAGE] = self._conversation_storage
@@ -329,11 +330,8 @@ class FileStorageConfiguration(BaseConfigurationData):
         amap[FileStore.REGEX_STORAGE] = self._regex_storage
 
         amap[FileStore.PROPERTIES_STORAGE] = self._properties_storage
-        amap[FileStore.VARIABLES_STORAGE] = self._variables_storage
         amap[FileStore.DEFAULTS_STORAGE] = self._defaults_storage
         amap[FileStore.NLU_SERVERS_STORAGE] = self._nlu_servers_storage
-
-        amap[FileStore.TWITTER_STORAGE] = self._twitter_storage
 
         amap[FileStore.SPELLING_STORAGE] = self._spelling_storage
 
@@ -364,7 +362,9 @@ class FileStorageConfiguration(BaseConfigurationData):
                                                                 encoding="utf-8", delete_on_start=False)
         amap[FileStore.DUPLICATES_STORAGE] = FileStoreConfiguration(file=tmpdir + os.sep + "debug/duplicates.txt", format="text",
                                                                     encoding="utf-8", delete_on_start=False)
-        amap[FileStore.LEARNF_STORAGE] = FileStoreConfiguration(dirs=[tmpdir + os.sep + "categories/learnf"], extension="aiml", subdirs=False,
+        amap[FileStore.ERRORS_COLLECTION_STORAGE] = FileStoreConfiguration(file=tmpdir + os.sep + "debug/errors_collection.txt", format="text",
+                                                                           encoding="utf-8", delete_on_start=False)
+        amap[FileStore.LEARNF_STORAGE] = FileStoreConfiguration(dirs=[tmpdir + os.sep + "learnf"], extension="aiml", subdirs=False,
                                                                 format="xml", encoding="utf-8", delete_on_start=False)
 
         amap[FileStore.CONVERSATION_STORAGE] = FileStoreConfiguration(dirs=[tmpdir + os.sep + "conversations"], extension="txt",
@@ -392,17 +392,12 @@ class FileStorageConfiguration(BaseConfigurationData):
         amap[FileStore.REGEX_STORAGE] = FileStoreConfiguration(file=tmpdir + os.sep + "lookups/regex.txt", format="text",
                                                                encoding="utf-8", delete_on_start=False)
 
-        amap[FileStore.PROPERTIES_STORAGE] = FileStoreConfiguration(file=tmpdir + os.sep + "properties.txt", format="text",
+        amap[FileStore.PROPERTIES_STORAGE] = FileStoreConfiguration(file=tmpdir + os.sep + "properties/properties.txt", format="text",
                                                                     encoding="utf-8", delete_on_start=False)
-        amap[FileStore.DEFAULTS_STORAGE] = FileStoreConfiguration(file=tmpdir + os.sep + "defaults.txt", format="text",
+        amap[FileStore.DEFAULTS_STORAGE] = FileStoreConfiguration(file=tmpdir + os.sep + "properties/defaults.txt", format="text",
                                                                   encoding="utf-8", delete_on_start=False)
-        amap[FileStore.VARIABLES_STORAGE] = FileStoreConfiguration(dirs=[tmpdir + os.sep + "variables"], extension="txt", subdirs=False,
-                                                                   format="text", encoding="utf-8", delete_on_start=False)
-        amap[FileStore.NLU_SERVERS_STORAGE] = FileStoreConfiguration(file=tmpdir + os.sep + "nlu_servers.yaml", format="yaml",
+        amap[FileStore.NLU_SERVERS_STORAGE] = FileStoreConfiguration(file=tmpdir + os.sep + "properties/nlu_servers.yaml", format="yaml",
                                                                      encoding="utf-8", delete_on_start=False)
-
-        amap[FileStore.TWITTER_STORAGE] = FileStoreConfiguration(dirs=[tmpdir + os.sep + "twitter"], extension="txt", subdirs=False,
-                                                                 format="text", encoding="utf-8", delete_on_start=False)
 
         amap[FileStore.SPELLING_STORAGE] = FileStoreConfiguration(file=tmpdir + os.sep + "spelling/corpus.txt", format="text",
                                                                   encoding="utf-8", delete_on_start=False)
@@ -428,7 +423,7 @@ class FileStorageConfiguration(BaseConfigurationData):
         amap[FileStore.USERGROUPS_STORAGE] = FileStoreConfiguration(file=tmpdir + os.sep + "security/usergroups.txt", format="text",
                                                                     encoding="utf-8", delete_on_start=False)
 
-        amap[FileStore.TRIGGERS_STORAGE] = FileStoreConfiguration(file=tmpdir + os.sep + "triggers/triggers.txt", format="text",
+        amap[FileStore.TRIGGERS_STORAGE] = FileStoreConfiguration(file=tmpdir + os.sep + "properties/triggers.txt", format="text",
                                                                   encoding="utf-8", delete_on_start=False)
 
         amap[FileStore.RDF_UPDATES_STORAGE] = FileStoreConfiguration(dirs=[tmpdir + os.sep + "rdf_updates"], extension="txt", subdirs=False,

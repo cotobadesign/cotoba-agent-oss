@@ -54,8 +54,8 @@ class TriggerConfiguration(BaseContainerConfigurationData):
     def load_config_section(self, configuration_file, section, bot_root, subs: Substitutions = None):
         triggers = configuration_file.get_section(self._section_name, section)
         if triggers is not None:
-            self._manager = configuration_file.get_option(triggers, "manager", missing_value=TriggerConfiguration.LOCAL_MANAGER)
-            self.load_additional_key_values(configuration_file, triggers)
+            self._manager = configuration_file.get_option(triggers, "manager", missing_value=TriggerConfiguration.LOCAL_MANAGER, subs=subs)
+            self.load_additional_key_values(configuration_file, triggers, subs=subs)
         else:
             YLogger.debug(self, "'triggers' section missing from client config, using defaults")
 
@@ -65,6 +65,9 @@ class TriggerConfiguration(BaseContainerConfigurationData):
 
         if defaults is True:
             data['manager'] = TriggerConfiguration.LOCAL_MANAGER
-
         else:
             data['manager'] = self._manager
+
+            if len(self._additionals) > 0:
+                for key, value in self._additionals.items():
+                    data[key] = value

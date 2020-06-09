@@ -37,11 +37,17 @@ from programy.storage.factory import StorageFactory
 
 class MapCollection(object):
 
-    def __init__(self, split_char=":", eol="\n"):
+    def __init__(self, errors_dict=None, split_char=":", eol="\n"):
         self._split_char = split_char
         self._eol = eol
         self._maps = {}
         self._stores = {}
+
+        if errors_dict is None:
+            self._errors_dict = None
+        else:
+            errors_dict['maps'] = []
+            self._errors_dict = errors_dict['maps']
 
     @property
     def maps(self):
@@ -65,8 +71,17 @@ class MapCollection(object):
             return self._stores[map_name]
         return None
 
+    def set_error_info(self, filename, line, description):
+        if self._errors_dict is not None:
+            error_info = {'file': filename, 'line': line, 'description': description}
+            self._errors_dict.append(error_info)
+
     def add_map(self, name, the_map, map_store):
         map_name = name.upper()
+        if map_name in self._maps:
+            error_info = "duplicate map_name='%s' (map_list is invalid)" % map_name
+            self.set_error_info(map_store, 0, error_info)
+            return
         self._maps[map_name] = the_map
         self._stores[map_name] = map_store
 

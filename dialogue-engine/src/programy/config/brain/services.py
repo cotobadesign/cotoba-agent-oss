@@ -89,3 +89,6 @@ class BrainServicesConfiguration(BaseSectionConfigurationData):
             data['DuckDuckGo'] = {}
             data['DuckDuckGo']['classname'] = 'programy.services.duckduckgo.DuckDuckGoService'
             data['DuckDuckGo']['url'] = 'http://api.duckduckgo.com'
+        else:
+            for service in self._services:
+                self.config_to_yaml(data, self._services[service], defaults)

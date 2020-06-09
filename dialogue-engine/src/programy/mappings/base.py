@@ -275,25 +275,38 @@ class DoubleStringPatternSplitCollection(BaseCollection):
 
 class PersonalPronounCollection(DoubleStringPatternSplitCollection):
 
-    def __init__(self):
+    def __init__(self, errors_dict=None):
         DoubleStringPatternSplitCollection.__init__(self)
         self._match = {}
         self._match_jp = {}
+        self._errors_dict = errors_dict
 
     def empty(self):
         super(PersonalPronounCollection, self).empty()
         self._match.clear()
         self._match_jp.clear()
 
-    def add_to_lookup(self, org_key, org_value):
+    def set_error_info(self, filename, line, description):
+        if self._errors_dict is not None:
+            error_info = {'file': filename, 'line': line, 'description': description}
+            self._errors_dict.append(error_info)
+
+    def add_to_lookup(self, org_key, org_value, filename=None, line=0):
         key = org_key.strip()
+        if key == '':
+            error_info = "key is empty"
+            self.set_error_info(filename, line, error_info)
+            return
+
         target_key = JapaneseLanguage.zenhan_normalize(key)
-        target_key = target_key.upper()
+        target_key = re.sub(' +', ' ', target_key.upper())
         value = org_value.strip()
 
         if JapaneseLanguage.is_CJKword(target_key) is True:
             if target_key in self._pairs_jp:
                 YLogger.error(self, "%s = %s already exists in jp_collection", key, value)
+                error_info = "duplicate key='%s' (value='%s' is invalid)" % (key, value)
+                self.set_error_info(filename, line, error_info)
                 return
             else:
                 matchs = self._match_jp
@@ -303,6 +316,8 @@ class PersonalPronounCollection(DoubleStringPatternSplitCollection):
         else:
             if target_key in self._pairs:
                 YLogger.error(self, "%s = %s already exists in en_collection", key, value)
+                error_info = "duplicate key='%s' (value='%s' is invalid)" % (key, value)
+                self.set_error_info(filename, line, error_info)
                 return
             else:
                 matchs = self._match
@@ -410,10 +425,12 @@ class PersonalPronounCollection(DoubleStringPatternSplitCollection):
     def load_from_text(self, text):
         lines = text.split("\n")
         count = 0
+        line_no = 0
         for line in lines:
+            line_no += 1
             line = line.strip()
             split = self.split_line_by_pattern(line, DoubleStringPatternSplitCollection.RE_OF_SPLIT_PATTERN)
             if split is not None:
-                self.add_to_lookup(split[0], split[1])
+                self.add_to_lookup(split[0], split[1], 'text', line_no)
                 count += 1
         return count

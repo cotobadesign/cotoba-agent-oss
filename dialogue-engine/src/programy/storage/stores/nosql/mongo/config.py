@@ -63,9 +63,9 @@ class MongoStorageConfiguration(BaseConfigurationData):
     def load_config_section(self, configuration_file, configuration, bot_root, subs: Substitutions = None):
         storage = configuration_file.get_section(self._section_name, configuration)
         if storage is not None:
-            self._url = configuration_file.get_option(storage, "url")
-            self._database = configuration_file.get_option(storage, "database")
-            self._drop_all_first = configuration_file.get_option(storage, "drop_all_first")
+            self._url = configuration_file.get_option(storage, "url", subs=subs)
+            self._database = configuration_file.get_option(storage, "database", subs=subs)
+            self._drop_all_first = configuration_file.get_option(storage, "drop_all_first", subs=subs)
         else:
             YLogger.error(None, "'config' section missing from storage config")
 
@@ -82,6 +82,9 @@ class MongoStorageConfiguration(BaseConfigurationData):
         return None
 
     def to_yaml(self, data, defaults=True):
+        data['type'] = 'mongo'
+        data['config'] = {}
+        data = data['config']
         if defaults is True:
             data['url'] = 'mongodb://localhost:27017/'
             data['database'] = "programy"

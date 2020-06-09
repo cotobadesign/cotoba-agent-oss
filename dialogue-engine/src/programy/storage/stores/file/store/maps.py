@@ -36,6 +36,8 @@ from programy.storage.entities.maps import MapsStore
 
 from programy.utils.language.japanese import JapaneseLanguage
 
+import re
+
 
 class FileMapsStore(FileStore, MapsStore):
 
@@ -47,15 +49,32 @@ class FileMapsStore(FileStore, MapsStore):
 
         the_map = {}
         try:
+            line_no = 0
             with open(filename, 'r', encoding='utf8') as my_file:
                 for line in my_file:
+                    line_no += 1
+                    line = line.strip()
+                    if line == '' or line[0] == '#':
+                        continue
                     splits = line.split(":")
                     if len(splits) > 1:
-                        targer_word = JapaneseLanguage.zenhan_normalize(splits[0].strip())
-                        key = targer_word.upper()
+                        targer_word = splits[0].strip()
+                        if targer_word == '':
+                            error_info = "key is empty"
+                            map_collection.set_error_info(filename, line_no, error_info)
+                            continue
+                        targer_word = JapaneseLanguage.zenhan_normalize(targer_word)
+                        key = re.sub(' +', ' ', targer_word.upper())
+                        value = ":".join(splits[1:]).strip()
                         if key not in the_map:
-                            value = ":".join(splits[1:]).strip()
                             the_map[key] = value.strip()
+                        else:
+                            error_info = "duplicate key='%s' (value='%s' is invalid)" % (key, value)
+                            map_collection.set_error_info(filename, line_no, error_info)
+                    else:
+                        error_info = "invalid parameters [%s]" % line
+                        map_collection.set_error_info(filename, line_no, error_info)
+
         except Exception as excep:
             YLogger.exception(self, "Failed to load map [%s]", excep, filename)
 

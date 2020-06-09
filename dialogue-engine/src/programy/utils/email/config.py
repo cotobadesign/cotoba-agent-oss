@@ -74,11 +74,11 @@ class EmailConfiguration(BaseConfigurationData):
     def load_config_section(self, configuration_file, configuration, bot_root, subs: Substitutions = None):
         email = configuration_file.get_section(self._section_name, configuration)
         if email is not None:
-            self._host = configuration_file.get_option(email, "host", missing_value=None)
-            self._port = configuration_file.get_option(email, "port", missing_value=None)
-            self._username = configuration_file.get_option(email, "username", missing_value=None)
-            self._password = configuration_file.get_option(email, "password", missing_value=None)
-            self._from_addr = configuration_file.get_option(email, "from_addr", missing_value=None)
+            self._host = configuration_file.get_option(email, "host", missing_value=None, subs=subs)
+            self._port = configuration_file.get_option(email, "port", missing_value=None, subs=subs)
+            self._username = configuration_file.get_option(email, "username", missing_value=None, subs=subs)
+            self._password = configuration_file.get_option(email, "password", missing_value=None, subs=subs)
+            self._from_addr = configuration_file.get_option(email, "from_addr", missing_value=None, subs=subs)
             if self._from_addr is None:
                 self._from_addr = self._username
         else:

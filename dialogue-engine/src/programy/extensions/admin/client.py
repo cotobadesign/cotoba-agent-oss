@@ -75,6 +75,10 @@ class ClientAdminExtension(Extension):
                             brain.dump_brain_tree(client_context)
                             return "Brain dumped, see config for location"
 
+                if commands[1] == 'CONFIG':
+                    client_context.client.dump_client_config()
+                    return "Config dumped, see config for location"
+
         except Exception as e:
             YLogger.exception(client_context, "Failed to execute client admin extension", e)
 

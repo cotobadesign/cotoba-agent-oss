@@ -104,12 +104,12 @@ class BrainDynamicsConfiguration(BaseSectionConfigurationData):
         else:
             data['sets'] = {}
             for dyn in self._dynamic_sets:
-                self.config_to_yaml(data['sets'], dyn, defaults)
+                data['sets'][dyn] = self._dynamic_sets[dyn]
 
             data['maps'] = {}
             for dyn in self._dynamic_maps:
-                self.config_to_yaml(data['maps'], dyn, defaults)
+                data['maps'][dyn] = self._dynamic_maps[dyn]
 
             data['variables'] = {}
             for dyn in self._dynamic_vars:
-                self.config_to_yaml(data['variables'], dyn, defaults)
+                data['variables'][dyn] = self._dynamic_vars[dyn]

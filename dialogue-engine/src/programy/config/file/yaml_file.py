@@ -116,7 +116,10 @@ class YamlConfigurationFile(BaseConfigurationFile):
 
         if option_name in section:
             values = section[option_name]
-            splits = values.split('\n')
+            if isinstance(values, list):
+                splits = values
+            else:
+                splits = values.split('\n')
             multis = []
             for value in splits:
                 if value is not None and value != '':
@@ -133,7 +136,10 @@ class YamlConfigurationFile(BaseConfigurationFile):
 
         if option_name in section:
             values = section[option_name]
-            splits = values.split('\n')
+            if isinstance(values, list):
+                splits = values
+            else:
+                splits = values.split('\n')
             multis = []
             for value in splits:
                 if value is not None and value != '':
