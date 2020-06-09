@@ -63,7 +63,7 @@ class ConverstionStoreAsserts(unittest.TestCase):
         store.store_conversation(client_context, conversation)
         store.commit()
 
-        debugInfo = store.debug_conversation_data(client_context)
+        debugInfo, _ = store.debug_conversation_data(client_context)
         self.assertIsNotNone(debugInfo)
         self.assertIsNotNone(debugInfo['conversations'])
         conversations = debugInfo['conversations']
@@ -89,7 +89,7 @@ class ConverstionStoreAsserts(unittest.TestCase):
         store.modify_conversation_data(client_context, conversation)
         store.commit()
 
-        debugInfo = store.debug_conversation_data(client_context)
+        debugInfo, _ = store.debug_conversation_data(client_context)
         self.assertIsNotNone(debugInfo)
         self.assertIsNotNone(debugInfo['conversations'])
         conversations = debugInfo['conversations']

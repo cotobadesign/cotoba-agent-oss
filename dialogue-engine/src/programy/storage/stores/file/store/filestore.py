@@ -44,6 +44,7 @@ class FileStore(Store):
     CATEGORIES_STORAGE = 'categories_storage'
     ERRORS_STORAGE = 'errors_storage'
     DUPLICATES_STORAGE = 'duplicates_storage'
+    ERRORS_COLLECTION_STORAGE = 'errors_collection_storage'
     LEARNF_STORAGE = 'learnf_storage'
 
     CONVERSATION_STORAGE = 'conversations_storage'
@@ -62,10 +63,7 @@ class FileStore(Store):
     REGEX_STORAGE = 'regex_templates_storage'
 
     PROPERTIES_STORAGE = 'properties_storage'
-    VARIABLES_STORAGE = 'variables_storage'
     DEFAULTS_STORAGE = 'defaults_storage'
-
-    TWITTER_STORAGE = 'twitter_storage'
 
     SPELLING_STORAGE = 'spelling_corpus_storage'
 

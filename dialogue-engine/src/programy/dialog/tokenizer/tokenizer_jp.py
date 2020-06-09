@@ -172,12 +172,12 @@ class TokenizerJP(Tokenizer):
                         target_text = ''
                     target_text += ch
                 if len(target_text) > 0:
-                        if words_CJK is True:
-                            tmp_words = self._texts_to_words_jp(target_text)
-                        else:
-                            tmp_words = self._texts_to_words_en(target_text)
-                        for word in tmp_words:
-                            words.append(word)
+                    if words_CJK is True:
+                        tmp_words = self._texts_to_words_jp(target_text)
+                    else:
+                        tmp_words = self._texts_to_words_en(target_text)
+                    for word in tmp_words:
+                        words.append(word)
             else:
                 words = self._template_texts_to_words_jp(texts)
         else:

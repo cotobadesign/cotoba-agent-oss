@@ -272,6 +272,35 @@ class YadlanRestBotClient(RestBotClient):
     def get_reset_param(self, rest_request):
         return self.get_parameter(rest_request, 'reset')
 
+    def get_errors_param(self, rest_request):
+        bodydata = self.get_request_body(rest_request)
+        key = 'errors_collection'
+        if len(bodydata) == 0:
+            errMsg = "Missing Request Data"
+            YLogger.error(self, key + " " + errMsg)
+            self.server_abort(400, errMsg)
+        try:
+            dialogRequest = codecs.decode(bodydata, 'utf_8')
+            dialogDict = json.loads(dialogRequest)
+        except Exception as excep:
+            errMsg = "Request is not JSON-format"
+            YLogger.exception(self, key + " " + errMsg, excep)
+            self.server_abort(400, errMsg)
+
+        response = False
+        try:
+            if len(format(dialogDict[key])) != 0:
+                response = dialogDict[key]
+        except Exception:
+            YLogger.debug(self, "user data " + key + " : is None")
+
+        if response is None:
+            response = False
+        elif type(response) is not bool:
+            response = False
+
+        return response
+
     def create_response(self, request, response_data, status, latency):
         self.dump_request_response(request, response_data, latency)
         return response_data

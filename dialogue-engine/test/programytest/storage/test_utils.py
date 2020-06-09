@@ -50,14 +50,13 @@ class StorageEngineTestUtils(unittest.TestCase):
                                        "occupation": "Gardener"})
         property_store.commit()
 
-    def variable_asserts(self, storage_engine):
-        variables_store = storage_engine.variables_store()
-        variables_store.add_variable(clientid='test', userid='test', name="topic", value="*")
-        variables_store.add_variables(clientid='test', userid='test',
-                                      variables={"name": "Fred",
-                                                 "age": "47",
-                                                 "occupation": "Gardener"})
-        variables_store.commit()
+    def defaults_asserts(self, storage_engine):
+        defaults_store = storage_engine.variables_store()
+        defaults_store.add_default(name="topic", value="*")
+        defaults_store.add_defaults({"name": "Fred",
+                                     "age": "47",
+                                     "occupation": "Gardener"})
+        defaults_store.commit()
 
     def conversation_asserts(self, storage_engine, visit=True):
 
@@ -78,12 +77,3 @@ class StorageEngineTestUtils(unittest.TestCase):
         category_store = storage_engine.category_store()
         category_store.store_category(groupid="group1", userid="keiffster", topic="*", that=None, pattern="Hello", template="Hi there!")
         category_store.commit()
-
-    def twitter_asserts(self, storage_engine, visit=True):
-        twitter_store = storage_engine.twitter_store()
-        twitter_store.store_last_message_ids(1, 2)
-        twitter_store.commit()
-
-        last_direct_message_id, last_status_id = twitter_store.load_last_message_ids()
-        self.assertEqual(1, int(last_direct_message_id))
-        self.assertEqual(2, int(last_status_id))

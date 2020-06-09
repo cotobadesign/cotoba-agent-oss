@@ -165,7 +165,7 @@ class SchedulerThreadPoolConfiguration(BaseConfigurationData):
 
     def __init__(self):
         BaseConfigurationData.__init__(self, name="threadpool")
-        self._max_workers = None
+        self._max_workers = 20
 
     @property
     def max_workers(self):
@@ -177,7 +177,7 @@ class SchedulerThreadPoolConfiguration(BaseConfigurationData):
     def load_config_section(self, configuration_file, configuration, bot_root, subs: Substitutions = None):
         threadpool = configuration_file.get_section(self._section_name, configuration)
         if threadpool is not None:
-            self._max_workers = configuration_file.get_option(threadpool, "max_workers", missing_value=None)
+            self._max_workers = configuration_file.get_int_option(threadpool, "max_workers", missing_value=20)
 
     def to_yaml(self, data, defaults=True):
         if defaults is True:
@@ -190,7 +190,7 @@ class SchedulerProcessPoolConfiguration(BaseConfigurationData):
 
     def __init__(self):
         BaseConfigurationData.__init__(self, name="processpool")
-        self._max_workers = None
+        self._max_workers = 5
 
     @property
     def max_workers(self):
@@ -202,7 +202,7 @@ class SchedulerProcessPoolConfiguration(BaseConfigurationData):
     def load_config_section(self, configuration_file, configuration, bot_root, subs: Substitutions = None):
         processpool = configuration_file.get_section(self._section_name, configuration)
         if processpool is not None:
-            self._max_workers = configuration_file.get_option(processpool, "max_workers", missing_value=None)
+            self._max_workers = configuration_file.get_int_option(processpool, "max_workers", missing_value=5)
 
     def to_yaml(self, data, defaults=True):
         if defaults is True:
@@ -215,8 +215,8 @@ class SchedulerJobDefaultsConfiguration(BaseConfigurationData):
 
     def __init__(self):
         BaseConfigurationData.__init__(self, name="job_defaults")
-        self._coalesce = None
-        self._max_instances = None
+        self._coalesce = False
+        self._max_instances = 3
 
     @property
     def coalesce(self):
@@ -232,8 +232,8 @@ class SchedulerJobDefaultsConfiguration(BaseConfigurationData):
     def load_config_section(self, configuration_file, configuration, bot_root, subs: Substitutions = None):
         job_defaults = configuration_file.get_section(self._section_name, configuration)
         if job_defaults is not None:
-            self._coalesce = configuration_file.get_option(job_defaults, "coalesce", missing_value=None)
-            self._max_instances = configuration_file.get_option(job_defaults, "max_instances", missing_value=None)
+            self._coalesce = configuration_file.get_bool_option(job_defaults, "coalesce", missing_value=False)
+            self._max_instances = configuration_file.get_int_option(job_defaults, "max_instances", missing_value=3)
 
     def to_yaml(self, data, defaults=True):
         if defaults is True:
@@ -298,10 +298,10 @@ class SchedulerConfiguration(BaseConfigurationData):
     def load_config_section(self, configuration_file, configuration, bot_root, subs: Substitutions = None):
         scheduler = configuration_file.get_section(self._section_name, configuration)
         if scheduler is not None:
-            self._name = configuration_file.get_option(scheduler, "name", missing_value=None)
-            self._debug_level = configuration_file.get_int_option(scheduler, "debug_level", missing_value=0)
-            self._add_listeners = configuration_file.get_bool_option(scheduler, "add_listeners", missing_value=False)
-            self._remove_all_jobs = configuration_file.get_bool_option(scheduler, "remove_all_jobs", missing_value=False)
+            self._name = configuration_file.get_option(scheduler, "name", missing_value=None, subs=subs)
+            self._debug_level = configuration_file.get_int_option(scheduler, "debug_level", missing_value=0, subs=subs)
+            self._add_listeners = configuration_file.get_bool_option(scheduler, "add_listeners", missing_value=False, subs=subs)
+            self._remove_all_jobs = configuration_file.get_bool_option(scheduler, "remove_all_jobs", missing_value=False, subs=subs)
 
             if 'jobstore' in scheduler:
                 self._jobstore = SchedulerJobStoreConfiguration()

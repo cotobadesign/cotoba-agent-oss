@@ -99,6 +99,9 @@ class SQLStorageConfiguration(BaseConfigurationData):
         return None
 
     def to_yaml(self, data, defaults=True):
+        data['type'] = 'sql'
+        data['config'] = {}
+        data = data['config']
         if defaults is True:
             data['url'] = 'sqlite:///:memory:'
             data['echo'] = False

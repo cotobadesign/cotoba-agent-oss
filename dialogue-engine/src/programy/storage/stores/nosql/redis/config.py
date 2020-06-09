@@ -83,13 +83,13 @@ class RedisStorageConfiguration(BaseConfigurationData):
     def load_config_section(self, configuration_file, configuration, bot_root, subs: Substitutions = None):
         storage = configuration_file.get_section(self._section_name, configuration)
         if storage is not None:
-            self._host = configuration_file.get_option(storage, "host")
-            self._port = configuration_file.get_option(storage, "port")
-            self._password = configuration_file.get_option(storage, "password")
-            self._db = configuration_file.get_option(storage, "db")
-            self._prefix = configuration_file.get_option(storage, "prefix")
-            self._drop_all_first = configuration_file.get_option(storage, "drop_all_first")
-            self._expiretime = configuration_file.get_option(storage, "expiretime")
+            self._host = configuration_file.get_option(storage, "host", subs=subs)
+            self._port = configuration_file.get_option(storage, "port", subs=subs)
+            self._password = configuration_file.get_option(storage, "password", subs=subs)
+            self._db = configuration_file.get_option(storage, "db", subs=subs)
+            self._prefix = configuration_file.get_option(storage, "prefix", subs=subs)
+            self._drop_all_first = configuration_file.get_option(storage, "drop_all_first", subs=subs)
+            self._expiretime = configuration_file.get_option(storage, "expiretime", subs=subs)
         else:
             YLogger.error(None, "'config' section missing from storage config")
 
@@ -110,6 +110,9 @@ class RedisStorageConfiguration(BaseConfigurationData):
         return None
 
     def to_yaml(self, data, defaults=True):
+        data['type'] = 'redis'
+        data['config'] = {}
+        data = data['config']
         if defaults is True:
             data['host'] = "localhost"
             data['port'] = 6379

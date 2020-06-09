@@ -59,6 +59,8 @@ from programy.security.manager import SecurityManager
 from programy.oob.handler import OOBHandler
 from programy.nlu.nlu import NluRequest
 from programy.parser.exceptions import LimitOverException
+from programy.dialog.convo_vars import ConversationVariables
+from programy.storage.factory import StorageFactory
 
 
 class Brain(object):
@@ -77,20 +79,25 @@ class Brain(object):
         self._braintree = BraintreeManager(configuration.braintree)
         self._tokenizer = Tokenizer.load_tokenizer(configuration)
 
-        self._denormal_collection = DenormalCollection()
-        self._normal_collection = NormalCollection()
-        self._gender_collection = GenderCollection()
-        self._person_collection = PersonCollection()
-        self._person2_collection = Person2Collection()
-        self._rdf_collection = RDFCollection()
-        self._sets_collection = SetCollection()
-        self._maps_collection = MapCollection()
+        if configuration.debugfiles.save_errors_collection is True:
+            errors_dict = {}
+        else:
+            errors_dict = None
 
-        self._properties_collection = PropertiesCollection()
-        self._default_variables_collection = DefaultVariablesCollection()
+        self._denormal_collection = DenormalCollection(errors_dict)
+        self._normal_collection = NormalCollection(errors_dict)
+        self._gender_collection = GenderCollection(errors_dict)
+        self._person_collection = PersonCollection(errors_dict)
+        self._person2_collection = Person2Collection(errors_dict)
+        self._rdf_collection = RDFCollection(errors_dict)
+        self._sets_collection = SetCollection(errors_dict)
+        self._maps_collection = MapCollection(errors_dict)
 
-        self._preprocessors = PreProcessorCollection()
-        self._postprocessors = PostProcessorCollection()
+        self._properties_collection = PropertiesCollection(errors_dict)
+        self._default_variables_collection = DefaultVariablesCollection(errors_dict)
+
+        self._preprocessors = PreProcessorCollection(errors_dict)
+        self._postprocessors = PostProcessorCollection(errors_dict)
 
         self._pattern_factory = None
         self._template_factory = None
@@ -99,17 +106,24 @@ class Brain(object):
 
         self._oobhandler = OOBHandler(configuration.oob)
 
-        self._regex_templates = RegexTemplatesCollection()
+        self._regex_templates = RegexTemplatesCollection(errors_dict)
 
         self._dynamics_collection = DynamicsCollection()
 
         self._aiml_parser = self.load_aiml_parser()
 
-        self._nlu_collection = NluCollection(bot.client, configuration.nlu)
+        self._nlu_collection = NluCollection(bot.client, configuration.nlu, errors_dict)
         self._nlu = NluRequest.load_nlu(configuration.nlu)
         self._nlu_utterance = None
 
         self.load(self.configuration)
+
+        if configuration.debugfiles.save_errors_collection is True:
+            storage_factory = self.bot.client.storage_factory
+            if storage_factory.entity_storage_engine_available(StorageFactory.ERRORS_COLLECTION) is True:
+                errors_collection_engine = storage_factory.entity_storage_engine(StorageFactory.ERRORS_COLLECTION)
+                errors_collection_store = errors_collection_engine.errors_collection_store()
+                errors_collection_store.save_errors_collection(errors_dict)
 
     def ylogger_type(self):
         return "brain"
@@ -448,7 +462,8 @@ class Brain(object):
             conversation.add_internal_data(base, 'question', texts)
             conversation.add_internal_data(base, 'topic', topic_pattern)
             conversation.add_internal_data(base, 'that', that_pattern)
-            conversation.add_internal_variables(base, 'before_variables')
+
+            current_variables = ConversationVariables(conversation)
 
             match_context = self._aiml_parser.match_sentence(client_context,
                                                              sentence,
@@ -468,8 +483,11 @@ class Brain(object):
                     try:
                         conversation.add_internal_matched(base, match_context._template_node)
                         answer = self.resolve_matched_template(client_context, match_context)
-                    except LimitOverException:
+                    except Exception:
                         self.set_match_context_info(conversation, match_context)
+                        before, after = current_variables.different_variables(conversation)
+                        conversation.add_internal_data(base, 'before_variables', before)
+                        conversation.add_internal_data(base, 'after_variables', after)
                         raise
 
             if answer is None and self._aiml_parser.pattern_parser.use_nlu is True:
@@ -502,15 +520,21 @@ class Brain(object):
                         conversation.add_internal_matched(base, match_context._template_node)
                         answer = self.resolve_matched_template(client_context, match_context)
                 except Exception:
-                    pass
+                    self.set_match_context_info(conversation, match_context)
+                    before, after = current_variables.different_variables(conversation)
+                    conversation.add_internal_data(base, 'before_variables', before)
+                    conversation.add_internal_data(base, 'after_variables', after)
+                    raise
 
             self.set_match_context_info(conversation, match_context)
 
-            conversation.add_internal_variables(base, 'after_variables')
+            before, after = current_variables.different_variables(conversation)
+            conversation.add_internal_data(base, 'before_variables', before)
+            conversation.add_internal_data(base, 'after_variables', after)
             conversation.add_internal_data(base, 'processing_result', answer)
 
             if original_base is not None:
-                conversation.internal_base = original_base 
+                conversation.internal_base = original_base
                 base = conversation.internal_base
             conversation.add_internal_data(base, 'response', answer)
 

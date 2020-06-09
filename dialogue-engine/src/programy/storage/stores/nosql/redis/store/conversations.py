@@ -51,7 +51,14 @@ class RedisConversationStore(RedisStore, ConversationStore):
         return RedisConversationStore.CONVERSATIONS
 
     def empty(self):
-        return
+        ns_keys = "{prefix}:*".format(prefix=self._storage_engine._prefix)
+        YLogger.debug(self, "Emptying Conversation from Redis [%s]", ns_keys)
+
+        cursor = '0'
+        while cursor != 0:
+            cursor, keys = self._storage_engine._redis.scan(cursor=cursor, match=ns_keys, count=self.CHUNK_SIZE)
+            if keys:
+                self._storage_engine._redis.delete(*keys)
 
     def create_key(self, clientid, userid):
         return "{prefix}:{clientid}:{userid}:conversation".format(prefix=self._storage_engine._prefix, clientid=clientid, userid=userid)
@@ -66,8 +73,11 @@ class RedisConversationStore(RedisStore, ConversationStore):
             conversation.questions[len(conversation.questions)-1]._name_properties = copy.copy(conversation.properties)
             conversation.questions[len(conversation.questions)-1]._data_properties = copy.copy(conversation.data_properties)
 
-            convo_json = conversation.to_json()
-            json_text = json.dumps(convo_json, ensure_ascii=False, indent=4)
+            convo_json = {'conversations': conversation.to_json()}
+            if len(conversation.internal_data) > 0:
+                convo_json['current_conversation'] = conversation.internal_data
+
+            json_text = json.dumps(convo_json, ensure_ascii=False)
 
             self.store(h_key, s_key, client_context.client.id, json_text, ex=self._storage_engine._expiretime)
 
@@ -84,13 +94,14 @@ class RedisConversationStore(RedisStore, ConversationStore):
             # Check if clientid in sessions set
             if not self.is_member(s_key, client_context.client.id):
                 YLogger.debug(self, "Clientid [%s], not in sessions [%s]", client_context.client.id, s_key)
-                return {}
+                return False
 
             YLogger.debug(self, "Fetching conversation [%s]", h_key)
             conversations = self.load(h_key)
 
             json_data = json.loads(str(conversations, encoding='utf-8'))
-            conversation.from_json(client_context, json_data)
+            if 'conversations' in json_data:
+                conversation.from_json(client_context, json_data['conversations'])
             return True
 
         except Exception:
@@ -117,6 +128,7 @@ class RedisConversationStore(RedisStore, ConversationStore):
     def debug_conversation_data(self, client_context):
         YLogger.debug(client_context, "Debug conversation from Redis [%s] [%s]", client_context.client.id, client_context.userid)
         conversations = {}
+        current_info = {}
         conversation = None
 
         try:
@@ -126,7 +138,7 @@ class RedisConversationStore(RedisStore, ConversationStore):
             # Check if clientid in sessions set
             if not self.is_member(s_key, client_context.client.id):
                 YLogger.debug(self, "Clientid [%s], not in sessions [%s]", client_context.client.id, s_key)
-                return conversations
+                return conversations, current_info
 
             YLogger.debug(self, "Fetching conversation [%s]", h_key)
             redis_data = self.load(h_key)
@@ -136,9 +148,12 @@ class RedisConversationStore(RedisStore, ConversationStore):
             YLogger.debug(self, "Failed to Debug conversation from Redis for [%s][%s]", client_context.client.id, client_context.userid)
 
         if conversation is not None:
-            conversations['conversations'] = conversation
+            if 'conversations' in conversation:
+                conversations['conversations'] = conversation['conversations']
+            if 'current_conversation' in conversation:
+                current_info = conversation['current_conversation']
 
-        return conversations
+        return conversations, current_info
 
     def modify_conversation_data(self, client_context, conversation):
         YLogger.debug(client_context, "Modify conversation to Redis [%s] [%s]", client_context.client.id, client_context.userid)
@@ -147,8 +162,8 @@ class RedisConversationStore(RedisStore, ConversationStore):
             s_key = self._storage_engine._sessions_set_key
 
             YLogger.debug(self, "Adding conversation [%s] - [%s]", s_key, h_key)
-            convo_json = conversation.to_json()
-            json_text = json.dumps(convo_json, ensure_ascii=False, indent=4)
+            convo_json = {'conversations': conversation.to_json()}
+            json_text = json.dumps(convo_json, ensure_ascii=False)
 
             self.store(h_key, s_key, client_context.client.id, json_text)
 

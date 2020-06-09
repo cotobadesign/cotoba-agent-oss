@@ -45,8 +45,6 @@ from programy.storage.stores.sql.store.properties import SQLPropertyStore
 from programy.storage.stores.sql.store.properties import SQLRegexStore
 from programy.storage.stores.sql.store.properties import SQLDefaultVariableStore
 
-from programy.storage.stores.sql.store.variables import SQLVariablesStore
-
 from programy.storage.stores.sql.store.categories import SQLCategoryStore
 from programy.storage.stores.sql.store.learnf import SQLLearnfStore
 from programy.storage.stores.sql.store.conversations import SQLConversationStore
@@ -60,11 +58,9 @@ from programy.storage.stores.sql.store.lookups import SQLNormalStore
 from programy.storage.stores.sql.store.lookups import SQLGenderStore
 from programy.storage.stores.sql.store.lookups import SQLPersonStore
 from programy.storage.stores.sql.store.lookups import SQLPerson2Store
+
 from programy.storage.stores.sql.store.errors import SQLErrorsStore
-
 from programy.storage.stores.sql.store.duplicates import SQLDuplicatesStore
-
-from programy.storage.stores.sql.store.twitter import SQLTwitterStore
 
 from programy.storage.stores.sql.store.spelling import SQLSpellingStore
 
@@ -158,12 +154,6 @@ class SQLStorageEngine(StorageEngine):
 
     def defaults_store(self):
         return SQLDefaultVariableStore(self)
-
-    def variables_store(self):
-        return SQLVariablesStore(self)
-
-    def twitter_store(self):
-        return SQLTwitterStore(self)
 
     def spelling_store(self):
         return SQLSpellingStore(self)

@@ -130,7 +130,6 @@ class JSONConfigurationFileTests(ConfigurationBaseFileTests):
         "gender": "file",
         "person": "file",
         "person2": "file",
-        "twitter": "file",
         "spelling_corpus": "file",
         "license_keys": "file",
         "nodes": "file",
@@ -139,7 +138,6 @@ class JSONConfigurationFileTests(ConfigurationBaseFileTests):
         "preprocessors": "file",
         "postprocessors": "file",
         "regex_templates": "file",
-        "variables": "file",
         "usergroups": "file",
         "learnf": "file"
       },
@@ -206,16 +204,10 @@ class JSONConfigurationFileTests(ConfigurationBaseFileTests):
             "defaults_storage": {
               "file": "./storage/defaults.txt"
             },
-            "variables": {
-              "files": "./storage/variables"
-            },
             "rdf_storage": {
               "files": "./storage/rdfs",
               "extension": ".txt",
               "directories": true
-            },
-            "twitter_storage": {
-              "files": "./storage/twitter"
             },
             "spelling_corpus": {
               "file": "./storage/spelling/corpus.txt"

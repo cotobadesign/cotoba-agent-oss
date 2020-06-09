@@ -48,7 +48,7 @@ class YadlanRestConfiguration(RestConfiguration):
 
     def load_configuration_section(self, configuration_file, sanic, bot_root, subs: Substitutions = None):
         if sanic is not None:
-            self._workers = configuration_file.get_option(sanic, "workers", missing_value=4, subs=subs)
+            self._workers = configuration_file.get_int_option(sanic, "workers", missing_value=4, subs=subs)
             super(YadlanRestConfiguration, self).load_configuration_section(configuration_file, sanic, bot_root, subs=subs)
 
     def to_yaml(self, data, defaults=True):

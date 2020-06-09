@@ -131,12 +131,6 @@ class TestClient(BotClient):
         self.storage_factory._storage_engines[StorageFactory.TEMPLATE_NODES] = self._storage_engine
         self.storage_factory._store_to_engine_map[StorageFactory.TEMPLATE_NODES] = self._storage_engine
 
-    def add_twitter_store(self):
-        self._file_store_config._twitter_storage = FileStoreConfiguration(dirs=os.path.dirname(__file__) + os.sep + "testdata",
-                                                                          format="text", encoding="utf-8", delete_on_start=False)
-        self.storage_factory._storage_engines[StorageFactory.TWITTER] = self._storage_engine
-        self.storage_factory._store_to_engine_map[StorageFactory.TWITTER] = self._storage_engine
-
     def add_properties_store(self, file):
         self._file_store_config._properties_storage = FileStoreConfiguration(file=file, format="text", encoding="utf-8", delete_on_start=False)
         self.storage_factory._storage_engines[StorageFactory.PROPERTIES] = self._storage_engine
@@ -146,11 +140,6 @@ class TestClient(BotClient):
         self._file_store_config._defaults_storage = FileStoreConfiguration(file=file, format="text", encoding="utf-8", delete_on_start=False)
         self.storage_factory._storage_engines[StorageFactory.DEFAULTS] = self._storage_engine
         self.storage_factory._store_to_engine_map[StorageFactory.DEFAULTS] = self._storage_engine
-
-    def add_variables_store(self, file):
-        self._file_store_config._variables_storage = FileStoreConfiguration(file=file, format="text", encoding="utf-8", delete_on_start=False)
-        self.storage_factory._storage_engines[StorageFactory.VARIABLES] = self._storage_engine
-        self.storage_factory._store_to_engine_map[StorageFactory.VARIABLES] = self._storage_engine
 
     def add_regex_templates_store(self, file):
         self._file_store_config._regex_storage = FileStoreConfiguration(file=file, format="text", encoding="utf-8", delete_on_start=False)

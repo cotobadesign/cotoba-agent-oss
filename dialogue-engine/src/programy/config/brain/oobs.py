@@ -96,4 +96,4 @@ class BrainOOBSConfiguration(BaseSectionConfigurationData):
             if self._default is not None:
                 self.config_to_yaml(data, self._default, defaults)
             for oob in self._oobs:
-                self.config_to_yaml(data, oob, defaults)
+                self.config_to_yaml(data, self._oobs[oob], defaults)

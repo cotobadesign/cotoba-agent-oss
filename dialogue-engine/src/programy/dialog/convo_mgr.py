@@ -204,8 +204,3 @@ class ConversationManager(object):
         if client_context.userid in self._conversations:
             conversation = self._conversations[client_context.userid]
             conversation.clear_internal_data()
-
-    def get_internal_data(self, client_context):
-        if client_context.userid in self._internal_datas:
-            return self._internal_datas[client_context.userid]
-        return 'None'

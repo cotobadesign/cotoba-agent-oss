@@ -133,6 +133,11 @@ class StorageConfiguration(BaseConfigurationData):
         if defaults is True:
             self.add_default_entities(data['entities'])
             self.add_default_stores(data['stores'])
+
+            data['stores']['file'] = {}
+            file = FileStorageConfiguration()
+            file.to_yaml(data['stores']['file'], defaults)
+
         else:
             data['entities'] = {}
             for key, value in self._entity_store.items():
@@ -175,6 +180,7 @@ class StorageConfiguration(BaseConfigurationData):
         amap[StorageFactory.CATEGORIES] = 'file'
         amap[StorageFactory.ERRORS] = 'file'
         amap[StorageFactory.DUPLICATES] = 'file'
+        amap[StorageFactory.ERRORS_COLLECTION] = 'file'
         amap[StorageFactory.LEARNF] = 'file'
 
         amap[StorageFactory.CONVERSATIONS] = 'file'
@@ -194,9 +200,6 @@ class StorageConfiguration(BaseConfigurationData):
 
         amap[StorageFactory.PROPERTIES] = 'file'
         amap[StorageFactory.DEFAULTS] = 'file'
-        amap[StorageFactory.VARIABLES] = 'file'
-
-        amap[StorageFactory.TWITTER] = 'file'
 
         amap[StorageFactory.SPELLING_CORPUS] = 'file'
 

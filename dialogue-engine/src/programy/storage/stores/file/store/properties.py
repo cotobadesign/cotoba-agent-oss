@@ -75,23 +75,37 @@ class FilePropertyStore(FileStore, PropertyStore):
         properties = self._load_properties(property_filepath)
         return properties
 
-    def _load_properties(self, property_filepath):
+    def _load_properties(self, property_filepath, collection=None):
         properties = {}
         if os.path.exists(property_filepath):
             try:
                 YLogger.debug(self, "Loading properties from [%s]", property_filepath)
 
+                line_no = 0
                 with open(property_filepath, "r", encoding="utf-8") as props_file:
                     for line in props_file:
+                        line_no += 1
                         line = line.strip()
                         if line:
                             if line.startswith(FilePropertyStore.COMMENT) is False:
                                 splits = line.split(FilePropertyStore.SPLIT_CHAR)
                                 if len(splits) > 1:
                                     key = splits[0].strip()
-                                    val = self.process_value(splits[1:])
-                                    if val is not None:
-                                        properties[key] = val
+                                    value = splits[1:]
+                                    val = self.process_value(value)
+                                    if collection is None:
+                                        if val is not None:
+                                            properties[key] = val
+                                    else:
+                                        if val is None:
+                                            error_info = "key [%s] value %s is invalid" % (key, value)
+                                            collection.set_error_info(property_filepath, line_no, error_info)
+                                        else:
+                                            collection.add_property(key, val, property_filepath, line_no)
+                                else:
+                                    if collection is not None:
+                                        error_info = "invalid parameters [%s]" % line
+                                        collection.set_error_info(property_filepath, line_no, error_info)
 
             except Exception as excep:
                 YLogger.exception(self, "Failed to load properties file [%s]", excep, property_filepath)
@@ -112,9 +126,7 @@ class FilePropertyStore(FileStore, PropertyStore):
             YLogger.exception(self, "Failed to write properties file [%s]", excep, property_filepath)
 
     def _load_file_contents(self, collection, filename):
-        properties = self._load_properties(filename)
-        for key, value in properties.items():
-            collection.add_property(key, value)
+        self._load_properties(filename, collection)
 
     def get_storage(self):
         return self.storage_engine.configuration.properties_storage
@@ -131,10 +143,11 @@ class FileRegexStore(FilePropertyStore):
     def process_value(self, splits):
         try:
             pattern = (FilePropertyStore.SPLIT_CHAR.join(splits)).strip()
-            return re.compile(pattern, re.IGNORECASE)
+            if pattern != '':
+                return re.compile(pattern, re.IGNORECASE)
         except Exception:
             YLogger.error(self, "Invalid regex template [%s]", pattern)
-            return None
+        return None
 
     def get_regular_expressions(self):
         return self.get_properties()
@@ -147,6 +160,12 @@ class FileDefaultVariablesStore(FilePropertyStore):
 
     def get_storage(self):
         return self.storage_engine.configuration.defaults_storage
+
+    def process_value(self, splits):
+        value = (FilePropertyStore.SPLIT_CHAR.join(splits)).strip()
+        if value == '':
+            value = None
+        return value
 
     def get_defaults_values(self):
         return self.get_properties()

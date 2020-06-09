@@ -58,6 +58,9 @@ class StorageEngine(object):
     def duplicates_store(self):
         raise NotImplementedError("Engine does not support duplicates storage")
 
+    def errors_collection_store(self):
+        raise NotImplementedError("Engine does not support errors_collection storage")
+
     def learnf_store(self):
         raise NotImplementedError("Engine does not support learnf storage")
 
@@ -101,13 +104,7 @@ class StorageEngine(object):
         raise NotImplementedError("Engine does not support property storage")
 
     def defaults_store(self):
-        raise NotImplementedError("Engine does not support variables storage")
-
-    def variables_store(self):
-        raise NotImplementedError("Engine does not support variables storage")
-
-    def twitter_store(self):
-        raise NotImplementedError("Engine does not support twitter storage")
+        raise NotImplementedError("Engine does not support defaults storage")
 
     def spelling_store(self):
         raise NotImplementedError("Engine does not support spelling storage")

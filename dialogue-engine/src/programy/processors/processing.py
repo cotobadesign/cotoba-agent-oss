@@ -38,9 +38,10 @@ from programy.storage.factory import StorageFactory
 
 class ProcessorCollection(object):
 
-    def __init__(self):
+    def __init__(self, errors_dict=None):
         ClassLoader.__init__(self)
         self._processors = []
+        self._errors_dict = errors_dict
 
     @property
     def processors(self):
@@ -48,6 +49,11 @@ class ProcessorCollection(object):
 
     def empty(self):
         self.processors.clear()
+
+    def set_error_info(self, filename, line, description):
+        if self._errors_dict is not None:
+            error_info = {'file': filename, 'line': line, 'description': description}
+            self._errors_dict.append(error_info)
 
     def add_processor(self, processor):
         self._processors.append(processor)
@@ -73,8 +79,13 @@ class ProcessorCollection(object):
 
 class PreProcessorCollection(ProcessorCollection):
 
-    def __init__(self):
-        ProcessorCollection.__init__(self)
+    def __init__(self, errors_dict=None):
+        if errors_dict is None:
+            self._errors = None
+        else:
+            errors_dict['pre_processors'] = []
+            self._errors = errors_dict['pre_processors']
+        ProcessorCollection.__init__(self, self._errors)
 
     def _get_storage_name(self):
         return StorageFactory.PREPROCESSORS
@@ -85,8 +96,13 @@ class PreProcessorCollection(ProcessorCollection):
 
 class PostProcessorCollection(ProcessorCollection):
 
-    def __init__(self):
-        ProcessorCollection.__init__(self)
+    def __init__(self, errors_dict=None):
+        if errors_dict is None:
+            self._errors = None
+        else:
+            errors_dict['post_processors'] = []
+            self._errors = errors_dict['post_processors']
+        ProcessorCollection.__init__(self, self._errors)
 
     def _get_storage_name(self):
         return StorageFactory.POSTPROCESSORS

@@ -119,6 +119,10 @@ class BrainSecurityAuthorisationConfiguration(BrainSecurityConfiguration):
             data['denied_srai'] = self._denied_srai
             data['denied_text'] = self._denied_text
 
+            if len(self._additionals) > 0:
+                for key, value in self._additionals.items():
+                    data[key] = value
+
 
 class BrainSecurityAccountLinkerConfiguration(BrainSecurityConfiguration):
 
@@ -145,3 +149,7 @@ class BrainSecurityAccountLinkerConfiguration(BrainSecurityConfiguration):
             data['classname'] = self._classname
             data['denied_srai'] = self._denied_srai
             data['denied_text'] = self._denied_text
+
+            if len(self._additionals) > 0:
+                for key, value in self._additionals.items():
+                    data[key] = value

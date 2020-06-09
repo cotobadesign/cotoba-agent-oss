@@ -40,11 +40,18 @@ from programy.utils.language.japanese import JapaneseLanguage
 
 class NormalCollection(DoubleStringPatternSplitCollection):
 
-    def __init__(self):
+    def __init__(self, errors_dict=None):
         DoubleStringPatternSplitCollection.__init__(self)
         self._replace = []
         self._match = {}
         self._match_jp = {}
+        self._replace_key = []
+
+        if errors_dict is None:
+            self._errors_dict = None
+        else:
+            errors_dict['normals'] = []
+            self._errors_dict = errors_dict['normals']
 
     def normalise(self, normal):
         if self.has_keyVal(normal):
@@ -73,6 +80,7 @@ class NormalCollection(DoubleStringPatternSplitCollection):
         self._replace.clear()
         self._match.clear()
         self._match_jp.clear()
+        self._replace_key.clear()
 
     def has_replace_key(self, key):
         for replaceInfo in self._replace:
@@ -87,14 +95,25 @@ class NormalCollection(DoubleStringPatternSplitCollection):
                     return replaceInfo[2]
         return None
 
-    def add_to_lookup(self, org_key, org_value):
+    def set_error_info(self, filename, line, description):
+        if self._errors_dict is not None:
+            error_info = {'file': filename, 'line': line, 'description': description}
+            self._errors_dict.append(error_info)
+
+    def add_to_lookup(self, org_key, org_value, filename=None, line=0):
         key = org_key
         value = org_value.strip()
 
+        if key.strip() == '':
+            error_info = "key is empty"
+            self.set_error_info(filename, line, error_info)
+            return
         if JapaneseLanguage.is_CJKword(org_key) is True:
             key = key.strip()
             if key in self._pairs_jp:
                 YLogger.error(self, "%s = %s already exists in jp_collection", key, value)
+                error_info = "duplicate key='%s' (value='%s' is invalid)" % (key, value)
+                self.set_error_info(filename, line, error_info)
                 return
             else:
                 matchs = self._match_jp
@@ -104,6 +123,11 @@ class NormalCollection(DoubleStringPatternSplitCollection):
         else:
             if key[0] != ' ':
                 key = key.strip()
+                if key in self._replace_key:
+                    YLogger.error(self, "%s = %s already exists in replace_collection", key, value)
+                    error_info = "duplicate replace_chars='%s' (value='%s' is invalid)" % (key, value)
+                    self.set_error_info(filename, line, error_info)
+                    return
                 pattern_text = DoubleStringPatternSplitCollection.normalise_pattern(key)
                 start = pattern_text.lstrip()
                 middle = pattern_text
@@ -112,11 +136,14 @@ class NormalCollection(DoubleStringPatternSplitCollection):
                 replacement = value
                 replaceInfo = [key, re.compile(pattern), replacement]
                 self._replace.append(replaceInfo)
+                self._replace_key.append(key)
                 return
             else:
                 key = key.strip()
                 if key in self._pairs:
                     YLogger.error(self, "%s = %s already exists in en_collection", key, value)
+                    error_info = "duplicate key='%s' (value='%s' is invalid)" % (key, value)
+                    self.set_error_info(filename, line, error_info)
                     return
                 else:
                     matchs = self._match
@@ -240,10 +267,12 @@ class NormalCollection(DoubleStringPatternSplitCollection):
     def load_from_text(self, text):
         lines = text.split("\n")
         count = 0
+        line_no = 0
         for line in lines:
+            line_no += 1
             line = line.strip()
             split = self.split_line_by_pattern(line, DoubleStringPatternSplitCollection.RE_OF_SPLIT_PATTERN)
             if split is not None:
-                self.add_to_lookup(split[0], split[1])
+                self.add_to_lookup(split[0], split[1], 'text', line_no)
                 count += 1
         return count

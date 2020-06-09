@@ -343,36 +343,11 @@ class Conversation(object):
         self._internal_base = None
 
     def add_internal_data(self, base, tag, data):
-        if base is not None: 
+        if base is not None:
             base[tag] = data
 
-    def add_internal_variables(self, base, tag):
-        if base is None: 
-            return
-
-        name_dict = {}
-        for key, val in self.properties.items():
-            name_dict[key] = val
-
-        data_dict = {}
-        for key, val in self.data_properties.items():
-            data_dict[key] = val
-
-        var_dict = {}
-        question = self.current_question()
-        if question is not None:
-            for key, val in question._properties.items():
-                var_dict[key] = val
-
-        variables_dict = {}
-        variables_dict["name_properties"] = name_dict
-        variables_dict["data_properties"] = data_dict
-        variables_dict["var_properties"] = var_dict
-
-        base[tag] = variables_dict
-
     def add_internal_matched(self, base, match_template):
-        if base is None: 
+        if base is None:
             return
 
         match_dict = {}

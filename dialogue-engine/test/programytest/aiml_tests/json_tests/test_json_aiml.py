@@ -178,7 +178,7 @@ class JsonAIMLTests(unittest.TestCase):
 
         response = self._client_context.bot.ask_question(self._client_context, "JSON get joint QUOTE")
         self.assertIsNotNone(response)
-        self.assertEqual(response, '{"key": "set\\"data\\""}.')
+        self.assertEqual(response, '{"key": "set \\"data\\""}.')
 
     def test_json_get_joint_tag_with_quote_sp(self):
         client = JsonAIMLTestClient(category_file="json.aiml")

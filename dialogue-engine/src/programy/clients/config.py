@@ -148,24 +148,18 @@ class ClientConfigurationData(BaseContainerConfigurationData):
             data['description'] = 'ProgramY AIML2.0 Client'
             data['bot'] = 'bot'
             data['bot_selector'] = "programy.clients.client.DefaultBotSelector"
-
-            data[self._scheduler.id] = {}
-            self._scheduler.to_yaml(data[self._scheduler.id], defaults)
-
             data['renderer'] = "programy.clients.render.text.TextRenderer"
-
         else:
             data['description'] = self._description
             data['bot'] = self._bot_configs[0].id
             data['bot_selector'] = self.bot_selector
-
-            data[self._scheduler.id] = {}
-            self._scheduler.to_yaml(data[self._scheduler.id], defaults)
-
-            data['email'] = {}
-            self._email.to_yaml(data['email'], defaults)
-
-            data['triggers'] = {}
-            self._email.to_yaml(data['triggers'], defaults)
-
             data['renderer'] = self.renderer
+
+        data[self._scheduler.id] = {}
+        self._scheduler.to_yaml(data[self._scheduler.id], defaults)
+
+        data['email'] = {}
+        self._email.to_yaml(data['email'], defaults)
+
+        data['triggers'] = {}
+        self._triggers.to_yaml(data['triggers'], defaults)

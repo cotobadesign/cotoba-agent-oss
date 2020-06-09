@@ -41,9 +41,3 @@ class FileStorageEngineTests(StorageEngineTestUtils):
         engine = FileStorageEngine(config)
         engine.initialise()
         self.conversation_asserts(storage_engine=engine)
-
-    def test_twitter(self):
-        config = FileStorageConfiguration()
-        engine = FileStorageEngine(config)
-        engine.initialise()
-        self.twitter_asserts(storage_engine=engine)

@@ -42,6 +42,7 @@ class BrainDebugFilesConfiguration(BaseSectionConfigurationData):
         BaseSectionConfigurationData.__init__(self, "debugfiles")
         self._save_errors = False
         self._save_duplicates = False
+        self._save_errors_collection = False
 
     @property
     def save_errors(self):
@@ -51,6 +52,10 @@ class BrainDebugFilesConfiguration(BaseSectionConfigurationData):
     def save_duplicates(self):
         return self._save_duplicates
 
+    @property
+    def save_errors_collection(self):
+        return self._save_errors_collection
+
     def check_for_license_keys(self, license_keys):
         BaseSectionConfigurationData.check_for_license_keys(self, license_keys)
 
@@ -59,13 +64,16 @@ class BrainDebugFilesConfiguration(BaseSectionConfigurationData):
         if debugfiles is not None:
             self._save_errors = configuration_file.get_bool_option(debugfiles, "save-errors", missing_value=False, subs=subs)
             self._save_duplicates = configuration_file.get_bool_option(debugfiles, "save-duplicates", missing_value=False, subs=subs)
+            self._save_errors_collection = configuration_file.get_bool_option(debugfiles, "save-errors_collection", missing_value=False, subs=subs)
         else:
             YLogger.warning(self, "'debugfiles' section missing from brain config, using debugfile defaults")
 
     def to_yaml(self, data, defaults=True):
         if defaults is True:
-            data['save_errors'] = False
-            data['save_duplicates'] = False
+            data['save-errors'] = False
+            data['save-duplicates'] = False
+            data['save-errors_collection'] = False
         else:
-            data['save_errors'] = self._save_errors
-            data['save_duplicates'] = self._save_duplicates
+            data['save-errors'] = self._save_errors
+            data['save-duplicates'] = self._save_duplicates
+            data['save-errors_collection'] = self._save_errors_collection

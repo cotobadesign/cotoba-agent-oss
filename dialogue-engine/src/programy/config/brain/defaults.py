@@ -69,10 +69,10 @@ class BrainDefaultsConfiguration(BaseSectionConfigurationData):
 
     def to_yaml(self, data, defaults=True):
         if defaults is True:
-            data['default_get'] = "unknown"
-            data['default_property'] = "unknown"
-            data['default_map'] = "unknown"
+            data['default-get'] = "unknown"
+            data['default-property'] = "unknown"
+            data['default-map'] = "unknown"
         else:
-            data['default_get'] = self._default_get
-            data['default_property'] = self._default_property
-            data['default_map'] = self._default_map
+            data['default-get'] = self._default_get
+            data['default-property'] = self._default_property
+            data['default-map'] = self._default_map

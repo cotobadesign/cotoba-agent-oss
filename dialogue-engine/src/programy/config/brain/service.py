@@ -97,3 +97,7 @@ class BrainServiceConfiguration(BaseSectionConfigurationData):
         data['host'] = self._host
         data['port'] = self._port
         data['url'] = self._url
+
+        if len(self._additionals) > 0:
+            for key, value in self._additionals.items():
+                data[key] = value

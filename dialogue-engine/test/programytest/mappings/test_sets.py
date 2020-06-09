@@ -120,10 +120,22 @@ class SetTests(unittest.TestCase):
         values = {"A": "A", "A B": "A B", "A C": "A C", "D": "D", "E": "E", "E F": "E F"}
         collection.add_set("TESTSET", set_dict, "teststore", False, values)
 
-        with self.assertRaises(Exception):
-            set_dict = {"1": [["1", "1 2", "1 3"]], "4": [["4"]], "5": [["5", "5 6"]]}
-            values = {"1": "1", "1 2": "1 2", "1 3": "1 3", "4": "4", "5": "5", "5 6": "5 6"}
-            collection.add_set("TESTSET", set_dict, "teststore", False, values)
+        set_dict = {"1": [["1", "1 2", "1 3"]], "4": [["4"]], "5": [["5", "5 6"]]}
+        values = {"1": "1", "1 2": "1 2", "1 3": "1 3", "4": "4", "5": "5", "5 6": "5 6"}
+        collection.add_set("TESTSET", set_dict, "teststore", False, values)
+
+        aset = collection.set_list('TESTSET')
+        self.assertIsNotNone(aset)
+        values = aset['A']
+        self.assertIsNotNone(values)
+        self.assertTrue(["A", "A B", "A C"] in values)
+
+        self.assertTrue("D" in aset)
+        self.assertTrue("E" in aset)
+
+        self.assertFalse("1" in aset)
+        self.assertFalse("4" in aset)
+        self.assertFalse("5" in aset)
 
     def test_load_from_file(self):
         storage_factory = StorageFactory()

@@ -10,6 +10,7 @@ yadlan:
             categories: file
             errors: file
             duplicates: file
+            errors_collection: file
             learnf: file
             conversations: file
             logs: file
@@ -56,6 +57,8 @@ yadlan:
                         file: ../storage/debug/errors.txt
                     duplicates_storage:
                         file: ../storage/debug/duplicates.txt
+                    errors_collection_storage:
+                        file: ../storage/debug/errors_collection.txt
                     learnf_storage:
                         dirs: ../storage/learnf
 
@@ -137,6 +140,7 @@ console:
             categories: file
             errors: file
             duplicates: file
+            errors_collection: file
             learnf: file
             conversations:   file
 
@@ -182,6 +186,8 @@ console:
                         file: ../storage/debug/errors.txt
                     duplicates_storage:
                         file: ../storage/debug/duplicates.txt
+                    errors_collection_storage:
+                        file: ../storage/debug/errors_collection.txt
                     learnf_storage:
                         dirs: ../storage/learnf
 
@@ -281,15 +287,11 @@ bot:
     max_properties: 10000
 
     spelling:
-        load: false
         classname: programy.spelling.norvig.NorvigSpellingChecker
-        corpus: file
         check_before: false
         check_and_retry: false
 
     conversations:
-      save: true
-      load: false
       max_histories: 10
 
     joiner:
@@ -330,7 +332,7 @@ brain:
     debugfiles:
         save-errors: true
         save-duplicates: true
-
+        save-errors_collection: true
 
     # Braintree
     braintree:
@@ -354,7 +356,6 @@ brain:
         authorisation:
             classname: programy.security.authorise.usergroupsauthorisor.BasicUserGroupAuthorisationService
             denied_srai: AUTHORISATION_FAILED
-            usergroups: ./storage/security/usergroups.yaml
     
     oob:
       default:

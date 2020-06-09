@@ -21,7 +21,6 @@ from programy.storage.stores.file.config import FileStorageConfiguration
 import os.path
 import shutil
 
-from programy.dialog.question import Question
 from programy.dialog.conversation import Conversation
 
 from programytest.client import TestClient
@@ -108,7 +107,7 @@ class FileConversationStoreTests(ConverstionStoreAsserts):
         client = TestClient()
         client_context = client.create_client_context("user1")
 
-        debugInfo = store.debug_conversation_data(client_context)
+        debugInfo, _ = store.debug_conversation_data(client_context)
         self.assertEqual(0, len(debugInfo))
 
     def tests_modify_conversation(self):
