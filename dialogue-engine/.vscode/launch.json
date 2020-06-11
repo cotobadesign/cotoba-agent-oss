@@ -1,0 +1,47 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "REST Server debug",
+            "type": "python",
+            "request": "launch",
+            "program": "${workspaceFolder}/src/programy/clients/restful/yadlan/flask/client.py",
+            "console": "integratedTerminal",
+            "cwd":"${workspaceFolder}/basic/script",
+            "env": {
+                "PYTHONPATH": "../../src"
+            },
+            "args": [
+                "--config","../config/config.yaml","--cformat","yaml","--logging","../config/logging.yaml"
+            ]
+        },
+        {
+            "name": "REST client debug",
+            "type": "python",
+            "request": "launch",
+            "program": "${workspaceFolder}/basic/script/simple_request.py",
+            "console": "integratedTerminal",
+            "cwd":"${workspaceFolder}/basic/script",
+            "env": {
+                "PYTHONPATH": "../../src"
+            },
+            "args": [
+            ]
+        },
+        {
+            "name": "Console debug",
+            "type": "python",
+            "request": "launch",
+            "program": "${workspaceFolder}/src/programy/clients/events/console/client.py",
+            "console": "integratedTerminal",
+            "cwd":"${workspaceFolder}/basic/script",
+            "env": {
+                "PYTHONPATH": "../../src"
+            },
+            "args": [
+                "--config","../config/config.yaml","--cformat","yaml","--logging","../config/logging.yaml"
+            ]
+        }
+
+    ]
+}
