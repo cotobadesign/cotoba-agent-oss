@@ -79,7 +79,7 @@ class TemplateJsonNode(TemplateNode):
             check_chr = check_text[0]
         else:
             check_chr = resolved[0]
-        if check_chr == '{':
+        if check_chr == '{' or check_chr == '[':
             resolved = self._delete_child_mark(resolved, is_json=True)
             try:
                 words = json.loads(resolved)
@@ -675,7 +675,7 @@ class TemplateJsonNode(TemplateNode):
         texts = texts.strip()
         if len(texts) == 0:
             return True
-        if texts[0] == '{':
+        if texts[0] == '{' or texts[0] == '[':
             texts1 = texts.replace(self.JSON_CHILD_MARK, '""')
             texts2 = texts.replace(self.JSON_CHILD_MARK, '"key": "value"')
             try:
