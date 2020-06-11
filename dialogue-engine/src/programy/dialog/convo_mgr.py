@@ -110,12 +110,12 @@ class ConversationManager(object):
 
             conversation.num_categories = client_context.brain.aiml_parser.num_categories
 
-            conversation.load_initial_variables(client_context.brain.default_variables)
-
             self._conversations[client_context.userid] = conversation
 
             if self._conversation_storage is not None:
                 self._conversation_storage.load_conversation(client_context, conversation)
+
+            conversation.load_initial_variables(client_context.brain.default_variables)
 
             if client_context.server_mode is False:
                 self.load_learnf_with_userid(client_context)
@@ -144,14 +144,15 @@ class ConversationManager(object):
     def set_conversation_valiables(self, client_context, variables):
         if client_context.userid in self._conversations:
             conversation = self._conversations[client_context.userid]
+            if self._conversation_storage is not None:
+                self._conversation_storage.load_conversation(client_context, conversation)
         else:
             conversation = Conversation(client_context)
             conversation.num_categories = client_context.brain.aiml_parser.num_categories
+            if self._conversation_storage is not None:
+                self._conversation_storage.load_conversation(client_context, conversation)
             conversation.load_initial_variables(client_context.brain.default_variables)
             self._conversations[client_context.userid] = conversation
-
-        if self._conversation_storage is not None:
-            self._conversation_storage.load_conversation(client_context, conversation)
 
         for variable in variables:
             try:
