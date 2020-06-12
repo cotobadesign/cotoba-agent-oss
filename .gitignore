@@ -63,3 +63,8 @@ ehthumbs.db
 Thumbs.db
 
 .vscode
+
+*.log
+*.bin
+*.conv
+debug/
