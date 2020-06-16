@@ -187,8 +187,9 @@ class Conversation(object):
 
     def load_initial_variables(self, variables_collection):
         for pair in variables_collection.pairs:
-            YLogger.debug(self, "Setting variable [%s] = [%s]", pair[0], pair[1])
-            self._properties[pair[0]] = pair[1]
+            if pair[0] not in self._properties:
+                YLogger.debug(self, "Setting variable [%s] = [%s]", pair[0], pair[1])
+                self._properties[pair[0]] = pair[1]
 
     def get_topic_pattern(self, client_context):
         topic_pattern = self.property("topic")
