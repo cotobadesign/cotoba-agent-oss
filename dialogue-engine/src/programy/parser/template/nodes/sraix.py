@@ -208,7 +208,7 @@ class TemplateSRAIXNode(TemplateNode):
         if self._topic is not None:
             self.topic = self._topic.resolve(client_context)
         if self._topic is None or self.topic == '*':
-            if conversation.property('topic') is not '*':
+            if conversation.property('topic') != '*':
                 self.topic = conversation.property('topic')
         if self._deleteVariable is None:
             self.deleteVariable = None
