@@ -113,11 +113,11 @@ class TemplateMapNode(TemplateNode):
             name = self.parse_attrib_value_as_word_node(graph, expression, 'name')
             name_text = name.children[0].word
             map_name = name_text.upper()
-            if graph.aiml_parser.brain.maps.storename(map_name) is not None:
-                self.name = name
-                name_found = True
-            else:
-                raise ParserException("Map[%s] name not found" % map_name, xml_element=expression, nodename='map')
+            if graph.aiml_parser.brain.maps.storename(map_name) is None:
+                if graph.aiml_parser.brain.dynamics.is_dynamic_map(name) is False:
+                    raise ParserException("Map[%s] name not found" % map_name, xml_element=expression, nodename='map')
+            self.name = name
+            name_found = True
 
         self.parse_text(graph, self.get_text_from_element(expression))
 

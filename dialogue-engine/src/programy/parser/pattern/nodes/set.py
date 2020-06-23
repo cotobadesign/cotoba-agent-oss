@@ -54,8 +54,9 @@ class PatternSetNode(PatternNode):
 
         set_name = name.upper()
         if brain is not None:
-            if brain.sets.storename(set_name) is not None:
-                raise ParserException("Set[%s] not found" % set_name, xml_element=element, nodename='set(pattern)')
+            if brain.sets.storename(set_name) is None:
+                if brain.dynamics.is_dynamic_set(set_name) is False:
+                    raise ParserException("Set[%s] not found" % set_name, xml_element=element, nodename='set(pattern)')
         self._set_name = set_name
 
     @property

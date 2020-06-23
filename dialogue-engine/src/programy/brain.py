@@ -247,6 +247,9 @@ class Brain(object):
         YLogger.debug(self, "Loading collections")
         self.load_collections()
 
+        YLogger.debug(self, "Loading dynamics sets, maps and vars")
+        self.load_dynamics()
+
         load_aiml = True
 
         if self.configuration.binaries.load_binary is True:
@@ -268,9 +271,6 @@ class Brain(object):
 
         YLogger.debug(self, "Loading oob processors")
         self._oobhandler.load_oob_processors()
-
-        YLogger.debug(self, "Loading dynamics sets, maps and vars")
-        self.load_dynamics()
 
     def dump_brain_tree(self, client_context):
         self._braintree.dump_brain_tree(client_context)
