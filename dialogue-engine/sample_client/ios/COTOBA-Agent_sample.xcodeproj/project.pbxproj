@@ -1,0 +1,559 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 50;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		91CA43EA230A8C7A00103966 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 91CA43E9230A8C7A00103966 /* AppDelegate.swift */; };
+		91CA43EC230A8C7A00103966 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 91CA43EB230A8C7A00103966 /* ViewController.swift */; };
+		91CA43EF230A8C7A00103966 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 91CA43ED230A8C7A00103966 /* Main.storyboard */; };
+		91CA43F1230A8C7E00103966 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 91CA43F0230A8C7E00103966 /* Assets.xcassets */; };
+		91CA43F4230A8C7E00103966 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 91CA43F2230A8C7E00103966 /* LaunchScreen.storyboard */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		91CA43FB230A8C7E00103966 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 91CA43DE230A8C7A00103966 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 91CA43E5230A8C7A00103966;
+			remoteInfo = "COTOBA-Agent_sample";
+		};
+		91CA4406230A8C7E00103966 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 91CA43DE230A8C7A00103966 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 91CA43E5230A8C7A00103966;
+			remoteInfo = "COTOBA-Agent_sample";
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXFileReference section */
+		91CA43E6230A8C7A00103966 /* COTOBA-Agent_sample.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "COTOBA-Agent_sample.app"; sourceTree = BUILT_PRODUCTS_DIR; };
+		91CA43E9230A8C7A00103966 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
+		91CA43EB230A8C7A00103966 /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
+		91CA43EE230A8C7A00103966 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
+		91CA43F0230A8C7E00103966 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		91CA43F3230A8C7E00103966 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
+		91CA43F5230A8C7E00103966 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		91CA43FA230A8C7E00103966 /* COTOBA-Agent_sampleTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "COTOBA-Agent_sampleTests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
+		91CA4405230A8C7E00103966 /* COTOBA-Agent_sampleUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "COTOBA-Agent_sampleUITests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		91CA43E3230A8C7A00103966 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		91CA43F7230A8C7E00103966 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		91CA4402230A8C7E00103966 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		91CA43DD230A8C7A00103966 = {
+			isa = PBXGroup;
+			children = (
+				91CA43E8230A8C7A00103966 /* COTOBA-Agent_sample */,
+				91CA43E7230A8C7A00103966 /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		91CA43E7230A8C7A00103966 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				91CA43E6230A8C7A00103966 /* COTOBA-Agent_sample.app */,
+				91CA43FA230A8C7E00103966 /* COTOBA-Agent_sampleTests.xctest */,
+				91CA4405230A8C7E00103966 /* COTOBA-Agent_sampleUITests.xctest */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		91CA43E8230A8C7A00103966 /* COTOBA-Agent_sample */ = {
+			isa = PBXGroup;
+			children = (
+				91CA43E9230A8C7A00103966 /* AppDelegate.swift */,
+				91CA43EB230A8C7A00103966 /* ViewController.swift */,
+				91CA43ED230A8C7A00103966 /* Main.storyboard */,
+				91CA43F0230A8C7E00103966 /* Assets.xcassets */,
+				91CA43F2230A8C7E00103966 /* LaunchScreen.storyboard */,
+				91CA43F5230A8C7E00103966 /* Info.plist */,
+			);
+			path = "COTOBA-Agent_sample";
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		91CA43E5230A8C7A00103966 /* COTOBA-Agent_sample */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 91CA440E230A8C7E00103966 /* Build configuration list for PBXNativeTarget "COTOBA-Agent_sample" */;
+			buildPhases = (
+				91CA43E2230A8C7A00103966 /* Sources */,
+				91CA43E3230A8C7A00103966 /* Frameworks */,
+				91CA43E4230A8C7A00103966 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = "COTOBA-Agent_sample";
+			productName = "COTOBA-Agent_sample";
+			productReference = 91CA43E6230A8C7A00103966 /* COTOBA-Agent_sample.app */;
+			productType = "com.apple.product-type.application";
+		};
+		91CA43F9230A8C7E00103966 /* COTOBA-Agent_sampleTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 91CA4411230A8C7E00103966 /* Build configuration list for PBXNativeTarget "COTOBA-Agent_sampleTests" */;
+			buildPhases = (
+				91CA43F6230A8C7E00103966 /* Sources */,
+				91CA43F7230A8C7E00103966 /* Frameworks */,
+				91CA43F8230A8C7E00103966 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				91CA43FC230A8C7E00103966 /* PBXTargetDependency */,
+			);
+			name = "COTOBA-Agent_sampleTests";
+			productName = "COTOBA-Agent_sampleTests";
+			productReference = 91CA43FA230A8C7E00103966 /* COTOBA-Agent_sampleTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
+		91CA4404230A8C7E00103966 /* COTOBA-Agent_sampleUITests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 91CA4414230A8C7E00103966 /* Build configuration list for PBXNativeTarget "COTOBA-Agent_sampleUITests" */;
+			buildPhases = (
+				91CA4401230A8C7E00103966 /* Sources */,
+				91CA4402230A8C7E00103966 /* Frameworks */,
+				91CA4403230A8C7E00103966 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				91CA4407230A8C7E00103966 /* PBXTargetDependency */,
+			);
+			name = "COTOBA-Agent_sampleUITests";
+			productName = "COTOBA-Agent_sampleUITests";
+			productReference = 91CA4405230A8C7E00103966 /* COTOBA-Agent_sampleUITests.xctest */;
+			productType = "com.apple.product-type.bundle.ui-testing";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		91CA43DE230A8C7A00103966 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				LastSwiftUpdateCheck = 1030;
+				LastUpgradeCheck = 1030;
+				ORGANIZATIONNAME = "Toshihiro Kimura";
+				TargetAttributes = {
+					91CA43E5230A8C7A00103966 = {
+						CreatedOnToolsVersion = 10.3;
+					};
+					91CA43F9230A8C7E00103966 = {
+						CreatedOnToolsVersion = 10.3;
+						TestTargetID = 91CA43E5230A8C7A00103966;
+					};
+					91CA4404230A8C7E00103966 = {
+						CreatedOnToolsVersion = 10.3;
+						TestTargetID = 91CA43E5230A8C7A00103966;
+					};
+				};
+			};
+			buildConfigurationList = 91CA43E1230A8C7A00103966 /* Build configuration list for PBXProject "COTOBA-Agent_sample" */;
+			compatibilityVersion = "Xcode 9.3";
+			developmentRegion = en;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+				Base,
+			);
+			mainGroup = 91CA43DD230A8C7A00103966;
+			productRefGroup = 91CA43E7230A8C7A00103966 /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				91CA43E5230A8C7A00103966 /* COTOBA-Agent_sample */,
+				91CA43F9230A8C7E00103966 /* COTOBA-Agent_sampleTests */,
+				91CA4404230A8C7E00103966 /* COTOBA-Agent_sampleUITests */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		91CA43E4230A8C7A00103966 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				91CA43F4230A8C7E00103966 /* LaunchScreen.storyboard in Resources */,
+				91CA43F1230A8C7E00103966 /* Assets.xcassets in Resources */,
+				91CA43EF230A8C7A00103966 /* Main.storyboard in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		91CA43F8230A8C7E00103966 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		91CA4403230A8C7E00103966 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		91CA43E2230A8C7A00103966 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				91CA43EC230A8C7A00103966 /* ViewController.swift in Sources */,
+				91CA43EA230A8C7A00103966 /* AppDelegate.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		91CA43F6230A8C7E00103966 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		91CA4401230A8C7E00103966 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		91CA43FC230A8C7E00103966 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 91CA43E5230A8C7A00103966 /* COTOBA-Agent_sample */;
+			targetProxy = 91CA43FB230A8C7E00103966 /* PBXContainerItemProxy */;
+		};
+		91CA4407230A8C7E00103966 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 91CA43E5230A8C7A00103966 /* COTOBA-Agent_sample */;
+			targetProxy = 91CA4406230A8C7E00103966 /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
+/* Begin PBXVariantGroup section */
+		91CA43ED230A8C7A00103966 /* Main.storyboard */ = {
+			isa = PBXVariantGroup;
+			children = (
+				91CA43EE230A8C7A00103966 /* Base */,
+			);
+			name = Main.storyboard;
+			sourceTree = "<group>";
+		};
+		91CA43F2230A8C7E00103966 /* LaunchScreen.storyboard */ = {
+			isa = PBXVariantGroup;
+			children = (
+				91CA43F3230A8C7E00103966 /* Base */,
+			);
+			name = LaunchScreen.storyboard;
+			sourceTree = "<group>";
+		};
+/* End PBXVariantGroup section */
+
+/* Begin XCBuildConfiguration section */
+		91CA440C230A8C7E00103966 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 12.4;
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				MTL_FAST_MATH = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = iphoneos;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+			};
+			name = Debug;
+		};
+		91CA440D230A8C7E00103966 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 12.4;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				MTL_FAST_MATH = YES;
+				SDKROOT = iphoneos;
+				SWIFT_COMPILATION_MODE = wholemodule;
+				SWIFT_OPTIMIZATION_LEVEL = "-O";
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
+		91CA440F230A8C7E00103966 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = XXAKVJ4CDX;
+				INFOPLIST_FILE = "COTOBA-Agent_sample/Info.plist";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = "cotobadesign.COTOBA-Agent-sample";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		91CA4410230A8C7E00103966 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = XXAKVJ4CDX;
+				INFOPLIST_FILE = "COTOBA-Agent_sample/Info.plist";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = "cotobadesign.COTOBA-Agent-sample";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Release;
+		};
+		91CA4412230A8C7E00103966 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				INFOPLIST_FILE = "COTOBA-Agent_sampleTests/Info.plist";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = "cotobadesign.COTOBA-Agent-sampleTests";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/COTOBA-Agent_sample.app/COTOBA-Agent_sample";
+			};
+			name = Debug;
+		};
+		91CA4413230A8C7E00103966 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				INFOPLIST_FILE = "COTOBA-Agent_sampleTests/Info.plist";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = "cotobadesign.COTOBA-Agent-sampleTests";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/COTOBA-Agent_sample.app/COTOBA-Agent_sample";
+			};
+			name = Release;
+		};
+		91CA4415230A8C7E00103966 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
+				CODE_SIGN_STYLE = Automatic;
+				INFOPLIST_FILE = "COTOBA-Agent_sampleUITests/Info.plist";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = "cotobadesign.COTOBA-Agent-sampleUITests";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_TARGET_NAME = "COTOBA-Agent_sample";
+			};
+			name = Debug;
+		};
+		91CA4416230A8C7E00103966 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
+				CODE_SIGN_STYLE = Automatic;
+				INFOPLIST_FILE = "COTOBA-Agent_sampleUITests/Info.plist";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = "cotobadesign.COTOBA-Agent-sampleUITests";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_TARGET_NAME = "COTOBA-Agent_sample";
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		91CA43E1230A8C7A00103966 /* Build configuration list for PBXProject "COTOBA-Agent_sample" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				91CA440C230A8C7E00103966 /* Debug */,
+				91CA440D230A8C7E00103966 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		91CA440E230A8C7E00103966 /* Build configuration list for PBXNativeTarget "COTOBA-Agent_sample" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				91CA440F230A8C7E00103966 /* Debug */,
+				91CA4410230A8C7E00103966 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		91CA4411230A8C7E00103966 /* Build configuration list for PBXNativeTarget "COTOBA-Agent_sampleTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				91CA4412230A8C7E00103966 /* Debug */,
+				91CA4413230A8C7E00103966 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		91CA4414230A8C7E00103966 /* Build configuration list for PBXNativeTarget "COTOBA-Agent_sampleUITests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				91CA4415230A8C7E00103966 /* Debug */,
+				91CA4416230A8C7E00103966 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = 91CA43DE230A8C7A00103966 /* Project object */;
+}
