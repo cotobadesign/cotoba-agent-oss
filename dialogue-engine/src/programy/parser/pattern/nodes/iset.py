@@ -42,7 +42,7 @@ class PatternISetNode(PatternNode):
 
     iset_count = 1
 
-    def __init__(self, attribs, text, userid='*', element=None):
+    def __init__(self, attribs, text, userid='*', element=None, brain=None):
         PatternNode.__init__(self, userid)
         self._words = {}
         self._values = {}

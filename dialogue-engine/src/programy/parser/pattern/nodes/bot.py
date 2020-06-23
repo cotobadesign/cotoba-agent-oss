@@ -39,7 +39,7 @@ from programy.utils.language.japanese import JapaneseLanguage
 
 class PatternBotNode(PatternNode):
 
-    def __init__(self, attribs, text, userid='*', element=None):
+    def __init__(self, attribs, text, userid='*', element=None, brain=None):
         PatternNode.__init__(self, userid)
         if 'name' in attribs:
             self._property = attribs['name']
@@ -52,6 +52,10 @@ class PatternBotNode(PatternNode):
 
         if self._property == '':
             raise ParserException("No parameter specified as attribute or text", xml_element=element, nodename='bot(pattern)')
+
+        if brain is not None:
+            if brain.properties.has_property(self._property) is False:
+                raise ParserException("Bot_property[%s] not found" % self._property, xml_element=element, nodename='bot(pattern)')
 
     def is_bot(self):
         return True

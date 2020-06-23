@@ -40,8 +40,7 @@ from programy.parser.exceptions import ParserException
 
 class PatternRegexNode(PatternNode):
 
-    def __init__(self, attribs, text, userid='*', element=None):
-        # @TODO This does not handle upper and lower case
+    def __init__(self, attribs, text, userid='*', element=None, brain=None):
         PatternNode.__init__(self, userid)
         self._pattern_text = None
         self._pattern_template = None
@@ -51,9 +50,14 @@ class PatternRegexNode(PatternNode):
         if 'pattern' in attribs:
             self._pattern_text = attribs['pattern']
         elif 'template' in attribs:
-            self._pattern_template = attribs['template']
-            if self._pattern_template == '':
-                raise ParserException("Specified Parameter is empty", xml_element=element, nodename='regex')
+            name = attribs['template']
+            if name == '':
+                raise ParserException("Specified Template Parameter is empty", xml_element=element, nodename='regex')
+            template_name = name.upper()
+            if brain is not None:
+                if brain.regex_templates.has_regex(template_name) is False:
+                    raise ParserException("Template[%s] not found" % template_name, xml_element=element, nodename='regex')
+            self._pattern_template = template_name
         elif 'form' in attribs:
             form_text = attribs['form']
             if form_text.count('(?!') > 0:

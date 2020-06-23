@@ -40,16 +40,23 @@ from programy.utils.language.japanese import JapaneseLanguage
 
 class PatternSetNode(PatternNode):
 
-    def __init__(self, attribs, text, userid='*', element=None):
+    def __init__(self, attribs, text, userid='*', element=None, brain=None):
         PatternNode.__init__(self, userid)
         if 'name' in attribs:
-            self._set_name = attribs['name'].upper()
-            if self._set_name == '':
-                raise ParserException("No name specified as attribute or text", xml_element=element, nodename='set(pattern)')
+            name = attribs['name']
         elif text:
-            self._set_name = text.upper()
+            name = text
         else:
             raise ParserException("No name specified as attribute or text", xml_element=element, nodename='set(pattern)')
+
+        if name == '':
+            raise ParserException("No name specified as attribute or text", xml_element=element, nodename='set(pattern)')
+
+        set_name = name.upper()
+        if brain is not None:
+            if brain.sets.storename(set_name) is not None:
+                raise ParserException("Set[%s] not found" % set_name, xml_element=element, nodename='set(pattern)')
+        self._set_name = set_name
 
     @property
     def set_name(self):
