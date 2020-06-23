@@ -30,7 +30,6 @@ def cotoba_agent_call(endpoint, apikey, userid, utternce):
     r = requests.post(url=endpoint, headers=headers, data=json.dumps(params, default=json_serial, ensure_ascii=False).encode("utf-8"))
     r.encoding = r.apparent_encoding
     r.encoding = 'UTF-8'
-    print(r.text)
     return r.text
 
 
