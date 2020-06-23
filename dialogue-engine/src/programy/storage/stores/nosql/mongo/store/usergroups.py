@@ -77,7 +77,7 @@ class MongoUserGroupsStore(MongoStore, UserGroupsStore):
 
         try:
             with open(filename, 'r+', encoding="utf-8") as yaml_data_file:
-                yaml_data = yaml.load(yaml_data_file)
+                yaml_data = yaml.load(yaml_data_file, Loader=yaml.SafeLoader)
                 return yaml_data
 
         except Exception as e:

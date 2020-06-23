@@ -237,7 +237,7 @@ class BotClient(ResponseLogger):
         if arguments.logging is not None:
             try:
                 with open(arguments.logging, 'r+', encoding="utf-8") as yml_data_file:
-                    logging_config = yaml.load(yml_data_file)
+                    logging_config = yaml.load(yml_data_file, Loader=yaml.SafeLoader)
                     logging.config.dictConfig(logging_config)
                     YLogger.debug(self, "Now logging under configuration")
 

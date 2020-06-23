@@ -47,7 +47,7 @@ class FileNLUStore(FileStore, NLUStore):
         server_index = 0
         try:
             with open(filename, 'r+', encoding="utf-8") as yml_file:
-                yaml_data = yaml.load(yml_file)
+                yaml_data = yaml.load(yml_file, Loader=yaml.SafeLoader)
                 if yaml_data is not None:
                     nlu_section = self._get_section(yaml_data, 'nlu')
                     if nlu_section is not None:
