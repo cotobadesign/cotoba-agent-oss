@@ -110,8 +110,14 @@ class TemplateMapNode(TemplateNode):
         name_found = False
 
         if 'name' in expression.attrib:
-            self.name = self.parse_attrib_value_as_word_node(graph, expression, 'name')
-            name_found = True
+            name = self.parse_attrib_value_as_word_node(graph, expression, 'name')
+            name_text = name.children[0].word
+            map_name = name_text.upper()
+            if graph.aiml_parser.brain.maps.storename(map_name) is not None:
+                self.name = name
+                name_found = True
+            else:
+                raise ParserException("Map[%s] name not found" % map_name, xml_element=expression, nodename='map')
 
         self.parse_text(graph, self.get_text_from_element(expression))
 
