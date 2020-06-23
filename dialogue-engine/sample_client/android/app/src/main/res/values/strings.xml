@@ -1,0 +1,9 @@
+<resources>
+    <string name="app_name">COTOBA Agent client</string>
+    <string name="start_button">Start</string>
+    <string name="stop_button">Stop</string>
+    <string name="endpointurl">SET_YOUR_ENDPOINT</string>
+    <string name="userid">SET_YOUR_USERID</string>
+    <string name="api_key">SET_YOUR_API_KEY</string>
+    <string name="unconnect_dialog">Cannot connected server</string>
+</resources>
