@@ -29,14 +29,18 @@ class SraiTestClient(TestClient):
         self.add_default_stores()
         self.add_categories_store([os.path.dirname(__file__)])
 
+    def load_configuration(self, arguments, subs=None):
+        super(SraiTestClient, self).load_configuration(arguments, subs)
+        bot_config = self._configuration.client_configuration.configurations[0]
+        brain_config = bot_config.configurations[0]
+        brain_config.dynamics.dynamic_sets["number"] = "programy.dynamic.sets.numeric.IsNumeric"
+
 
 class SraiAIMLTests(unittest.TestCase):
 
     def setUp(self):
         client = SraiTestClient()
         self._client_context = client.create_client_context("testid")
-
-        self._client_context.bot.brain.dynamics.add_dynamic_set('number', "programy.dynamic.sets.numeric.IsNumeric", None)
 
     def test_srai_response(self):
         response = self._client_context.bot.ask_question(self._client_context, "HELLO")

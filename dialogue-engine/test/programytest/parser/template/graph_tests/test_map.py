@@ -24,12 +24,17 @@ from programytest.parser.template.graph_tests.graph_test_client import TemplateG
 
 class TemplateGraphMapTests(TemplateGraphTestClient):
 
+    def set_collection_maps(self):
+        map_dict = {"key": "value"}
+        self._client_context.brain.maps.add_map("somemap", map_dict, "test_map")
+
     def test_map_name_as_attrib(self):
         template = ET.fromstring("""
             <template>
                 <map name="somemap">sometext</map>
             </template>
             """)
+        self.set_collection_maps()
         ast = self._graph.parse_template_expression(template)
         self.assertIsNotNone(ast)
         self.assertIsInstance(ast, TemplateNode)
@@ -52,6 +57,7 @@ class TemplateGraphMapTests(TemplateGraphTestClient):
                 <map><name>somemap</name>sometext</map>
             </template>
             """)
+        self.set_collection_maps()
         ast = self._graph.parse_template_expression(template)
         self.assertIsNotNone(ast)
         self.assertIsInstance(ast, TemplateNode)
@@ -74,5 +80,6 @@ class TemplateGraphMapTests(TemplateGraphTestClient):
                 <map>sometext</map>
             </template>
             """)
+        self.set_collection_maps()
         with self.assertRaises(ParserException):
             self._graph.parse_template_expression(template)

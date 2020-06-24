@@ -24,12 +24,16 @@ from programytest.parser.template.graph_tests.graph_test_client import TemplateG
 
 class TemplateGraphBotTests(TemplateGraphTestClient):
 
+    def set_collection_properties(self):
+        self._client_context.brain.properties.add_property("somebot", "value")
+
     def test_bot_name_as_attrib(self):
         template = ET.fromstring("""
             <template>
                 <bot name="somebot">sometext</bot>
             </template>
             """)
+        self.set_collection_properties()
         ast = self._graph.parse_template_expression(template)
         self.assertIsNotNone(ast)
         self.assertIsInstance(ast, TemplateNode)
@@ -52,6 +56,7 @@ class TemplateGraphBotTests(TemplateGraphTestClient):
                 <bot><name>somebot</name>sometext</bot>
             </template>
             """)
+        self.set_collection_properties()
         ast = self._graph.parse_template_expression(template)
         self.assertIsNotNone(ast)
         self.assertIsInstance(ast, TemplateNode)

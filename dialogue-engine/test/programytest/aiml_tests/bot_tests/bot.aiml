@@ -22,7 +22,7 @@ For more information see [url]
 	<category>
 		<pattern>BOT PROPERTY XXX</pattern>
 		<template>
-		    <bot name='XXX' />
+		    <bot><name>XXX</name></bot>
 		</template>
 	</category>
 
@@ -169,7 +169,7 @@ For more information see [url]
 	<category>
 		<pattern>BOT PROPERTY DEFAULT PROPERTY</pattern>
 		<template>
-		    <bot name='property' />
+		    <bot name='default-property' />
 		</template>
 	</category>
 
