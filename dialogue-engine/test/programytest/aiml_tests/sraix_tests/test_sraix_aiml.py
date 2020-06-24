@@ -46,11 +46,11 @@ class MockGenericRESTService(Service):
 class SraixAIMLTests(unittest.TestCase):
 
     def setUp(self):
-        client = SraixTestClient()
-        self._client_context = client.create_client_context("testid")
-
         config = unittest.mock.Mock()
         ServiceFactory.services['REST'] = MockGenericRESTService(config)
+
+        client = SraixTestClient()
+        self._client_context = client.create_client_context("testid")
 
     def test_basic_sraix_test(self):
         response = self._client_context.bot.ask_question(self._client_context, "GENERIC REST TEST")

@@ -19,11 +19,25 @@ import xml.etree.ElementTree as ET
 from programy.parser.template.nodes.base import TemplateNode
 from programy.parser.template.nodes.sraix import TemplateSRAIXNode
 from programy.parser.exceptions import ParserException
+from programy.services.service import ServiceFactory
+from programy.config.brain.services import BrainServicesConfiguration
+from programy.config.brain.service import BrainServiceConfiguration
 
 from programytest.parser.template.graph_tests.graph_test_client import TemplateGraphTestClient
 
 
 class TemplateGraphSraixTests(TemplateGraphTestClient):
+
+    def set_service_config(self):
+        service1 = BrainServiceConfiguration("ask")
+        service1._classname = "programy.services.rest.GenericRESTService"
+        service1._host = "localhost"
+        service2 = BrainServiceConfiguration("test")
+        service2._classname = "programy.services.rest.GenericRESTService"
+        service2._host = "localhost"
+        services_config = BrainServicesConfiguration()
+        services_config._services = {"ask": service1, "test": service2}
+        ServiceFactory.preload_services(services_config)
 
     def test_sraix_template_GeneralRest_attribs(self):
         template = ET.fromstring("""
@@ -65,6 +79,7 @@ class TemplateGraphSraixTests(TemplateGraphTestClient):
                 </sraix>
             </template>
             """)
+        self.set_service_config()
         ast = self._graph.parse_template_expression(template)
         self.assertIsInstance(ast, TemplateNode)
         self.assertIsNotNone(ast.children)
@@ -144,6 +159,7 @@ class TemplateGraphSraixTests(TemplateGraphTestClient):
                 </sraix>
             </template>
             """)
+        self.set_service_config()
         ast = self._graph.parse_template_expression(template)
         self.assertIsInstance(ast, TemplateNode)
         self.assertIsNotNone(ast.children)
@@ -239,6 +255,7 @@ class TemplateGraphSraixTests(TemplateGraphTestClient):
                 </sraix>
             </template>
             """)
+        self.set_service_config()
         with self.assertRaises(ParserException):
             self._graph.parse_template_expression(template)
 
@@ -250,5 +267,6 @@ class TemplateGraphSraixTests(TemplateGraphTestClient):
                 </sraix>
             </template>
             """)
+        self.set_service_config()
         with self.assertRaises(ParserException):
             self._graph.parse_template_expression(template)
