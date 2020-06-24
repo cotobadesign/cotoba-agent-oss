@@ -32,6 +32,7 @@ TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR TH
 
 from programy.utils.logging.ylogger import YLogger
 from programy.parser.template.nodes.indexed import TemplateIndexedNode
+from programy.parser.exceptions import ParserException
 
 
 ######################################################################################################################
@@ -74,5 +75,7 @@ class TemplateResponseNode(TemplateIndexedNode):
 
     def parse_expression(self, graph, expression):
         self._parse_node_with_attrib(graph, expression, "index", "1")
+        if self._index == 0:
+            raise ParserException("index values are 1 based, cannot be 0", nodename='response')
         if self.children:
-            YLogger.warning(self, "<response> node should not contain child text, use <response /> or <response></response> only")
+            raise ParserException("Node should not contain child text", xml_element=expression, nodename='response')

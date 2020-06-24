@@ -80,3 +80,5 @@ class TemplateThatNode(TemplateDoubleIndexedNode):
         except ParserException as excep:
             excep.nodename = 'that'
             raise
+        if self.children:
+            raise ParserException("Node should not contain child text", xml_element=expression, nodename='that')

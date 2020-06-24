@@ -87,7 +87,9 @@ class TemplateAttribNode(TemplateNode):
             tag_name = TextUtils.tag_from_text(child.tag)
 
             if tag_name == attrib_name:
-                self.set_attrib(attrib_name, self.get_text_from_element(child))
+                value = self.get_text_from_element(child)
+                if value is not None:
+                    self.set_attrib(attrib_name, value)
             else:
                 graph.parse_tag_expression(child, self)
 
