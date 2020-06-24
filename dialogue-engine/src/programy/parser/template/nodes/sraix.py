@@ -485,8 +485,11 @@ class TemplateSRAIXNode(TemplateNode):
             YLogger.warning(self, "'config' attrib not supported in sraix, moved to config, see documentation")
 
         if 'service' in expression.attrib:
+            service_name = expression.attrib['service']
+            if ServiceFactory.service_exists(service_name) is False:
+                raise ParserException("Service[%s] not found" % service_name, xml_element=expression, nodename='sraix')
             mode_count += 1
-            self._service = expression.attrib['service']
+            self._service = service_name
 
         if 'default' in expression.attrib:
             self._default = expression.attrib['default']

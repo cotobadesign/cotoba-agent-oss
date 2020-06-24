@@ -250,6 +250,9 @@ class Brain(object):
         YLogger.debug(self, "Loading dynamics sets, maps and vars")
         self.load_dynamics()
 
+        YLogger.debug(self, "Loading services")
+        self.load_services(configuration)
+
         load_aiml = True
 
         if self.configuration.binaries.load_binary is True:
@@ -262,9 +265,6 @@ class Brain(object):
             self._binaries.set_aiml_parser(self._aiml_parser)
             if configuration.binaries.save_binary is True:
                 self._binaries.save_binary(self.bot.client.storage_factory)
-
-        YLogger.debug(self, "Loading services")
-        self.load_services(configuration)
 
         YLogger.debug(self, "Loading security services")
         self.load_security_services()
