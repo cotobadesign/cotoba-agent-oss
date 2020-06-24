@@ -88,7 +88,7 @@ class HotReloadAdminExtension(Extension):
     @staticmethod
     def reload_regex(client_context):
         YLogger.debug(client_context, "Hot reloading Regex")
-        client_context.brain.load_regex_templates()
+        client_context.brain._load_regex_templates()
         return 'HOTRELOAD OK'
 
     @staticmethod

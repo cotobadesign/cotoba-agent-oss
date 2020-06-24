@@ -52,6 +52,7 @@ class PatternSetNode(PatternNode):
         if name == '':
             raise ParserException("No name specified as attribute or text", xml_element=element, nodename='set(pattern)')
 
+        name = JapaneseLanguage.zenhan_normalize(name)
         set_name = name.upper()
         if brain is not None:
             if brain.sets.storename(set_name) is None:

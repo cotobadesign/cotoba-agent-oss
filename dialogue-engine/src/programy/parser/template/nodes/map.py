@@ -37,6 +37,8 @@ from programy.parser.exceptions import ParserException
 from programy.utils.text.text import TextUtils
 from programy.utils.language.japanese import JapaneseLanguage
 
+import re
+
 
 class TemplateMapNode(TemplateNode):
 
@@ -67,7 +69,10 @@ class TemplateMapNode(TemplateNode):
         return value
 
     def resolve_to_string(self, client_context):
-        name = self.name.resolve(client_context).upper()
+        name = self.name.resolve(client_context)
+        name = JapaneseLanguage.zenhan_normalize(name)
+        name = name.upper()
+
         targer_word = self.resolve_children(client_context)
         targer_word = JapaneseLanguage.zenhan_normalize(targer_word)
         var = targer_word.upper()
@@ -111,10 +116,10 @@ class TemplateMapNode(TemplateNode):
 
         if 'name' in expression.attrib:
             name = self.parse_attrib_value_as_word_node(graph, expression, 'name')
-            name_text = name.children[0].word
+            name_text = JapaneseLanguage.zenhan_normalize(name.children[0].word)
             map_name = name_text.upper()
             if graph.aiml_parser.brain.maps.storename(map_name) is None:
-                if graph.aiml_parser.brain.dynamics.is_dynamic_map(name) is False:
+                if graph.aiml_parser.brain.dynamics.is_dynamic_map(map_name) is False:
                     raise ParserException("Map[%s] name not found" % map_name, xml_element=expression, nodename='map')
             self.name = name
             name_found = True

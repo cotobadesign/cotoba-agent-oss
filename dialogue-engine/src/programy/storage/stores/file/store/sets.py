@@ -64,24 +64,28 @@ class FileSetsStore(FileStore, SetsStore):
                         chk_words = chk_words.upper()
                         cjk = self.check_cjk(is_cjk, chk_words)
                         if cjk is True:
+                            line_text = re.sub(' ', '', line)
                             chk_words = re.sub(' ', '', chk_words)
                             if is_cjk is False:
                                 is_cjk = True
                         else:
+                            line_text = re.sub(' +', ' ', line)
                             chk_words = re.sub(' +', ' ', chk_words)
                         if chk_words in check_list:
                             error_info = "duplicate value='%s'" % line
                             set_collection.set_error_info(filename, line_no, error_info)
                         else:
-                            set_list.append(line)
+                            set_list.append(line_text)
                             check_list.append(chk_words)
             the_set, values = self.make_set_table(is_cjk, set_list)
 
         except Exception as excep:
             YLogger.exception(self, "Failed to load set [%s]", excep, filename)
 
-        set_name = self.get_just_filename_from_filepath(filename)
-        set_collection.add_set(set_name, the_set, filename, is_cjk, values)
+        if len(the_set) > 0:
+            name = self.get_just_filename_from_filepath(filename)
+            set_name = JapaneseLanguage.zenhan_normalize(name)
+            set_collection.add_set(set_name, the_set, filename, is_cjk, values)
 
     def get_storage(self):
         return self.storage_engine.configuration.sets_storage
