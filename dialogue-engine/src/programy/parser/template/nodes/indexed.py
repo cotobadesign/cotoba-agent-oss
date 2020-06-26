@@ -260,7 +260,7 @@ class TemplateTripleIndexedNode(TemplateAttribNode):
             else:
                 raise ParserException("Invalid parameters count", nodename='indexed')
 
-        if self._star == 0:
+        if self._star <= 0:
             raise ParserException("star_index values are 1 based, cannot be <= 0", nodename='indexed')
 
         if self._sentence == 0:
@@ -268,6 +268,3 @@ class TemplateTripleIndexedNode(TemplateAttribNode):
 
         if self._question == 0:
             raise ParserException("Question values are 1 based, cannot be 0", nodename='indexed')
-
-        # if self._star == 0:
-        #     raise ParserException("star values are 1 based, cannot be 0", nodename='indexed')

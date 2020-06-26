@@ -78,3 +78,6 @@ class TemplateThatStarNode(TemplateTripleIndexedNode):
         except ParserException as excep:
             excep.nodename = 'thatstar'
             raise
+
+        if self.children:
+            raise ParserException("Node should not contain child text", xml_element=expression, nodename='topicstar')
