@@ -44,6 +44,7 @@ class ClientArguments(object):
         self._no_loop = False
         self._substitutions = None
         self._stdoutlog = False
+        self._stderrlog = False
 
     def parse_args(self, client):
         pass
@@ -80,6 +81,10 @@ class ClientArguments(object):
     def stdoutlog(self):
         return self._stdoutlog
 
+    @property
+    def stderrlog(self):
+        return self._stderrlog
+
 
 class CommandLineClientArguments(ClientArguments):
 
@@ -92,6 +97,7 @@ class CommandLineClientArguments(ClientArguments):
         self._no_loop = False
         self._substitutions = None
         self._stdoutlog = False
+        self._stderrlog = False
 
         ClientArguments.__init__(self, client)
         if parser is None:
@@ -105,7 +111,8 @@ class CommandLineClientArguments(ClientArguments):
         self.parser.add_argument('--cformat', dest='cformat', help='configuration file format (yaml|json|ini)')
         self.parser.add_argument('--logging', dest='logging', help='logging configuration file')
         self.parser.add_argument('--noloop', dest='noloop', action='store_true', help='do not enter conversation loop')
-        self.parser.add_argument('--stdoutlog', dest='stdoutlog', default=False, help='stdout/stderr log output setting')
+        self.parser.add_argument('--stdoutlog', dest='stdoutlog', default=False, help='stdout log output setting')
+        self.parser.add_argument('--stderrlog', dest='stderrlog', default=False, help='stderr log output setting')
 
         client.add_client_arguments(self.parser)
 
@@ -118,4 +125,5 @@ class CommandLineClientArguments(ClientArguments):
         self._no_loop = self.args.noloop
         self._substitutions = self.args.substitutions
         self._stdoutlog = self.args.stdoutlog
+        self._stderrlog = self.args.stderrlog
         client.parse_args(self, self.args)

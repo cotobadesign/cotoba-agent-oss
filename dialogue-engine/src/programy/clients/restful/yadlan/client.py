@@ -57,6 +57,7 @@ class YadlanRestBotClient(RestBotClient):
 
         self._server_mode = True  # if Not Server-Mode then change to comment line.
         YLogger.set_stdout(self.arguments.args.stdoutlog)
+        YLogger.set_stderr(self.arguments.args.stderrlog)
         YLogger.set_traceback(False)
 
     def get_client_configuration(self):

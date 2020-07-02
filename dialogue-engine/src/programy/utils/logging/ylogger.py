@@ -63,6 +63,7 @@ class YLogger(object):
     INFOS = 0
     DEBUGS = 0
     IS_STDOUT = False
+    IS_STDERR = False
     PREFIX = "Yadlan"
     IS_TRACEBACK = True
     DEFAULT_LEVEL = None
@@ -220,6 +221,13 @@ class YLogger(object):
             YLogger.IS_STDOUT = True
 
     @staticmethod
+    def set_stderr(status):
+        if status != "True":
+            YLogger.IS_STDERR = False
+        else:
+            YLogger.IS_STDERR = True
+
+    @staticmethod
     def set_prefix(prefix):
         YLogger.PREFIX = prefix
 
@@ -267,6 +275,6 @@ class YLogger(object):
 
     @staticmethod
     def yadlan_stderr(caller, level, message, *args, **kwargs):
-        if YLogger.IS_STDOUT:
+        if YLogger.IS_STDERR:
             sys.stderr.write(YLogger.format_yadlan_message(YLogger.PREFIX, level, caller, message) % args + "\n")
             sys.stderr.flush()
