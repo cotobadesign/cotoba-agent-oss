@@ -80,7 +80,7 @@ To start the program as a rest interface application, run the following command.
 ```
 $ cd basic/script
 $ export PYTHONPATH=PYTHONPATH=:../../src 
-$ python3 -m programy.clients.restful.yadlan.sanic.client  --config ../config/config.yaml --cformat yaml --logging ../config/logging.yaml --stdoutlog True
+$ python3 -m programy.clients.restful.yadlan.sanic.client  --config ../config/config.yaml --cformat yaml --logging ../config/logging.yaml --stdoutlog True --stderrlog True
 
 ```
 
