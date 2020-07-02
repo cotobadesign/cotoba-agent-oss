@@ -33,6 +33,12 @@ class DateTimeAIMLTestClient(TestClient):
         self.add_sets_store([os.path.dirname(__file__) + os.sep + "sets"])
         self.add_maps_store([os.path.dirname(__file__) + os.sep + "maps"])
 
+    def load_configuration(self, arguments, subs=None):
+        super(DateTimeAIMLTestClient, self).load_configuration(arguments, subs)
+        bot_config = self._configuration.client_configuration.configurations[0]
+        brain_config = bot_config.configurations[0]
+        brain_config.dynamics.dynamic_sets["number"] = "programy.dynamic.sets.numeric.IsNumeric"
+
 
 class DateTimeAIMLTests(unittest.TestCase):
 
@@ -42,7 +48,6 @@ class DateTimeAIMLTests(unittest.TestCase):
         client = DateTimeAIMLTestClient()
         self._client_context = client.create_client_context("testid")
 
-        self._client_context.brain.dynamics.add_dynamic_set('number', "programy.dynamic.sets.numeric.IsNumeric", None)
         self.date = DateFormatter()
 
     def test_season(self):

@@ -28,6 +28,15 @@ class MapAIMLTestClient(TestClient):
         super(MapAIMLTestClient, self).load_storage()
         self.add_default_stores()
         self.add_categories_store([os.path.dirname(__file__)])
+        self.add_properties_store(os.path.dirname(__file__) + os.sep + "properties.txt")
+        self.add_maps_store([os.path.dirname(__file__) + os.sep + "maps"])
+
+    def load_configuration(self, arguments, subs=None):
+        super(MapAIMLTestClient, self).load_configuration(arguments, subs)
+        bot_config = self._configuration.client_configuration.configurations[0]
+        brain_config = bot_config.configurations[0]
+        brain_config.dynamics.dynamic_maps["romantodec"] = "programy.dynamic.maps.roman.MapRomanToDecimal"
+        brain_config.dynamics.dynamic_maps["dectoroman"] = "programy.dynamic.maps.roman.MapDecimalToRoman"
 
 
 class MapAIMLTests(unittest.TestCase):
@@ -35,13 +44,6 @@ class MapAIMLTests(unittest.TestCase):
     def setUp(self):
         client = MapAIMLTestClient()
         self._client_context = client.create_client_context("testid")
-
-        self._client_context.brain.properties.load_from_text("""
-             default-get:unknown
-         """)
-        self._client_context.bot.brain.dynamics.add_dynamic_map('romantodec', "programy.dynamic.maps.roman.MapRomanToDecimal", None)
-        self._client_context.bot.brain.dynamics.add_dynamic_map('dectoroman', "programy.dynamic.maps.roman.MapDecimalToRoman", None)
-        self._client_context.bot.brain.maps.add_map("testmap", {"1": "One", "2": "Two", "3": "Three"}, "file")
 
     def test_static_map(self):
         response = self._client_context.bot.ask_question(self._client_context,  "STATIC MAP TEST")

@@ -26,7 +26,7 @@ class TemplateGraphResponseTests(TemplateGraphTestClient):
     def test_response_node_from_xml(self):
         template = ET.fromstring("""
             <template>
-                <response>Text</response>
+                <response index="1"></response>
             </template>
             """)
         root = self._graph.parse_template_expression(template)
@@ -38,3 +38,5 @@ class TemplateGraphResponseTests(TemplateGraphTestClient):
         node = root.children[0]
         self.assertIsNotNone(node)
         self.assertIsInstance(node, TemplateResponseNode)
+
+        self.assertEqual(root.children[0].to_string(), "[RESPONSE]")

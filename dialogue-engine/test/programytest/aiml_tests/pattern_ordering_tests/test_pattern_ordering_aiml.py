@@ -28,6 +28,7 @@ class PatternOrderingTestClient(TestClient):
         super(PatternOrderingTestClient, self).load_storage()
         self.add_default_stores()
         self.add_categories_store([os.path.dirname(__file__)])
+        self.add_sets_store([os.path.dirname(__file__) + os.sep + "sets"])
 
 
 class PatternOrderingAIMLTests(unittest.TestCase):
@@ -35,13 +36,6 @@ class PatternOrderingAIMLTests(unittest.TestCase):
     def setUp(self):
         client = PatternOrderingTestClient()
         self._client_context = client.create_client_context("testid")
-
-        self._client_context.brain.sets._sets["COLOR"] = {"RED": [["RED"]]}
-        self._client_context.brain.sets._is_cjk["COLOR"] = {False}
-        self._client_context.brain.sets._values["COLOR"] = {"RED": "RED"}
-        self._client_context.brain.sets._sets["ANIMAL"] = {"DOLPHIN": [["DOLPHIN"]]}
-        self._client_context.brain.sets._is_cjk["ANIMAL"] = {False}
-        self._client_context.brain.sets._values["ANIMAL"] = {"DOLPHIN": "DOLPHIN"}
 
     def test_basic_no_match(self):
         response = self._client_context.bot.ask_question(self._client_context,  "MY FAVORITE COLOR IS BLUE")

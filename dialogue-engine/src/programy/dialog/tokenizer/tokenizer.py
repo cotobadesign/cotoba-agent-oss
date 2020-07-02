@@ -45,12 +45,12 @@ class Tokenizer(object):
 
         try:
             self.before_concatenation_rule = re.compile(before_concatenation_rule)
-        except Exception: 
+        except Exception:
             self.before_concatenation_rule = None
 
         try:
             self.after_concatenation_rule = re.compile(after_concatenation_rule)
-        except Exception: 
+        except Exception:
             self.after_concatenation_rule = None
 
         self._is_template = False
@@ -87,13 +87,13 @@ class Tokenizer(object):
     def set_configuration_before_concatenation_rule(self, before_rule):
         try:
             self.before_concatenation_rule = re.compile(before_rule)
-        except Exception: 
+        except Exception:
             pass
 
     def set_configuration_after_concatenation_rule(self, after_rule):
         try:
             self.after_concatenation_rule = re.compile(after_rule)
-        except Exception: 
+        except Exception:
             pass
 
     def texts_to_words(self, texts):

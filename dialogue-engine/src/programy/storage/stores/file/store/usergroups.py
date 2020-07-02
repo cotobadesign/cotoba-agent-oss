@@ -46,7 +46,7 @@ class FileUserGroupStore(FileStore, UserGroupsStore):
 
         try:
             with open(filename, 'r+', encoding=self.get_storage().encoding) as yml_data_file:
-                yaml_data = yaml.load(yml_data_file)
+                yaml_data = yaml.load(yml_data_file, Loader=yaml.SafeLoader)
 
             self.load_users_and_groups_from_yaml(yaml_data, usersgroupsauthorisor)
 

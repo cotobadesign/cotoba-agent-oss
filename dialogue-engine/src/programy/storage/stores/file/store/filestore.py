@@ -135,6 +135,7 @@ class FileStore(Store):
     def load_all(self, collection):
         col_storage = self.get_storage()
 
+        col_files = []
         if col_storage.has_multiple_dirs():
             subdir = col_storage.subdirs
             col_ext = col_storage.extension
@@ -143,11 +144,28 @@ class FileStore(Store):
                     paths = os.listdir(col_dir)
                     for filename in paths:
                         if col_ext is None or filename.endswith(col_ext):
-                            YLogger.debug(self, "Loading file contents from [%s]", filename)
-                            self._load_file_contents(collection, os.path.join(col_dir, filename))
+                            col_files.append(filename)
+                    if len(col_files) > 1:
+                        col_files.sort()
+                    for filename in col_files:
+                        YLogger.debug(self, "Loading file contents from [%s]", filename)
+                        self._load_file_contents(collection, os.path.join(col_dir, filename))
                 else:
-                    for dirpath, _, filenames in os.walk(col_dir):
-                        for filename in [f for f in filenames if f.endswith(col_ext)]:
+                    sub_dirs = [col_dir]
+                    for rootpath, dirpaths, _ in os.walk(col_dir):
+                        for path in dirpaths:
+                            sub_dirs.append(os.path.join(rootpath, path))
+                    if len(sub_dirs) > 1:
+                        sub_dirs.sort()
+                    for dirpath in sub_dirs:
+                        col_files = []
+                        paths = os.listdir(dirpath)
+                        for filename in paths:
+                            if col_ext is None or filename.endswith(col_ext):
+                                col_files.append(filename)
+                        if len(col_files) > 1:
+                            col_files.sort()
+                        for filename in col_files:
                             YLogger.debug(self, "Loading file contents from [%s]", filename)
                             self._load_file_contents(collection, os.path.join(dirpath, filename))
 

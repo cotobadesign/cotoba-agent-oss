@@ -407,6 +407,7 @@ class AIMLParserErrorTests(unittest.TestCase):
         self.assertEqual("Duplicate grammar tree found [intent=aaa, score=0.9]", self.parser._duplicates[0][5])
 
     def test_base_aiml_category_duplicate_no_text(self):
+        self.parser.brain.properties.add_property("name", "value")
         self.parser.parse_from_text(
             """<?xml version="1.0" encoding="UTF-8"?>
             <aiml>

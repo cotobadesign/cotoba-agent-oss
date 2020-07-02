@@ -71,6 +71,9 @@ class TemplateSetNode(TemplateNode):
         name = self.name.resolve(client_context)
         value = self.resolve_children(client_context)
 
+        if name == '':
+            return TemplateGetNode.get_default_value(client_context)
+
         if self.property_type == 'var':
             YLogger.debug(client_context, "[%s] resolved to var: [%s] => [%s]", self.to_string(), name, value)
             conversation.current_question().set_property(name, value)

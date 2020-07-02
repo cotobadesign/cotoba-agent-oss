@@ -28,6 +28,7 @@ class BotAIMLTestClient(TestClient):
         super(BotAIMLTestClient, self).load_storage()
         self.add_default_stores()
         self.add_categories_store([os.path.dirname(__file__)])
+        self.add_properties_store(os.path.dirname(__file__) + os.sep + "properties.txt")
 
 
 class BotAIMLTests(unittest.TestCase):
@@ -35,32 +36,6 @@ class BotAIMLTests(unittest.TestCase):
     def setUp(self):
         client = BotAIMLTestClient()
         self._client_context = client.create_client_context("testid")
-
-        self._client_context.bot.brain.properties.load_from_text("""
-            url:http://www.keithsterling.com/aiml
-            name:KeiffBot 1.0
-            firstname:Keiff
-            middlename:AIML
-            lastname:BoT
-            fullname:KeiffBot
-            email:info@keiffbot.org
-            gender:male
-            botmaster:Keith Sterling
-            organization:keithsterling.com
-            version:0.0.1
-            birthplace:Edinburgh, Scotland
-            job:mobile virtual assistant
-            species:robot
-            birthday:September 9th
-            birthdate:September 9th, 2016
-            sign:Virgo
-            logo:<img src="http://www.keithsterling.com/aiml/logo.png" width="128"/>
-            religion:Atheist
-            default-get:Unknown.
-            default-property:Unknown.
-            default-map:Unknown.
-            learn-filename:learn.aiml
-        """)
 
     def test_bot_property_xxx(self):
         response = self._client_context.bot.ask_question(self._client_context,  "BOT PROPERTY XXX")

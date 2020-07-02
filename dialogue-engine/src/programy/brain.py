@@ -244,6 +244,15 @@ class Brain(object):
         if self.properties.has_property("after_concatenation_rule") is True:
             self.tokenizer.set_configuration_after_concatenation_rule(self.properties.property("after_concatenation_rule"))
 
+        YLogger.debug(self, "Loading collections")
+        self.load_collections()
+
+        YLogger.debug(self, "Loading dynamics sets, maps and vars")
+        self.load_dynamics()
+
+        YLogger.debug(self, "Loading services")
+        self.load_services(configuration)
+
         load_aiml = True
 
         if self.configuration.binaries.load_binary is True:
@@ -257,23 +266,11 @@ class Brain(object):
             if configuration.binaries.save_binary is True:
                 self._binaries.save_binary(self.bot.client.storage_factory)
 
-        YLogger.debug(self, "Loading collections")
-        self.load_collections()
-
-        YLogger.debug(self, "Loading services")
-        self.load_services(configuration)
-
         YLogger.debug(self, "Loading security services")
         self.load_security_services()
 
         YLogger.debug(self, "Loading oob processors")
         self._oobhandler.load_oob_processors()
-
-        YLogger.debug(self, "Loading regex templates")
-        self.load_regex_templates()
-
-        YLogger.debug(self, "Loading dynamics sets, maps and vars")
-        self.load_dynamics()
 
     def dump_brain_tree(self, client_context):
         self._braintree.dump_brain_tree(client_context)
@@ -342,6 +339,9 @@ class Brain(object):
         if self._rdf_collection.contains(rdfname):
             self._rdf_collection.reload(self.bot.client.storage_factory, rdfname)
 
+    def _load_regex_templates(self):
+        self._regex_templates.load(self.bot.client.storage_factory)
+
     def _load_preprocessors(self):
         self._preprocessors.empty()
         self._preprocessors.load(self.bot.client.storage_factory)
@@ -368,6 +368,7 @@ class Brain(object):
         self._load_rdfs()
         self._load_sets()
         self._load_maps()
+        self._load_regex_templates()
         self._load_preprocessors()
         self._load_postprocessors()
 
@@ -382,9 +383,6 @@ class Brain(object):
             self._dynamics_collection.load_from_configuration(self.configuration.dynamics)
         else:
             YLogger.debug(self, "No dynamics configuration defined...")
-
-    def load_regex_templates(self):
-        self._regex_templates.load(self.bot.client.storage_factory)
 
     def pre_process_question(self, client_context, question):
         return self.preprocessors.process(client_context, question)

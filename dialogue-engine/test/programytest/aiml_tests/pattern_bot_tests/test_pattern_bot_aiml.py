@@ -28,6 +28,7 @@ class PatternBotTestClient(TestClient):
         super(PatternBotTestClient, self).load_storage()
         self.add_default_stores()
         self.add_categories_store([os.path.dirname(__file__)])
+        self.add_properties_store(os.path.dirname(__file__) + os.sep + "properties.txt")
 
 
 class PatternBotAIMLTests(unittest.TestCase):
@@ -35,8 +36,6 @@ class PatternBotAIMLTests(unittest.TestCase):
     def setUp(self):
         client = PatternBotTestClient()
         self._client_context = client.create_client_context("testid")
-
-        self._client_context.brain.properties.pairs.append(("favouritecolor", "RED"))
 
     def test_pattern_bot_match(self):
         response = self._client_context.bot.ask_question(self._client_context,  "MY FAVORITE COLOR IS RED")

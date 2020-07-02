@@ -28,6 +28,7 @@ class InfoAIMLTestClient(TestClient):
         super(InfoAIMLTestClient, self).load_storage()
         self.add_default_stores()
         self.add_categories_store([os.path.dirname(__file__)])
+        self.add_properties_store(os.path.dirname(__file__) + os.sep + "properties.txt")
 
 
 class InfoAIMLTests(unittest.TestCase):
@@ -47,9 +48,6 @@ class InfoAIMLTests(unittest.TestCase):
         self.assertEqual(response, "Testclient.")
 
     def test_env(self):
-
-        self._client_context.bot.brain.properties.add_property("env", "test")
-
         response = self._client_context.bot.ask_question(self._client_context, "TEST ENVIRONMENT")
         self.assertIsNotNone(response)
         self.assertEqual(response, "ENVIRONMENT IS test.")

@@ -43,7 +43,7 @@ class PatternRegexNodeTests(ParserTestsBaseClass):
         self.assertIsNotNone(node)
         self.assertIsNone(node._pattern_text)
         self.assertFalse(node._is_form)
-        self.assertEqual("PhoneNumber", node.pattern_template)
+        self.assertEqual("PHONENUMBER", node.pattern_template)
 
     def test_init_with_form_attrib(self):
         node = PatternRegexNode({"form": "今[はわ]何時"}, "")

@@ -96,6 +96,10 @@ class TemplateBotNode(TemplateNode):
         name_found = False
 
         if 'name' in expression.attrib:
+            name = expression.attrib['name']
+            if graph.aiml_parser.brain.properties.has_property(name) is False:
+                raise ParserException("Bot_property[%s] not found" % name, xml_element=expression, nodename='bot')
+
             self.name = self.parse_attrib_value_as_word_node(graph, expression, 'name')
             name_found = True
 

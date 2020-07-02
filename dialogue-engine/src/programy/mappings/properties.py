@@ -33,6 +33,7 @@ from programy.utils.logging.ylogger import YLogger
 
 from programy.mappings.base import DoubleStringCharSplitCollection
 from programy.storage.factory import StorageFactory
+from programy.utils.language.japanese import JapaneseLanguage
 
 
 class BasePropertiesCollection(DoubleStringCharSplitCollection):
@@ -154,10 +155,28 @@ class RegexTemplatesCollection(BasePropertiesCollection):
         return engine.regex_store()
 
     def has_regex(self, key):
-        return self.has_property(key)
+        template = JapaneseLanguage.zenhan_normalize(key)
+        template = template.upper()
+        return self.has_property(template)
 
     def regex(self, key):
-        return self.property(key)
+        template = JapaneseLanguage.zenhan_normalize(key)
+        template = template.upper()
+        return self.property(template)
+
+    def add_property(self, key, value, filename=None, line=0):
+        if key == '':
+            error_info = "key is empty"
+            self.set_error_info(filename, line, error_info)
+            return
+
+        template = JapaneseLanguage.zenhan_normalize(key)
+        template = template.upper()
+        if self.has_property(template) is False:
+            self.pairs.append([template, value])
+        else:
+            error_info = "duplicate key='%s' (value='%s' is invalid)" % (key, value)
+            self.set_error_info(filename, line, error_info)
 
     def add_regex(self, key, value):
         self.add_property(key, value)

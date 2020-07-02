@@ -85,3 +85,7 @@ class TemplateTopicStarNode(TemplateIndexedNode):
         except ParserException as excep:
             excep.nodename = 'topicstar'
             raise
+        if self._index <= 0:
+            raise ParserException("index values are 1 based, cannot be <= 0", nodename='topicstar')
+        if self.children:
+            raise ParserException("Node should not contain child text", xml_element=expression, nodename='topicstar')

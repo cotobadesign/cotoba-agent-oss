@@ -36,6 +36,14 @@ from programy.parser.template.nodes.word import TemplateWordNode
 
 class PatternGraphTests(ParserTestsBaseClass):
 
+    def set_collection_properties(self):
+        self._client_context.brain.properties.add_property("name", "value")
+
+    def set_collection_sets(self):
+        set_dict = {"RED": [["RED"]]}
+        values = {"RED": "red"}
+        self._client_context.brain.sets.add_set("COLOUR", set_dict, "test_sets", False, values)
+
     def test_init_no_root(self):
         graph = PatternGraph(self._client_context.brain.aiml_parser)
         self.assertIsNotNone(graph)
@@ -97,6 +105,7 @@ class PatternGraphTests(ParserTestsBaseClass):
         self.assertIsInstance(node, PatternISetNode)
 
     def test_node_from_element_set(self):
+        self.set_collection_sets()
         set_element = ET.fromstring('<set>colour</set>')
         graph = PatternGraph(self._client_context.brain.aiml_parser)
         node = graph.node_from_element(set_element)
@@ -104,6 +113,7 @@ class PatternGraphTests(ParserTestsBaseClass):
         self.assertIsInstance(node, PatternSetNode)
 
     def test_node_from_element_bot(self):
+        self.set_collection_properties()
         bot_element = ET.fromstring('<bot>name</bot>')
         graph = PatternGraph(self._client_context.brain.aiml_parser)
         node = graph.node_from_element(bot_element)
@@ -172,6 +182,7 @@ class PatternGraphTests(ParserTestsBaseClass):
         self.assertIsInstance(final_node, PatternOneOrMoreWildCardNode)
 
     def get_text_from_element_word(self):
+        self.set_collection_sets()
         graph = PatternGraph(self._client_context.brain.aiml_parser)
         set_element = ET.fromstring('<set>colour</set>')
         text = graph.get_text_from_element(set_element)
@@ -179,6 +190,7 @@ class PatternGraphTests(ParserTestsBaseClass):
         self.assertEqual("colour", text)
 
     def get_text_from_element_whitespaces(self):
+        self.set_collection_sets()
         graph = PatternGraph(self._client_context.brain.aiml_parser)
         set_element = ET.fromstring('<set>colour \n\r\t  eyes</set>')
         text = graph.get_text_from_element(set_element)
@@ -186,6 +198,7 @@ class PatternGraphTests(ParserTestsBaseClass):
         self.assertEqual("colour set", text)
 
     def get_tail_from_element_word(self):
+        self.set_collection_sets()
         graph = PatternGraph(self._client_context.brain.aiml_parser)
         set_element = ET.fromstring('<set>colour</set>this')
         text = graph.get_tail_from_element(set_element)
@@ -477,7 +490,9 @@ class PatternGraphTests(ParserTestsBaseClass):
         that_element = ET.fromstring('<that>*</that>')
         template_graph_root = None
 
-        self._client_context.brain.sets._sets["SET1"] = ["VAL1", "VAL2", "VAL3", "VAL5"]
+        set_dict = {"VAL1": [["VAL1"]]}
+        values = {"VAL1": "val1"}
+        self._client_context.brain.sets.add_set("SET1", set_dict, "test_sets", False, values)
 
         element = ET.fromstring('<pattern><set>set1</set> IS A VALUE</pattern>')
         graph.add_pattern_to_graph(element, topic_element, that_element, template_graph_root)
@@ -494,7 +509,9 @@ class PatternGraphTests(ParserTestsBaseClass):
         that_element = ET.fromstring('<that>*</that>')
         template_graph_root = None
 
-        self._client_context.brain.sets._sets["SET1"] = ["val1", "val2", "val3", "val5"]
+        set_dict = {"VAL1": [["VAL1"]]}
+        values = {"VAL1": "val1"}
+        self._client_context.brain.sets.add_set("SET1", set_dict, "test_sets", False, values)
 
         element = ET.fromstring('<pattern><set name="set1" /></pattern>')
         graph.add_pattern_to_graph(element, topic_element, that_element, template_graph_root)
@@ -577,7 +594,9 @@ class PatternGraphTests(ParserTestsBaseClass):
         that_element = ET.fromstring('<that>*</that>')
         template_graph_root = None
 
-        self._client_context.brain.sets._sets["SET1"] = ["val1", "val2", "val3", "val5"]
+        set_dict = {"VAL1": [["VAL1"]]}
+        values = {"VAL1": "val1"}
+        self._client_context.brain.sets.add_set("SET1", set_dict, "test_sets", False, values)
         self._client_context.brain.properties.add_property('bot1', 'val1')
 
         element = ET.fromstring('<pattern>test1 test2 <set name="SET1" /> test4 <bot name="bot1" /> test6</pattern>')
@@ -770,6 +789,10 @@ class PatternGraphTests(ParserTestsBaseClass):
 
         base_node = PatternWordNode("TOPIC_TEST")
 
+        set_dict = {"VAL1": [["VAL1"]]}
+        values = {"VAL1": "val1"}
+        self._client_context.brain.sets.add_set("TEST", set_dict, "test_sets", False, values)
+
         topic_element = ET.fromstring('<topic>HELLO <set name="test" /> WORLD</topic>')
 
         end_node = graph.add_topic_to_node(topic_element, base_node)
@@ -839,6 +862,10 @@ class PatternGraphTests(ParserTestsBaseClass):
         graph = PatternGraph(self._client_context.brain.aiml_parser)
 
         base_node = PatternWordNode("THAT_TEST")
+
+        set_dict = {"VAL1": [["VAL1"]]}
+        values = {"VAL1": "val1"}
+        self._client_context.brain.sets.add_set("TEST", set_dict, "test_sets", False, values)
 
         that_element = ET.fromstring('<that>HELLO <set name="test" /> WORLD</that>')
 
@@ -922,6 +949,10 @@ class PatternGraphTests(ParserTestsBaseClass):
         topic_element = ET.fromstring('<topic>*</topic>')
         that_element = ET.fromstring('<that>*</that>')
         template_graph_root = None
+
+        set_dict = {"VAL1": [["VAL1"]]}
+        values = {"VAL1": "val1"}
+        self._client_context.brain.sets.add_set("ARTICLE", set_dict, "test_sets", False, values)
 
         pattern1 = "<pattern>IS A</pattern>"
         pattern2 = "<pattern>IS * <set>article</set> *</pattern>"

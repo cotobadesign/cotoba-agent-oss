@@ -26,6 +26,14 @@ from programy.parser.pattern.nodes.word import PatternWordNode
 
 class PatternGraphDuplicateTests(ParserTestsBaseClass):
 
+    def set_collection_properties(self):
+        self._client_context.brain.properties.add_property("A", "value")
+
+    def set_collection_sets(self):
+        set_dict = {"RED": [["RED"]]}
+        values = {"RED": "red"}
+        self._client_context.brain.sets.add_set("A", set_dict, "test_sets", False, values)
+
     def test_duplicate_pattern(self):
         graph = PatternGraph(self._client_context.brain.aiml_parser)
 
@@ -168,6 +176,7 @@ class PatternGraphDuplicateTests(ParserTestsBaseClass):
 
     def test_duplicate_set(self):
         graph = PatternGraph(self._client_context.brain.aiml_parser)
+        self.set_collection_sets()
 
         pattern_element = ET.fromstring("<pattern><set>A</set></pattern>")
         topic_element = ET.fromstring("<topic>*</topic>")
@@ -186,6 +195,7 @@ class PatternGraphDuplicateTests(ParserTestsBaseClass):
 
     def test_duplicate_set_and_word(self):
         graph = PatternGraph(self._client_context.brain.aiml_parser)
+        self.set_collection_sets()
 
         pattern_element = ET.fromstring("<pattern>A</pattern>")
         topic_element = ET.fromstring("<topic>*</topic>")
@@ -203,6 +213,7 @@ class PatternGraphDuplicateTests(ParserTestsBaseClass):
 
     def test_duplicate_set_and_word_otherwayround(self):
         graph = PatternGraph(self._client_context.brain.aiml_parser)
+        self.set_collection_sets()
 
         pattern_element = ET.fromstring("<pattern><set>A</set></pattern>")
         topic_element = ET.fromstring("<topic>*</topic>")
@@ -220,6 +231,7 @@ class PatternGraphDuplicateTests(ParserTestsBaseClass):
 
     def test_duplicate_bot(self):
         graph = PatternGraph(self._client_context.brain.aiml_parser)
+        self.set_collection_properties()
 
         pattern_element = ET.fromstring("<pattern><bot>A</bot></pattern>")
         topic_element = ET.fromstring("<topic>*</topic>")
@@ -238,6 +250,7 @@ class PatternGraphDuplicateTests(ParserTestsBaseClass):
 
     def test_duplicate_bot_and_word(self):
         graph = PatternGraph(self._client_context.brain.aiml_parser)
+        self.set_collection_properties()
 
         pattern_element = ET.fromstring("<pattern>A</pattern>")
         topic_element = ET.fromstring("<topic>*</topic>")
@@ -255,6 +268,7 @@ class PatternGraphDuplicateTests(ParserTestsBaseClass):
 
     def test_duplicate_bot_and_word_otherwayround(self):
         graph = PatternGraph(self._client_context.brain.aiml_parser)
+        self.set_collection_properties()
 
         pattern_element = ET.fromstring("<pattern><bot>A</bot></pattern>")
         topic_element = ET.fromstring("<topic>*</topic>")

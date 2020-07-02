@@ -108,7 +108,7 @@ class PatternGraph(object):
             text = TextUtils.strip_whitespace(element.text)
 
         node_class_instance = self._pattern_factory.new_node_class(node_name)
-        node_instance = node_class_instance(element.attrib, text, userid, element)
+        node_instance = node_class_instance(element.attrib, text, userid, element, brain=self._aiml_parser.brain)
 
         return node_instance
 

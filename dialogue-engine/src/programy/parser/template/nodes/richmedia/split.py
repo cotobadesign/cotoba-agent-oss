@@ -31,6 +31,7 @@ TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR TH
 """
 
 from programy.parser.template.nodes.base import TemplateNode
+from programy.parser.exceptions import ParserException
 
 
 class TemplateSplitNode(TemplateNode):
@@ -52,3 +53,5 @@ class TemplateSplitNode(TemplateNode):
     #
     def parse_expression(self, graph, expression):
         self._parse_node(graph, expression)
+        if self.children:
+            raise ParserException("Node should not contain child text", xml_element=expression, nodename='split')

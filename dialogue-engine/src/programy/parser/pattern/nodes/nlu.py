@@ -23,7 +23,7 @@ import json
 
 class PatternNluNode(PatternNode):
 
-    def __init__(self, attribs, text, userid='*', element=None):
+    def __init__(self, attribs, text, userid='*', element=None, brain=None):
         PatternNode.__init__(self, userid)
         if 'intent' in attribs:
             self._intent = attribs['intent']

@@ -37,12 +37,14 @@ from programy.parser.pattern.matcher import EqualsMatch
 from programy.parser.exceptions import ParserException
 from programy.utils.language.japanese import JapaneseLanguage
 
+import re
+
 
 class PatternISetNode(PatternNode):
 
     iset_count = 1
 
-    def __init__(self, attribs, text, userid='*', element=None):
+    def __init__(self, attribs, text, userid='*', element=None, brain=None):
         PatternNode.__init__(self, userid)
         self._words = {}
         self._values = {}
@@ -76,6 +78,10 @@ class PatternISetNode(PatternNode):
     def add_set_values(self, value):
         checkwords = JapaneseLanguage.zenhan_normalize(value)
         checkwords = checkwords.upper()
+        if self._is_CJK is True:
+            checkwords = checkwords.replace(' ', '')
+        else:
+            checkwords = re.sub(' +', ' ', checkwords)
         if checkwords in self._values:
             return
         self._values[checkwords] = value

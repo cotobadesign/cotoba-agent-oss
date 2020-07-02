@@ -113,10 +113,6 @@ class RestBotClient(BotClient):
         return None
 
     @abstractmethod
-    def get_errors_param(self, rest_request):
-        return None
-
-    @abstractmethod
     def create_response(self, response, status):
         raise NotImplementedError()
 
@@ -234,7 +230,6 @@ class RestBotClient(BotClient):
         userid = 'None'
         variables = 'None'
         reset_data = 'None'
-        errors_param = False
         debugInfo = {}
         self._status_code = 200
         self._error_msg = ''
@@ -245,7 +240,6 @@ class RestBotClient(BotClient):
                 userid = self.get_userid(request)
                 variables = self.get_variables(request)
                 reset_data = self.get_reset_param(request)
-                errors_param = self.get_errors_param(request)
         except Exception:
             pass
 
@@ -299,13 +293,12 @@ class RestBotClient(BotClient):
         except Exception:
             return {'error': 'Load duplicates failed'}, 500
 
-        if errors_param is True:
-            try:
-                errors_collection = self.get_errors_collection(client_context)
-                if errors_collection is not None:
-                    debugInfo.update(errors_collection)
-            except Exception:
-                pass
+        try:
+            errors_collection = self.get_errors_collection(client_context)
+            if errors_collection is not None:
+                debugInfo.update(errors_collection)
+        except Exception:
+            pass
 
         if userid == 'None':
             return debugInfo, 200

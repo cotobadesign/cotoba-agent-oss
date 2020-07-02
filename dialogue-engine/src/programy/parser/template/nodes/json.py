@@ -416,7 +416,11 @@ class TemplateJsonNode(TemplateNode):
             self.keys = name.split('.')
             if '' in self.keys:
                 YLogger.debug(self, "JSON invalid key")
-                return ''
+                if len(resolved) == 0 and self.function != 'delete':
+                    return TemplateGetNode.get_default_value(client_context)
+                else:
+                    return ''
+
             if self._type == "var":
                 if conversation.has_current_question():
                     value = conversation.current_question().property(self.keys[0])

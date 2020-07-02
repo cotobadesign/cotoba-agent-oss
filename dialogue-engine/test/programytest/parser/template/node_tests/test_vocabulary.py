@@ -107,7 +107,7 @@ class TemplateVocabularyNodeTests(ParserTestsBaseClass):
         xml = root.xml_tree(self._client_context)
         self.assertIsNotNone(xml)
         xml_str = ET.tostring(xml, "utf-8").decode("utf-8")
-        self.assertEqual("<template><vocabulary>Test</vocabulary></template>", xml_str)
+        self.assertEqual("<template><vocabulary /></template>", xml_str)
 
     def test_node_exception_handling(self):
         root = TemplateNode()

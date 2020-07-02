@@ -78,8 +78,10 @@ class FileMapsStore(FileStore, MapsStore):
         except Exception as excep:
             YLogger.exception(self, "Failed to load map [%s]", excep, filename)
 
-        map_name = self.get_just_filename_from_filepath(filename)
-        map_collection.add_map(map_name, the_map, filename)
+        if len(the_map) > 0:
+            name = self.get_just_filename_from_filepath(filename)
+            map_name = JapaneseLanguage.zenhan_normalize(name)
+            map_collection.add_map(map_name, the_map, filename)
 
         return self.storage_engine.configuration.maps_storage
 

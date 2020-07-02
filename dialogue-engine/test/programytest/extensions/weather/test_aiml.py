@@ -68,6 +68,7 @@ class WeathersTestsClient(TestClient):
         super(WeathersTestsClient, self).load_storage()
         self.add_default_stores()
         self.add_categories_store([os.path.dirname(__file__)])
+        self.add_properties_store(os.path.dirname(__file__) + os.sep + "properties.txt")
 
 
 class WeathersAIMLTests(unittest.TestCase):
