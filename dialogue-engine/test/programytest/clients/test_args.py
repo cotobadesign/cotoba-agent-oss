@@ -29,7 +29,8 @@ class MockArguments(object):
                  cformat="yaml",
                  noloop=False,
                  substitutions='subs.txt',
-                 stdoutlog=False
+                 stdoutlog=False,
+                 stderrlog=False
                  ):
         self.bot_root = bot_root
         self.logging = logging
@@ -38,6 +39,7 @@ class MockArguments(object):
         self.noloop = noloop
         self.substitutions = substitutions
         self.stdoutlog = stdoutlog
+        self.stderrlog = stderrlog
 
 
 class MockArgumentParser(object):
@@ -77,6 +79,7 @@ class ClientArgumentsTests(unittest.TestCase):
         self.assertIsNotNone(args.noloop)
         self.assertIsNone(args.substitutions)
         self.assertIsNotNone(args.stdoutlog)
+        self.assertIsNotNone(args.stderrlog)
 
         args.bot_root = os.sep + "tmp"
         self.assertIsNotNone(args.bot_root)
@@ -99,6 +102,7 @@ class CommandLineClientArgumentsTests(unittest.TestCase):
         self.assertEqual(args._no_loop, False)
         self.assertEqual(args._substitutions, "subs.txt")
         self.assertEqual(args._stdoutlog, False)
+        self.assertEqual(args._stderrlog, False)
 
     def test_init_command_line_parser(self):
         args = CommandLineClientArguments(client=MockClient())
@@ -111,3 +115,4 @@ class CommandLineClientArgumentsTests(unittest.TestCase):
         self.assertIsNotNone(args._no_loop)
         self.assertIsNone(args.substitutions)
         self.assertIsNotNone(args.stdoutlog)
+        self.assertIsNotNone(args.stderrlog)

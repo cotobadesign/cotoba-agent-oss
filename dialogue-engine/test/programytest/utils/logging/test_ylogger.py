@@ -33,6 +33,7 @@ class YLoggerTests(unittest.TestCase):
     def setUp(self):
         YLogger.DEFAULT_LEVEL = None
         YLogger.IS_STDOUT = False
+        YLogger.IS_STDERR = False
 
     def test_ylogger(self):
         client_context = ClientContext(TestClient(), "testid")
@@ -326,10 +327,52 @@ class YLoggerTests(unittest.TestCase):
         json_data2 = '{"key_a":"%s", "key_b": "%d"}'
         YLogger.debug(client_context, 'json_data : "%s"', json_data2)
 
-    def test_exception_is_none(self):
+    def test_exception_is_none_with_stdout(self):
         client = TestClient()
         client_context = ClientContext(client, "testid")
         logging.getLogger().setLevel(level=logging.DEBUG)
         YLogger.set_stdout("True")
+
+        YLogger.exception(client_context, "Exception Log", None)
+
+    def test_set_stderror(self):
+        client = TestClient()
+        client_context = ClientContext(client, "testid")
+
+        logging.getLogger().setLevel(level=logging.DEBUG)
+        YLogger.set_stderr("True")
+
+        YLogger.critical(client_context, "Critical Log")
+        YLogger.fatal(client_context, "Fatal Log")
+        YLogger.error(client_context, "Error Log")
+        YLogger.exception(client_context, "Exception Log", Exception("test"))
+        YLogger.warning(client_context, "Warning Log")
+        YLogger.info(client_context, "Info Log")
+        YLogger.debug(client_context, "Debug Log")
+
+    def test_set_stderror_json(self):
+        client = TestClient()
+        client_context = ClientContext(client, "testid")
+
+        logging.getLogger().setLevel(level=logging.DEBUG)
+        YLogger.set_stderr("True")
+
+        tmp_str = 'test'
+        tmp_val = 99
+        YLogger.debug(client_context, '{"key_a":"%s", "key_b": "%d"}', tmp_str, tmp_val)
+
+        YLogger.debug(client_context, '{"key_a":"%s", "key_b": "%d"}')
+
+        json_data1 = '{"key_a":"%s", "key_b": "%d"}' % (tmp_str, tmp_val)
+        YLogger.debug(client_context, 'json_data : "%s"', json_data1)
+
+        json_data2 = '{"key_a":"%s", "key_b": "%d"}'
+        YLogger.debug(client_context, 'json_data : "%s"', json_data2)
+
+    def test_exception_is_none_with_stderror(self):
+        client = TestClient()
+        client_context = ClientContext(client, "testid")
+        logging.getLogger().setLevel(level=logging.DEBUG)
+        YLogger.set_stderr("True")
 
         YLogger.exception(client_context, "Exception Log", None)
