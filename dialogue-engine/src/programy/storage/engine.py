@@ -73,6 +73,9 @@ class StorageEngine(object):
     def nlu_store(self):
         raise NotImplementedError("Engine does not support NLU storage")
 
+    def bot_names_store(self):
+        raise NotImplementedError("Engine does not support Bot Names storage")
+
     def sets_store(self):
         raise NotImplementedError("Engine does not support sets storage")
 

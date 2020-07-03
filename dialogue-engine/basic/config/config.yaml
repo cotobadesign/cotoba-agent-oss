@@ -30,6 +30,7 @@ yadlan:
             properties: file
             defaults: file
             nlu_servers: file
+            bot_names: file
 
             spelling_corpus: file
             license_keys: file
@@ -99,7 +100,9 @@ yadlan:
                         file: ../storage/properties/defaults.txt
                     nlu_servers_storage:
                         file: ../storage/properties/nlu_servers.yaml
-    
+                    bot_names_storage:
+                        file: ../storage/properties/botnames.yaml
+
                     spelling_corpus_storage:
                         file: ../storage/spelling/corpus.txt
 
@@ -159,6 +162,7 @@ console:
             properties: file
             defaults: file
             nlu_servers: file
+            bot_names: file
 
             spelling_corpus: file
             license_keys: file
@@ -226,6 +230,8 @@ console:
                         file: ../storage/properties/defaults.txt
                     nlu_servers_storage:
                         file: ../storage/properties/nlu_servers.yaml
+                    bot_names_storage:
+                        file: ../storage/properties/botnames.yaml
     
                     spelling_corpus_storage:
                         file: ../storage/spelling/corpus.txt
@@ -347,7 +353,6 @@ brain:
             classname: programy.services.publishedrest.PublishedRestService
         __PublishedBot__:
             classname: programy.services.publishedbot.PublishedBotService
-            host: 'http://localhost:5200'
 
     security:
         authentication:
