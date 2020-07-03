@@ -313,9 +313,6 @@ bot:
 #
 
 brain:
-    bot_name: BOT_XXXX
-    manager_name: API_KEY_XXXX
-
     # Overrides
     overrides:
       allow_system_aiml: false
