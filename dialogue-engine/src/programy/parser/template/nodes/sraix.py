@@ -32,6 +32,7 @@ TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR TH
 
 import json
 import ast
+import copy
 
 from programy.utils.logging.ylogger import YLogger
 
@@ -79,8 +80,7 @@ class TemplateSRAIXNode(TemplateNode):
         self._header = None
         self._body = None
 
-        self._botId = None
-        self._botHost = None
+        self._botName = None
         self._locale = None
         self._time = None
         self._userId = None
@@ -94,12 +94,8 @@ class TemplateSRAIXNode(TemplateNode):
         self._default = None
 
     @property
-    def botId(self):
-        return self._botId
-
-    @property
-    def botHost(self):
-        return self._botHost
+    def botName(self):
+        return self._botName
 
     @property
     def service(self):
@@ -109,13 +105,9 @@ class TemplateSRAIXNode(TemplateNode):
     def default(self):
         return self._default
 
-    @botId.setter
-    def botId(self, botId):
-        self._botId = botId
-
-    @botHost.setter
-    def botHost(self, botHost):
-        self._botHost = botHost
+    @botName.setter
+    def botName(self, botName):
+        self._botName = botName
 
     @service.setter
     def service(self, service):
@@ -197,49 +189,67 @@ class TemplateSRAIXNode(TemplateNode):
         self.metadata = None
         self.config = None
 
-        conversation = client_context.bot.get_conversation(client_context)
-
+        self.userId = self._userId.resolve(client_context)
         if self._locale is not None:
             self.locale = self._locale.resolve(client_context)
         if self._time is not None:
             self.time = self._time.resolve(client_context)
-        if self._userId is not None:
-            self.userId = self._userId.resolve(client_context)
         if self._topic is not None:
             self.topic = self._topic.resolve(client_context)
-        if self._topic is None or self.topic == '*':
-            if conversation.property('topic') != '*':
-                self.topic = conversation.property('topic')
-        if self._deleteVariable is None:
-            self.deleteVariable = None
-        else:
+        if self._deleteVariable is not None:
             self.deleteVariable = self._deleteVariable.resolve(client_context)
-            if self.deleteVariable.upper() == 'TRUE':
-                self.deleteVariable = True
-            else:
-                self.deleteVariable = False
-        if self._metadata is not None:
-            self.metadata = self._metadata.resolve(client_context)
         if self._config is not None:
             shift_text = self._config.resolve(client_context)
             self.config = self._delete_shift_code(shift_text)
+        if self._metadata is not None:
+            self.metadata = self._metadata.resolve(client_context)
+
+        bot_service = ServiceFactory.get_service(self.SERVICE_PUBLISHED_BOT)
+
+        botInfo = client_context.brain.botnames.botInfo(self.botName)
+        if botInfo is None:
+            YLogger.debug(client_context, "BotName[%s] not found")
+            return ''
+
+        exec_botInfo = copy.copy(botInfo)
+
+        error_msg = None
+        self.userId = self._userId.resolve(client_context)
+        if self.userId is None or self.userId == '':
+            error_msg = "userId is empty"
+
+        if error_msg is None and self.locale is not None:
+            if exec_botInfo.set_locale(self.locale) is False:
+                error_msg = "invalid locale parameter [%s]" % self.locale
+        if error_msg is None and self.time is not None:
+            if exec_botInfo.set_time(self.time) is False:
+                error_msg = "invalid time parameter [%s]" % self.time
+        if error_msg is None and self.topic is not None:
+            if exec_botInfo.set_topic(self.topic) is False:
+                error_msg = "invalid topic parameter [%s]" % self.topic
+        if error_msg is None and self.deleteVariable is not None:
+            if exec_botInfo.set_deleteVariable(self.deleteVariable) is False:
+                error_msg = "invalid deleteVariable parameter [%s]" % self.deleteVariable
+        if error_msg is None and self.config is not None:
+            if exec_botInfo.set_config(self.config) is False:
+                error_msg = "invalid config parameter [%s]" % self.config
+        if error_msg is None and self.metadata is not None:
+            if exec_botInfo.join_metadata(self.metadata) is False:
+                error_msg = "invalid metadata parameter [%s]" % self.metadata
+
+        if error_msg is not None:
+            YLogger.debug(client_context, error_msg)
+            return ''
 
         resolved = self.resolve_children_to_string(client_context)
         YLogger.debug(client_context, "[%s] resolved to [%s]", self.to_string(), resolved)
 
-        bot_service = ServiceFactory.get_service(self.SERVICE_PUBLISHED_BOT)
-        bot_service.botId = self.botId
-        bot_service.botHost = self.botHost
-        bot_service.locale = self.locale
-        bot_service.time = self.time
+        bot_service.botInfo = exec_botInfo
         bot_service.userId = self.userId
-        bot_service.topic = self.topic
-        bot_service.deleteVariable = self.deleteVariable
-        bot_service.metadata = self.metadata
-        bot_service.config = self.config
         response = bot_service.ask_question(client_context, resolved)
-        YLogger.debug(client_context, "SRAIX botid [%s] return [%s]", self._botId, response)
+        YLogger.debug(client_context, "SRAIX botName [%s] return [%s]", self._botName, response)
 
+        conversation = client_context.bot.get_conversation(client_context)
         status_code = ''
         try:
             status_code = bot_service.get_status_code()
@@ -257,11 +267,11 @@ class TemplateSRAIXNode(TemplateNode):
                 if response != '':
                     try:
                         response_dic = json.loads(response)
-                        save_dic = {self._botId: response_dic}
-                        conversation.current_question().set_property(variableName, json.dumps(save_dic))
+                        save_dic = {self._botName: response_dic}
+                        conversation.current_question().set_property(variableName, json.dumps(save_dic, ensure_ascii=False))
                         response_data = response_dic['response']
                         if type(response_data) is dict:
-                            response = json.dumps(response_data)
+                            response = json.dumps(response_data, ensure_ascii=False)
                         else:
                             response = response_data
                     except Exception:
@@ -272,7 +282,7 @@ class TemplateSRAIXNode(TemplateNode):
                 else:
                     if self.default is not None:
                         response = self.default
-                    variableName += ".%s" % self._botId
+                    variableName += ".%s" % self._botName
                     conversation.current_question().set_property(variableName, response)
         return response
 
@@ -318,7 +328,7 @@ class TemplateSRAIXNode(TemplateNode):
                         conversation.current_question().set_property(variableName, response)
             return response
 
-        elif self._botId is not None:
+        elif self._botName is not None:
             response = self._published_Bot_interface(client_context)
             return response
 
@@ -337,10 +347,8 @@ class TemplateSRAIXNode(TemplateNode):
                 texts += ", default=%s" % self.default
             texts += ")]"
             return texts
-        elif self._botId is not None:
-            texts = "[SRAIX (botID=%s" % self.botId
-            if self._botHost is not None:
-                texts += ", host=%s" % self.botHost
+        elif self._botName is not None:
+            texts = "[SRAIX (botName=%s" % self.botName
             if self._default is not None:
                 texts += ", default=%s" % self.default
             if self._locale is not None:
@@ -383,10 +391,8 @@ class TemplateSRAIXNode(TemplateNode):
             if self._default is not None:
                 xml += ' default="%s"' % self._default
             xml += '>'
-        elif self._botId is not None:
-            xml += ' botId="%s"' % self._botId
-            if self._botHost is not None:
-                xml += ' host="%s"' % self._botHost
+        elif self._botName is not None:
+            xml += ' botName="%s"' % self._botName
             if self._default is not None:
                 xml += ' default="%s"' % self._default
             xml += '>'
@@ -425,8 +431,8 @@ class TemplateSRAIXNode(TemplateNode):
         return xml
 
     #######################################################################################################
-    # SRAIX_ATTRIBUTES ::= host="HOSTNAME" | botid="BOTID" | hint="TEXT" | apikey="APIKEY" | service="SERVICE"
-    # SRAIX_ATTRIBUTE_TAGS ::= <host>TEMPLATE_EXPRESSION</host> | <botid>TEMPLATE_EXPRESSION</botid> |
+    # SRAIX_ATTRIBUTES ::= host="HOSTNAME" | botName="BOTNAME" | hint="TEXT" | apikey="APIKEY" | service="SERVICE"
+    # SRAIX_ATTRIBUTE_TAGS ::= <host>TEMPLATE_EXPRESSION</host> | <botName>TEMPLATE_EXPRESSION</botName> |
     # <hint>TEMPLATE_EXPRESSION</hint> | <apikey>TEMPLATE_EXPRESSION</apikey> | <service>TEMPLATE_EXPRESSION</service>
     # SRAIX_EXPRESSION ::== <sraix( SRAIX_ATTRIBUTES)*>TEMPLATE_EXPRESSION</sraix> |
 
@@ -453,8 +459,6 @@ class TemplateSRAIXNode(TemplateNode):
     def parse_expression(self, graph, expression):
         mode_count = 0
 
-        if 'host' in expression.attrib:
-            self._botHost = expression.attrib['host']
         if 'method' in expression.attrib:
             YLogger.warning(self, "'method' attrib not supported in sraix, moved to config, see documentation")
         if 'query' in expression.attrib:
@@ -464,11 +468,12 @@ class TemplateSRAIXNode(TemplateNode):
         if 'body' in expression.attrib:
             YLogger.warning(self, "'body' attrib not supported in sraix, moved to config, see documentation")
 
-        if 'botId' in expression.attrib:
+        if 'botName' in expression.attrib:
+            bot_name = expression.attrib['botName']
+            if graph.aiml_parser.brain.botnames.botInfo(bot_name) is None:
+                raise ParserException("BotName[%s] not found" % bot_name, xml_element=expression, nodename='sraix')
             mode_count += 1
-            self._botId = expression.attrib['botId']
-        if 'apiKey' in expression.attrib:
-            YLogger.warning(self, "'apiKey' attrib not supported in sraix, moved to config, see documentation")
+            self._botName = bot_name
         if 'locale' in expression.attrib:
             YLogger.warning(self, "'locale' attrib not supported in sraix, moved to config, see documentation")
         if 'time' in expression.attrib:
@@ -512,10 +517,8 @@ class TemplateSRAIXNode(TemplateNode):
             elif tag_name == 'body':
                 self._body = self._parse_template_node(graph, child, 'body', False)
 
-            elif tag_name == 'botId':
-                YLogger.warning(self, "'botId' element not supported in sraix, moved to config, see documentation")
-            elif tag_name == 'apiKey':
-                YLogger.warning(self, "'apiKey' element not supported in sraix, moved to config, see documentation")
+            elif tag_name == 'botName':
+                YLogger.warning(self, "'botName' element not supported in sraix, moved to config, see documentation")
             elif tag_name == 'locale':
                 self._locale = self._parse_template_node(graph, child, 'locale', False)
             elif tag_name == 'time':
@@ -547,3 +550,7 @@ class TemplateSRAIXNode(TemplateNode):
             raise ParserException("Missing type attribute or host element", xml_element=expression, nodename='sraix')
         elif mode_count > 1:
             raise ParserException("Node has Multiple type attribute or host element", xml_element=expression, nodename='sraix')
+
+        if self._botName is not None:
+            if self._userId is None:
+                raise ParserException("userId not defined for Bot communication", xml_element=expression, nodename='sraix')
