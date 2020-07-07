@@ -60,9 +60,12 @@ class FileBotNamesStore(FileStore, BotNamesStore):
     def _make_botname_info(self, collection, bot_yaml):
         error_info = None
         url = self._get_yaml_option(bot_yaml, 'url')
+        if url is None:
+            error_info = "no url parameter"
+            return None, error_info
         apikey = self._get_yaml_option(bot_yaml, 'apikey')
         bot_info = collection.make_botInfo(url, apikey)
-        if bot_info.url is None:
+        if bot_info is None:
             error_info = "illegal basic parameter url=[%s] apikey=[%s]" % (url, apikey)
             return None, error_info
 
@@ -78,7 +81,7 @@ class FileBotNamesStore(FileStore, BotNamesStore):
         if bot_info.set_topic(topic) is False:
             error_info = "invalid topic parameter [%s]" % topic
             return None, error_info
-        deleteVariable = self._get_yaml_bool_option(bot_yaml, 'deleteVariable')
+        deleteVariable = self._get_yaml_option(bot_yaml, 'deleteVariable')
         if bot_info.set_deleteVariable(deleteVariable) is False:
             error_info = "invalid deleteVariable parameter [%s]" % deleteVariable
             return None, error_info
@@ -103,20 +106,10 @@ class FileBotNamesStore(FileStore, BotNamesStore):
 
     def _get_yaml_option(self, section, option_name):
         if option_name in section:
-            return section[option_name]
-        return None
-
-    def _get_yaml_bool_option(self, section, option_name):
-        if option_name in section:
-            option_value = section[option_name]
-            if isinstance(option_value, bool):
-                return option_value
+            if type(section[option_name]) is str:
+                return section[option_name]
             else:
-                try:
-                    value = bool(option_value)
-                    return value
-                except Exception:
-                    return option_value
+                return str(section[option_name])
         return None
 
     def get_storage(self):

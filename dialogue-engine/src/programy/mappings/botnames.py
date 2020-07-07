@@ -33,7 +33,8 @@ class PublicBotInfo(object):
         if apikey is None:
             self._header['x-api-key'] = ''
         else:
-            self._header['x-api-key'] = self._apikey
+            apikey = apikey.strip()
+            self._header['x-api-key'] = apikey
 
         self._locale = None
         self._time = None
@@ -80,7 +81,10 @@ class PublicBotInfo(object):
 
     def set_locale(self, locale):
         self._locale = None
-        if locale is None or locale == '':
+        if locale is None:
+            return True
+        locale = locale.strip()
+        if locale == '':
             return True
 
         if '-' not in locale:
@@ -110,7 +114,10 @@ class PublicBotInfo(object):
 
     def set_time(self, time):
         self._time = None
-        if time is None or time == '':
+        if time is None:
+            return True
+        time = time.strip()
+        if time == '':
             return True
 
         try:
@@ -124,7 +131,10 @@ class PublicBotInfo(object):
 
     def set_topic(self, topic):
         self._topic = None
-        if topic is None or topic == '' or topic == '*':
+        if topic is None:
+            return True
+        topic = topic.strip()
+        if topic == '' or topic == '*':
             return True
 
         self._topic = topic
@@ -144,10 +154,13 @@ class PublicBotInfo(object):
 
     def set_deleteVariable(self, deleteVariable):
         self._deleteVariable = False
-        if deleteVariable is None or deleteVariable == '':
+        if deleteVariable is None:
             return True
 
         if type(deleteVariable) is str:
+            deleteVariable = deleteVariable.strip()
+            if deleteVariable == '':
+                return True
             value = deleteVariable.upper()
             if value == "FALSE":
                 deleteVariable = False
@@ -165,7 +178,10 @@ class PublicBotInfo(object):
 
     def set_config(self, config):
         self._config = None
-        if config is None or config == '':
+        if config is None:
+            return True
+        config = config.strip()
+        if config == '':
             return True
 
         try:
@@ -234,18 +250,21 @@ class BotNamesCollection(object):
             self._errors_dict.append(error_info)
 
     def make_botInfo(self, url, apikey):
-        botInfo = PublicBotInfo(url, apikey)
-        if botInfo.url is None:
+        if url is None:
             return None
+        url = url.strip()
+        if url == '':
+            return None
+        botInfo = PublicBotInfo(url, apikey)
         return botInfo
 
     def add_botname(self, name, botInfo, filename, line):
         bot_name = JapaneseLanguage.zenhan_normalize(name)
-        bot_name = re.sub(' +', ' ', bot_name.upper())
+        bot_name = bot_name.upper()
         if bot_name not in self._botnames:
             self._botnames[bot_name] = botInfo
         else:
-            error_info = "duplicate botname='%s' (botId='%s' is invalid)" % (name, botInfo.botid)
+            error_info = "duplicate botname='%s' (url='%s' is invalid)" % (name, botInfo.url)
             self.set_error_info(filename, line, error_info)
             return
 

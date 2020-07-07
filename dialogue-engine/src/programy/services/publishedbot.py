@@ -91,7 +91,7 @@ class PublishedBotService(Service):
             payload.update({'time': botInfo.time})
         if botInfo.topic is not None:
             payload.update({'topic': botInfo.topic})
-        if botInfo.deleteVariable is not None:
+        if botInfo.deleteVariable is not None and botInfo.deleteVariable is True:
             payload.update({'deleteVariable': botInfo.deleteVariable})
         if botInfo.metadata is not None:
             payload.update({'metadata': botInfo.metadata})
