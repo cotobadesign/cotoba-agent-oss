@@ -21,7 +21,8 @@ class MockArguments(object):
                  cformat="yaml",
                  noloop=False,
                  substitutions='subs.txt',
-                 stdoutlog=False):
+                 stdoutlog=False,
+                 stderrlog=False):
         self.bot_root = bot_root
         self.logging = logging
         self.config = config
@@ -29,11 +30,12 @@ class MockArguments(object):
         self.noloop = noloop
         self.substitutions = substitutions
         self.stdoutlog = stdoutlog
+        self.stderrlog = stderrlog
 
 
 class MockArgumentParser(object):
 
-    def __init__(self, bot_root=".", logging=None, config=None, cformat="yaml", noloop=False, substitutions='subs.txt', stdoutlog=False):
+    def __init__(self, bot_root=".", logging=None, config=None, cformat="yaml", noloop=False, substitutions='subs.txt', stdoutlog=False, stderrlog=False):
         self.bot_root = bot_root
         self.logging = logging
         self.config = config
@@ -41,6 +43,7 @@ class MockArgumentParser(object):
         self.noloop = noloop
         self.substitutions = substitutions
         self.stdoutlog = stdoutlog
+        self.stderrlog = stderrlog
 
     def add_argument(self, argument, dest=None, action=None, help=None, default=False):
         pass
@@ -52,4 +55,5 @@ class MockArgumentParser(object):
                              cformat=self.cformat,
                              noloop=self.noloop,
                              substitutions=self.substitutions,
-                             stdoutlog=False)
+                             stdoutlog=False,
+                             stderrlog=False)
