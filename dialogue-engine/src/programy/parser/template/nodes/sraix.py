@@ -208,38 +208,39 @@ class TemplateSRAIXNode(TemplateNode):
 
         botInfo = client_context.brain.botnames.botInfo(self.botName)
         if botInfo is None:
-            YLogger.debug(client_context, "BotName[%s] not found")
-            return ''
+            error_msg = "sraix subagent-bot : botName[%s] not found" % self.botName
+            YLogger.debug(client_context, error_msg)
+            raise Exception(error_msg)
 
         exec_botInfo = copy.copy(botInfo)
 
         error_msg = None
         self.userId = self._userId.resolve(client_context)
         if self.userId is None or self.userId == '':
-            error_msg = "userId is empty"
+            error_msg = "sraix subagent-bot : userId is empty"
 
         if error_msg is None and self.locale is not None:
             if exec_botInfo.set_locale(self.locale) is False:
-                error_msg = "invalid locale parameter [%s]" % self.locale
+                error_msg = "sraix subagent-bot : invalid locale parameter [%s]" % self.locale
         if error_msg is None and self.time is not None:
             if exec_botInfo.set_time(self.time) is False:
-                error_msg = "invalid time parameter [%s]" % self.time
+                error_msg = "sraix subagent-bot : invalid time parameter [%s]" % self.time
         if error_msg is None and self.topic is not None:
             if exec_botInfo.set_topic(self.topic) is False:
-                error_msg = "invalid topic parameter [%s]" % self.topic
+                error_msg = "sraix subagent-bot : invalid topic parameter [%s]" % self.topic
         if error_msg is None and self.deleteVariable is not None:
             if exec_botInfo.set_deleteVariable(self.deleteVariable) is False:
-                error_msg = "invalid deleteVariable parameter [%s]" % self.deleteVariable
+                error_msg = "sraix subagent-bot : invalid deleteVariable parameter [%s]" % self.deleteVariable
         if error_msg is None and self.config is not None:
             if exec_botInfo.set_config(self.config) is False:
-                error_msg = "invalid config parameter [%s]" % self.config
+                error_msg = "sraix subagent-bot : invalid config parameter [%s]" % self.config
         if error_msg is None and self.metadata is not None:
             if exec_botInfo.join_metadata(self.metadata) is False:
-                error_msg = "invalid metadata parameter [%s]" % self.metadata
+                error_msg = "sraix subagent-bot : invalid metadata parameter [%s]" % self.metadata
 
         if error_msg is not None:
             YLogger.debug(client_context, error_msg)
-            return ''
+            raise Exception(error_msg)
 
         resolved = self.resolve_children_to_string(client_context)
         YLogger.debug(client_context, "[%s] resolved to [%s]", self.to_string(), resolved)
