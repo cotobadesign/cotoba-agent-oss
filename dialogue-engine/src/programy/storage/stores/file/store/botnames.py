@@ -106,7 +106,9 @@ class FileBotNamesStore(FileStore, BotNamesStore):
 
     def _get_yaml_option(self, section, option_name):
         if option_name in section:
-            if type(section[option_name]) is str:
+            if section[option_name] is None:
+                return None
+            elif type(section[option_name]) is str:
                 return section[option_name]
             else:
                 return str(section[option_name])
