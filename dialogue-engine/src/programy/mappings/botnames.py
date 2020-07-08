@@ -206,7 +206,7 @@ class PublicBotInfo(object):
         try:
             join_metadata = json.loads(metadata)
         except Exception:
-            join__metadata = metadata
+            join_metadata = metadata
 
         if type(self._metadata) is dict and type(join_metadata) is dict:
             for key, value in join_metadata.items():
@@ -216,7 +216,7 @@ class PublicBotInfo(object):
                         continue
                 self._metadata[key] = value
         else:
-            self._metadata = join__metadata
+            self._metadata = join_metadata
 
 
 class BotNamesCollection(object):
