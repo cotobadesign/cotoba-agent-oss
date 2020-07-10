@@ -73,63 +73,29 @@ class PublishedRestService(Service):
         else:
             self.api = api
 
-        self._host = None
-        self._method = None
-        self._query = None
-        self._header = None
-        self._body = None
+        self._params = None
         self._status_code = ''
 
     @property
-    def host(self):
-        return self._host
+    def params(self):
+        return self._params
 
-    @property
-    def method(self):
-        return self._method
-
-    @property
-    def query(self):
-        return self._query
-
-    @property
-    def header(self):
-        return self._header
-
-    @property
-    def body(self):
-        return self._body
-
-    @host.setter
-    def host(self, host):
-        self._host = host
-
-    @method.setter
-    def method(self, method):
-        self._method = method
-
-    @query.setter
-    def query(self, query):
-        self._query = query
-
-    @header.setter
-    def header(self, header):
-        self._header = header
-
-    @body.setter
-    def body(self, body):
-        self._body = body
+    @params.setter
+    def params(self, params):
+        self._params = params
 
     def check_char_type(self):
         char_type = None
         is_XML = False
-        if self._header is None or type(self._header) is not dict:
+        header = self.params.header
+
+        if header is None or type(header) is not dict:
             return char_type, is_XML
 
         content_type = None
-        for header_key in self._header:
+        for header_key in header:
             if header_key.upper() == 'CONTENT-TYPE':
-                content_type = self._header[header_key]
+                content_type = header[header_key]
                 break
         if content_type is not None:
             params = content_type.split(';')
@@ -150,53 +116,63 @@ class PublishedRestService(Service):
     def ask_question(self, client_context, question: str):
         self._status_code = ''
 
-        if self._host is None:
+        if self.params is None:
             return ""
 
-        if self._query is not None:
-            for key, value in self._query.items():
+        if self.params.host is None:
+            return ""
+
+        if len(self.params.query) > 0:
+            query_list = self.params.query
+            for key, value in query_list.items():
                 if key == "":
                     YLogger.debug(client_context, "Query key is empty: {"": %s}", value)
                     return ""
             try:
-                query = urllib.parse.urlencode(self._query)
+                query = urllib.parse.urlencode(query_list)
             except Exception as excep:
                 YLogger.debug(client_context, "Failed to encode query: %s", str(excep))
                 return ""
         else:
             query = None
 
-        if self.body is not None:
+        if len(self.params.header) > 0:
+            header = self.params.header
+        else:
+            header = None
+
+        if self.params.body is not None:
+            body_data = self.params.body
             char_type, is_XML = self.check_char_type()
             if is_XML is True:
                 try:
-                    xml_dict = json.loads(self.body)
-                    self.body = xmltodict.unparse(xml_dict)
+                    xml_dict = json.loads(body_data)
+                    body_data = xmltodict.unparse(xml_dict)
                 except Exception as excep:
                     YLogger.debug(client_context, "Failed to convert JSON to XML: %s", str(excep))
                     return ""
 
             if char_type is not None:
-                body = self.body.encode(char_type)
+                body = body_data.encode(char_type)
             else:
-                body = self.body
+                body = body_data
         else:
             body = None
 
         try:
             self._status_code = '000'
-            if self._method == 'GET':
-                response = self.api.get(self._host, query=query, header=self._header, body=body)
-            elif self.method == 'POST':
-                response = self.api.post(self._host, query=query, header=self._header, body=body)
-            elif self.method == 'PUT':
-                response = self.api.put(self._host, query=query, header=self._header, body=body)
-            elif self.method == 'DELETE':
-                response = self.api.delete(self._host, query=query, header=self._header, body=body)
-            elif self.method == 'PATCH':
-                response = self.api.patch(self._host, query=query, header=self._header, body=body)
+            if self.params.method == 'GET':
+                response = self.api.get(self.params.host, query=query, header=header, body=body)
+            elif self.params.method == 'POST':
+                response = self.api.post(self.params.host, query=query, header=header, body=body)
+            elif self.params.method == 'PUT':
+                response = self.api.put(self.params.host, query=query, header=header, body=body)
+            elif self.params.method == 'DELETE':
+                response = self.api.delete(self.params.host, query=query, header=header, body=body)
+            elif self.params.method == 'PATCH':
+                response = self.api.patch(self.params.host, query=query, header=header, body=body)
             else:
-                raise Exception("Unsupported REST method [%s]" % self._method)
+                raise Exception("Unsupported REST method [%s]" % self.params.method)
 
             self._status_code = str(response.status_code)
             if response.status_code == 200:
