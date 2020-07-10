@@ -31,6 +31,7 @@ yadlan:
             defaults: file
             nlu_servers: file
             bot_names: file
+            rest_templates: file
 
             spelling_corpus: file
             license_keys: file
@@ -103,6 +104,9 @@ yadlan:
                     bot_names_storage:
                         file: ../storage/properties/botnames.yaml
 
+                    rest_templates_storage:
+                        file: ../storage/properties/rest_templates.yaml
+    
                     spelling_corpus_storage:
                         file: ../storage/spelling/corpus.txt
 
@@ -163,6 +167,7 @@ console:
             defaults: file
             nlu_servers: file
             bot_names: file
+            rest_templates: file
 
             spelling_corpus: file
             license_keys: file
@@ -232,6 +237,8 @@ console:
                         file: ../storage/properties/nlu_servers.yaml
                     bot_names_storage:
                         file: ../storage/properties/botnames.yaml
+                    rest_templates_storage:
+                        file: ../storage/properties/rest_templates.yaml
     
                     spelling_corpus_storage:
                         file: ../storage/spelling/corpus.txt
