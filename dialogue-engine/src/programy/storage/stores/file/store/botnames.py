@@ -105,6 +105,8 @@ class FileBotNamesStore(FileStore, BotNamesStore):
         return section.keys()
 
     def _get_yaml_option(self, section, option_name):
+        if type(section) is not dict:
+            return None
         if option_name in section:
             if section[option_name] is None:
                 return None

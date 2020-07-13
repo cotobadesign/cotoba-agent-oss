@@ -189,7 +189,8 @@ class TemplateSRAIXNode(TemplateNode):
         self.metadata = None
         self.config = None
 
-        self.userId = self._userId.resolve(client_context)
+        if self._userId is not None:
+            self.userId = self._userId.resolve(client_context)
         if self._locale is not None:
             self.locale = self._locale.resolve(client_context)
         if self._time is not None:
@@ -215,10 +216,6 @@ class TemplateSRAIXNode(TemplateNode):
         exec_botInfo = copy.copy(botInfo)
 
         error_msg = None
-        self.userId = self._userId.resolve(client_context)
-        if self.userId is None or self.userId == '':
-            error_msg = "sraix subagent-bot : userId is empty"
-
         if error_msg is None and self.locale is not None:
             if exec_botInfo.set_locale(self.locale) is False:
                 error_msg = "sraix subagent-bot : invalid locale parameter [%s]" % self.locale
@@ -551,7 +548,3 @@ class TemplateSRAIXNode(TemplateNode):
             raise ParserException("Missing type attribute or host element", xml_element=expression, nodename='sraix')
         elif mode_count > 1:
             raise ParserException("Node has Multiple type attribute or host element", xml_element=expression, nodename='sraix')
-
-        if self._botName is not None:
-            if self._userId is None:
-                raise ParserException("userId not defined for Bot communication", xml_element=expression, nodename='sraix')
