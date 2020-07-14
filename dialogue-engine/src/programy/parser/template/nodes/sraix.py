@@ -213,9 +213,14 @@ class TemplateSRAIXNode(TemplateNode):
             YLogger.debug(client_context, error_msg)
             raise Exception(error_msg)
 
+        conversation = client_context.bot.get_conversation(client_context)
         exec_botInfo = copy.copy(botInfo)
 
         error_msg = None
+        if self.userId is None or self.userId == '':
+            self.userId = conversation.current_question().property('__USER_USERID__')
+        if self.userId is None or self.userId == '':
+            error_msg = "sraix subagent-bot : no userId parameter"
         if error_msg is None and self.locale is not None:
             if exec_botInfo.set_locale(self.locale) is False:
                 error_msg = "sraix subagent-bot : invalid locale parameter [%s]" % self.locale
@@ -247,7 +252,6 @@ class TemplateSRAIXNode(TemplateNode):
         response = bot_service.ask_question(client_context, resolved)
         YLogger.debug(client_context, "SRAIX botName [%s] return [%s]", self._botName, response)
 
-        conversation = client_context.bot.get_conversation(client_context)
         status_code = ''
         try:
             status_code = bot_service.get_status_code()

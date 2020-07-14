@@ -86,15 +86,7 @@ class PublishedBotService(Service):
     def _format_payload(self, client_context, botInfo, question):
         payload = {}
 
-        userId = self._userId
-        if userId is None:
-            if hasattr(client_context, 'userInfo') is True:
-                userId = client_context.userInfo.get('__USER_USERID__')
-        if userId is None or userId == '':
-            YLogger.debug(client_context, "UserId is empty")
-            return
-
-        payload.update({'userId': userId})
+        payload.update({'userId': self._userId})
         payload.update({'utterance': question})
 
         if botInfo.locale is not None:
@@ -120,8 +112,8 @@ class PublishedBotService(Service):
     def ask_question(self, client_context, question: str):
         self._status_code = ''
 
-        if self._botInfo is None:
-            YLogger.debug(client_context, "No botName Info")
+        if self._botInfo is None or self._userId is None:
+            YLogger.debug(client_context, "No botName Info or userId")
             return ""
 
         if question is None or question == '':
@@ -133,8 +125,6 @@ class PublishedBotService(Service):
         try:
             headers = self._botInfo.header
             payload = self._format_payload(client_context, self._botInfo, question)
-            if len(payload) == 0:
-                return ""
             bodys = payload.encode('UTF-8')
 
             self._status_code = '000'
