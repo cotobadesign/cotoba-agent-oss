@@ -38,6 +38,7 @@ from programy.mappings.denormal import DenormalCollection
 from programy.mappings.gender import GenderCollection
 from programy.mappings.maps import MapCollection
 from programy.mappings.nlu import NluCollection
+from programy.mappings.botnames import BotNamesCollection
 from programy.mappings.normal import NormalCollection
 from programy.mappings.person import PersonCollection
 from programy.mappings.person import Person2Collection
@@ -95,6 +96,7 @@ class Brain(object):
 
         self._properties_collection = PropertiesCollection(errors_dict)
         self._default_variables_collection = DefaultVariablesCollection(errors_dict)
+        self._botnames_collection = BotNamesCollection(errors_dict)
 
         self._preprocessors = PreProcessorCollection(errors_dict)
         self._postprocessors = PostProcessorCollection(errors_dict)
@@ -183,6 +185,10 @@ class Brain(object):
     @property
     def default_variables(self):
         return self._default_variables_collection
+
+    @property
+    def botnames(self):
+        return self._botnames_collection
 
     @property
     def preprocessors(self):
@@ -295,6 +301,10 @@ class Brain(object):
         self._person2_collection.empty()
         self._person2_collection.load(self.bot.client.storage_factory)
 
+    def _load_botnames(self):
+        self._botnames_collection.empty()
+        self._botnames_collection.load(self.bot.client.storage_factory)
+
     def _load_properties(self):
         self._properties_collection.empty()
         self._properties_collection.load(self.bot.client.storage_factory)
@@ -365,6 +375,7 @@ class Brain(object):
         self._load_persons()
         self._load_person2s()
         self._load_default_variables()
+        self._load_botnames()
         self._load_rdfs()
         self._load_sets()
         self._load_maps()

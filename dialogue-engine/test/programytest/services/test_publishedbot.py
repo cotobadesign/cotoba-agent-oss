@@ -14,11 +14,10 @@ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY
 TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 """
 import unittest
-import json
 
 from programy.services.publishedbot import PublishedBotService, PublishedBotAPI
 from programy.services.service import BrainServiceConfiguration
-from programy.clients.restful.client import UserInfo
+from programy.mappings.botnames import PublicBotInfo
 
 from programytest.client import TestClient
 
@@ -91,267 +90,204 @@ class PublishedBotServiceTests(unittest.TestCase):
         service = PublishedBotService(config=config)
         self.assertIsNotNone(service)
 
-        service._botId = "PublishedBot"
-        service._botHost = "cotobadesign.co.jp"
-        service._locale = "ja-JP"
-        service._time = "2019-01-01T00:00:00+09:00"
-        service._userId = "user00"
-        service._topic = "morning"
-        service._deleteVariable = True
-        service._metadata = "Test Data"
-        service._config = '{"logLevel": "debug"}'
+        bot_info = PublicBotInfo("https://cotobadesign.co.jp/bots/PublishedBot/ask", 'api_key')
 
-        self.assertEqual(service.botId, "PublishedBot")
-        self.assertEqual(service.botHost, "cotobadesign.co.jp")
-        self.assertEqual(service.locale, "ja-JP")
-        self.assertEqual(service.time, "2019-01-01T00:00:00+09:00")
+        bot_info._locale = "ja-JP"
+        bot_info._time = "2019-01-01T00:00:00+09:00"
+        bot_info._topic = "morning"
+        bot_info._deleteVariable = True
+        bot_info._metadata = "Test Data"
+        bot_info._config = '{"logLevel": "debug"}'
+
+        service.botInfo = bot_info
+        service.userId = "user00"
+
+        self.assertEqual(service.botInfo.url, "https://cotobadesign.co.jp/bots/PublishedBot/ask")
+        self.assertEqual(service.botInfo.apikey, 'api_key')
+        self.assertEqual(service.botInfo.locale, "ja-JP")
+        self.assertEqual(service.botInfo.time, "2019-01-01T00:00:00+09:00")
+        self.assertEqual(service.botInfo.topic, "morning")
+        self.assertEqual(service.botInfo.deleteVariable, True)
+        self.assertEqual(service.botInfo.metadata, "Test Data")
+        self.assertEqual(service.botInfo.config, '{"logLevel": "debug"}')
+
         self.assertEqual(service.userId, "user00")
-        self.assertEqual(service.topic, "morning")
-        self.assertEqual(service.deleteVariable, True)
-        self.assertEqual(service.metadata, "Test Data")
-        self.assertEqual(service.config, '{"logLevel": "debug"}')
+        self.assertEqual(service.botInfo.header['Content-Type'], "application/json;charset=UTF-8")
+        self.assertEqual(service.botInfo.header['x-api-key'], "api_key")
 
     def test_ask_question(self):
 
         config = BrainServiceConfiguration("__PUBLISHEDBOT__")
         config._host = "test_publishdbot"
 
-        self._client_context.bot.brain.configuration._bot_name = "RequestBot"
-        self._client_context.bot.brain.configuration._manager_name = "Bot_API_key"
-
         response_data = '{"response": "Hello"}'
         request_api = MockPublishedBotAPI(response=response_data)
         service = PublishedBotService(config=config, api=request_api)
         self.assertIsNotNone(service)
 
-        service.botId = "PublishedBot"
-        service.botHost = None
-        service.locale = None
-        service.time = None
+        bot_info = PublicBotInfo("https://cotobadesign.co.jp/bots/PublishedBot/ask", 'api_key')
+
+        bot_info._locale = None
+        bot_info._time = None
+        bot_info._topic = None
+        bot_info._deleteVariable = None
+        bot_info._metadata = None
+        bot_info._config = None
+
+        service.botInfo = bot_info
         service.userId = "user00"
-        service.topic = None
-        service.deleteVariable = None
-        service.metadata = None
-        service.config = None
 
         question = "Hello"
         response = service.ask_question(self._client_context, question)
         self.assertEqual('{"response": "Hello"}', response)
+        self.assertEqual('200', service._status_code)
 
     def test_ask_question_all_parameter(self):
 
         config = BrainServiceConfiguration("__PUBLISHEDBOT__")
         config._host = "test_publishdbot"
 
-        self._client_context.bot.brain.configuration._bot_name = "RequestBot"
-        self._client_context.bot.brain.configuration._manager_name = "Bot_API_key"
-
         response_data = '{"response": "Hello"}'
         request_api = MockPublishedBotAPI(response=response_data)
         service = PublishedBotService(config=config, api=request_api)
         self.assertIsNotNone(service)
 
-        service.botId = "PublishedBot"
-        service.botHost = "cotobadesign.co.jp"
-        service.locale = "ja-JP"
-        service.time = "2019-01-01T00:00:00+09:00"
+        bot_info = PublicBotInfo("https://cotobadesign.co.jp/bots/PublishedBot/ask", 'api_key')
+
+        bot_info._locale = "ja-JP"
+        bot_info._time = "2019-01-01T00:00:00+09:00"
+        bot_info._topic = "morning"
+        bot_info._deleteVariable = True
+        bot_info._metadata = "Test Data"
+        bot_info._config = '{"logLevel": "debug"}'
+
+        service.botInfo = bot_info
         service.userId = "user00"
-        service.topic = "morning"
-        service.deleteVariable = True
-        service.metadata = "Test Data"
-        service.config = '{"logLevel": "debug"}'
 
         question = "Hello"
         response = service.ask_question(self._client_context, question)
         self.assertEqual('{"response": "Hello"}', response)
-
-    def test_ask_question_with_userinfo(self):
-
-        config = BrainServiceConfiguration("__PUBLISHEDBOT__")
-        config._host = "test_publishdbot"
-
-        self._client_context.bot.brain.configuration._bot_name = "RequestBot"
-        self._client_context.bot.brain.configuration._manager_name = "Bot_API_key"
-
-        userInfo = UserInfo(None, None)
-        userInfo.set("__USER_LOCALE__", "ja-JP")
-        userInfo.set("__USER_TIME__", "2019-01-01T00:00:00+09:00")
-        userInfo.set("__USER_METADATA__", "Test Data")
-        self._client_context.userInfo = userInfo
-
-        response_data = '{"response": "Hello"}'
-        request_api = MockPublishedBotAPI(response=response_data)
-        service = PublishedBotService(config=config, api=request_api)
-        self.assertIsNotNone(service)
-
-        service.botId = "PublishedBot"
-        service.botHost = None
-        service.locale = None
-        service.time = None
-        service.userId = "user00"
-        service.topic = None
-        service.deleteVariable = None
-        service.metadata = None
-        service.config = None
-
-        question = "Hello"
-        response = service.ask_question(self._client_context, question)
-        self.assertEqual('{"response": "Hello"}', response)
-
-    def test_ask_question_default_host(self):
-
-        config = BrainServiceConfiguration("__PUBLISHEDBOT__")
-
-        self._client_context.bot.brain.configuration._bot_name = "RequestBot"
-        self._client_context.bot.brain.configuration._manager_name = "Bot_API_key"
-
-        response_data = '{"response": "Hello"}'
-        request_api = MockPublishedBotAPI(response=response_data)
-        service = PublishedBotService(config=config, api=request_api)
-        self.assertIsNotNone(service)
-
-        service.botId = "PublishedBot"
-        service.botHost = None
-        service.locale = None
-        service.time = None
-        service.userId = None
-        service.topic = None
-        service.deleteVariable = None
-        service.metadata = None
-        service.config = None
-
-        question = "Hello"
-        response = service.ask_question(self._client_context, question)
-        self.assertEqual('{"response": "Hello"}', response)
-
-    def test_ask_question_default_userid(self):
-
-        config = BrainServiceConfiguration("__PUBLISHEDBOT__")
-        config._host = "test_publishdbot"
-
-        self._client_context.bot.brain.configuration._bot_name = "RequestBot"
-        self._client_context.bot.brain.configuration._manager_name = "Bot_API_key"
-
-        userInfo = UserInfo(None, None)
-        userInfo.set("__USER_USERID__", "default_uesrid")
-        userInfo.set("__USER_LOCALE__", "ja-JP")
-        userInfo.set("__USER_TIME__", "2019-01-01T00:00:00+09:00")
-        userInfo.set("__USER_METADATA__", None)
-        self._client_context.userInfo = userInfo
-
-        response_data = '{"response": "Hello"}'
-        request_api = MockPublishedBotAPI(response=response_data)
-        service = PublishedBotService(config=config, api=request_api)
-        self.assertIsNotNone(service)
-
-        service.botId = "PublishedBot"
-        service.botHost = None
-        service.locale = None
-        service.time = None
-        service.userId = None
-        service.topic = None
-        service.deleteVariable = None
-        service.metadata = None
-        service.config = None
-
-        question = "Hello"
-        response = service.ask_question(self._client_context, question)
-        self.assertEqual('{"response": "Hello"}', response)
-
-    def test_ask_question_no_userid(self):
-
-        config = BrainServiceConfiguration("__PUBLISHEDBOT__")
-        config._host = "test_publishdbot"
-
-        self._client_context.bot.brain.configuration._bot_name = "RequestBot"
-        self._client_context.bot.brain.configuration._manager_name = "Bot_API_key"
-
-        response_data = '{"response": "Hello"}'
-        request_api = MockPublishedBotAPI(response=response_data)
-        service = PublishedBotService(config=config, api=request_api)
-        self.assertIsNotNone(service)
-
-        service.botId = "PublishedBot"
-        service.botHost = None
-        service.locale = None
-        service.time = None
-        service.userId = None
-        service.topic = None
-        service.deleteVariable = None
-        service.metadata = None
-        service.config = None
-
-        question = "Hello"
-        response = service.ask_question(self._client_context, question)
-        self.assertEqual('{"response": "Hello"}', response)
-
-    def test_ask_question_no_userdata(self):
-
-        config = BrainServiceConfiguration("__PUBLISHEDBOT__")
-        config._host = "test_publishdbot"
-
-        self._client_context.bot.brain.configuration._bot_name = "RequestBot"
-        self._client_context.bot.brain.configuration._manager_name = "Bot_API_key"
-
-        userInfo = UserInfo(None, None)
-        userInfo.set("__USER_LOCALE__", "None")
-        userInfo.set("__USER_TIME__", "None")
-        userInfo.set("__USER_METADATA__", "None")
-        self._client_context.userInfo = userInfo
-
-        response_data = '{"response": "Hello"}'
-        request_api = MockPublishedBotAPI(response=response_data)
-        service = PublishedBotService(config=config, api=request_api)
-        self.assertIsNotNone(service)
-
-        service.botId = "PublishedBot"
-        service.botHost = None
-        service.locale = None
-        service.time = None
-        service.userId = "user00"
-        service.topic = None
-        service.deleteVariable = None
-        service.metadata = None
-        service.config = None
-
-        question = "Hello"
-        response = service.ask_question(self._client_context, question)
-        self.assertEqual('{"response": "Hello"}', response)
-
-    def test_ask_question_Illegal_status(self):
-
-        config = BrainServiceConfiguration("__PUBLISHEDBOT__")
-        config._host = "test_publishdbot"
-
-        self._client_context.bot.brain.configuration._bot_name = "RequestBot"
-        self._client_context.bot.brain.configuration._manager_name = "Bot_API_key"
-
-        response_data = '{"response": "Hello"}'
-        request_api = MockPublishedBotAPI(status=500, response=response_data)
-        service = PublishedBotService(config=config, api=request_api)
-        self.assertIsNotNone(service)
-
-        service.botId = "PublishedBot"
-        service.botHost = None
-        service.locale = None
-        service.time = None
-        service.userId = "user00"
-        service.topic = None
-        service.deleteVariable = None
-        service.metadata = None
-        service.config = None
-
-        question = "Hello"
-        response = service.ask_question(self._client_context, question)
-        self.assertEqual('', response)
+        self.assertEqual('200', service._status_code)
 
     def test_ask_question_no_parameter(self):
 
         config = BrainServiceConfiguration("__PUBLISHEDBOT__")
         config._host = "test_publishdbot"
 
-        self._client_context.bot.brain.configuration._bot_name = "RequestBot"
-        self._client_context.bot.brain.configuration._manager_name = "Bot_API_key"
+        response_data = '{"response": "Hello"}'
+        request_api = MockPublishedBotAPI(response=response_data)
+        service = PublishedBotService(config=config, api=request_api)
+        self.assertIsNotNone(service)
+
+        bot_info = PublicBotInfo("https://cotobadesign.co.jp/bots/PublishedBot/ask", 'api_key')
+
+        service.botInfo = bot_info
+        service.userId = "user00"
+
+        question = "Hello"
+        response = service.ask_question(self._client_context, question)
+        self.assertEqual('{"response": "Hello"}', response)
+        self.assertEqual('200', service._status_code)
+
+    def test_ask_question_no_botInfo(self):
+
+        config = BrainServiceConfiguration("__PUBLISHEDBOT__")
+        config._host = "test_publishdbot"
+
+        response_data = '{"response": "Hello"}'
+        request_api = MockPublishedBotAPI(response=response_data)
+        service = PublishedBotService(config=config, api=request_api)
+        self.assertIsNotNone(service)
+
+        service.userId = "user00"
+
+        question = "Hello"
+        response = service.ask_question(self._client_context, question)
+        self.assertEqual('', response)
+        self.assertEqual('', service._status_code)
+
+    def test_ask_question_no_userid(self):
+
+        config = BrainServiceConfiguration("__PUBLISHEDBOT__")
+        config._host = "test_publishdbot"
+
+        response_data = '{"response": "Hello"}'
+        request_api = MockPublishedBotAPI(response=response_data)
+        service = PublishedBotService(config=config, api=request_api)
+        self.assertIsNotNone(service)
+
+        bot_info = PublicBotInfo("https://cotobadesign.co.jp/bots/PublishedBot/ask", 'api_key')
+
+        bot_info._locale = "ja-JP"
+        bot_info._time = "2019-01-01T00:00:00+09:00"
+        bot_info._topic = "morning"
+        bot_info._deleteVariable = True
+        bot_info._metadata = "Test Data"
+        bot_info._config = '{"logLevel": "debug"}'
+
+        service.botInfo = bot_info
+
+        question = "Hello"
+        response = service.ask_question(self._client_context, question)
+        self.assertEqual('', response)
+        self.assertEqual('', service._status_code)
+
+    def test_ask_question_no_question(self):
+
+        config = BrainServiceConfiguration("__PUBLISHEDBOT__")
+        config._host = "test_publishdbot"
+
+        response_data = '{"response": "Hello"}'
+        request_api = MockPublishedBotAPI(response=response_data)
+        service = PublishedBotService(config=config, api=request_api)
+        self.assertIsNotNone(service)
+
+        bot_info = PublicBotInfo("https://cotobadesign.co.jp/bots/PublishedBot/ask", 'api_key')
+
+        bot_info._locale = "ja-JP"
+        bot_info._time = "2019-01-01T00:00:00+09:00"
+        bot_info._topic = "morning"
+        bot_info._deleteVariable = True
+        bot_info._metadata = "Test Data"
+        bot_info._config = '{"logLevel": "debug"}'
+
+        service.botInfo = bot_info
+        service.userId = "user00"
+
+        response = service.ask_question(self._client_context, None)
+        self.assertEqual('', response)
+        self.assertEqual('', service._status_code)
+
+    def test_ask_question_empty_question(self):
+
+        config = BrainServiceConfiguration("__PUBLISHEDBOT__")
+        config._host = "test_publishdbot"
+
+        response_data = '{"response": "Hello"}'
+        request_api = MockPublishedBotAPI(response=response_data)
+        service = PublishedBotService(config=config, api=request_api)
+        self.assertIsNotNone(service)
+
+        bot_info = PublicBotInfo("https://cotobadesign.co.jp/bots/PublishedBot/ask", 'api_key')
+
+        bot_info._locale = "ja-JP"
+        bot_info._time = "2019-01-01T00:00:00+09:00"
+        bot_info._topic = "morning"
+        bot_info._deleteVariable = True
+        bot_info._metadata = "Test Data"
+        bot_info._config = '{"logLevel": "debug"}'
+
+        service.botInfo = bot_info
+        service.userId = "user00"
+
+        response = service.ask_question(self._client_context, "")
+        self.assertEqual('', response)
+        self.assertEqual('', service._status_code)
+
+    def test_ask_question_none_setting(self):
+
+        config = BrainServiceConfiguration("__PUBLISHEDBOT__")
+        config._host = "test_publishdbot"
 
         response_data = '{"response": "Hello"}'
         request_api = MockPublishedBotAPI(response=response_data)
@@ -361,115 +297,116 @@ class PublishedBotServiceTests(unittest.TestCase):
         question = "Hello"
         response = service.ask_question(self._client_context, question)
         self.assertEqual('', response)
-
-    def test_ask_question_no_botname(self):
-
-        config = BrainServiceConfiguration("__PUBLISHEDBOT__")
-        config._host = "test_publishdbot"
-
-        self._client_context.bot.brain.configuration._manager_name = "Bot_API_key"
-
-        response_data = '{"response": "Hello"}'
-        request_api = MockPublishedBotAPI(response=response_data)
-        service = PublishedBotService(config=config, api=request_api)
-        self.assertIsNotNone(service)
-
-        service.botId = "PublishedBot"
-        service.botHost = None
-        service.locale = None
-        service.time = None
-        service.userId = "user00"
-        service.topic = None
-        service.deleteVariable = None
-        service.metadata = None
-        service.config = None
-
-        question = "Hello"
-        response = service.ask_question(self._client_context, question)
-        self.assertEqual('{"response": "Hello"}', response)
+        self.assertEqual('', service._status_code)
 
     def test_ask_question_no_apikey(self):
 
         config = BrainServiceConfiguration("__PUBLISHEDBOT__")
         config._host = "test_publishdbot"
 
-        self._client_context.bot.brain.configuration._bot_name = "RequestBot"
-
         response_data = '{"response": "Hello"}'
         request_api = MockPublishedBotAPI(response=response_data)
         service = PublishedBotService(config=config, api=request_api)
         self.assertIsNotNone(service)
 
-        service.botId = "PublishedBot"
-        service.botHost = None
-        service.locale = None
-        service.time = None
+        bot_info = PublicBotInfo("https://cotobadesign.co.jp/bots/PublishedBot/ask", None)
+
+        bot_info._locale = "ja-JP"
+        bot_info._time = "2019-01-01T00:00:00+09:00"
+        bot_info._topic = "morning"
+        bot_info._deleteVariable = True
+        bot_info._metadata = "Test Data"
+        bot_info._config = '{"logLevel": "debug"}'
+
+        service.botInfo = bot_info
+
+        self.assertEqual(service.botInfo.header['x-api-key'], "")
         service.userId = "user00"
-        service.topic = None
-        service.deleteVariable = None
-        service.metadata = None
-        service.config = None
 
         question = "Hello"
         response = service.ask_question(self._client_context, question)
-        self.assertEqual('', response)
+        self.assertEqual('{"response": "Hello"}', response)
+        self.assertEqual('200', service._status_code)
 
-    def test_ask_question_no_botid(self):
+    def test_ask_question_empty_apikey(self):
 
         config = BrainServiceConfiguration("__PUBLISHEDBOT__")
         config._host = "test_publishdbot"
 
-        self._client_context.bot.brain.configuration._bot_name = "RequestBot"
-        self._client_context.bot.brain.configuration._manager_name = "Bot_API_key"
-
-        userInfo = UserInfo(None, None)
-        userInfo.set("__USER_LOCALE__", "ja-JP")
-        userInfo.set("__USER_TIME__", "2019-01-01T00:00:00+09:00")
-        userInfo.set("__USER_METADATA__", "Test Data")
-        self._client_context.userInfo = userInfo
-
         response_data = '{"response": "Hello"}'
         request_api = MockPublishedBotAPI(response=response_data)
         service = PublishedBotService(config=config, api=request_api)
         self.assertIsNotNone(service)
 
-        service.botId = None
-        service.botHost = None
-        service.locale = None
-        service.time = None
+        bot_info = PublicBotInfo("https://cotobadesign.co.jp/bots/PublishedBot/ask", '')
+
+        bot_info._locale = "ja-JP"
+        bot_info._time = "2019-01-01T00:00:00+09:00"
+        bot_info._topic = "morning"
+        bot_info._deleteVariable = True
+        bot_info._metadata = "Test Data"
+        bot_info._config = '{"logLevel": "debug"}'
+
+        service.botInfo = bot_info
         service.userId = "user00"
-        service.topic = None
-        service.deleteVariable = None
-        service.metadata = None
-        service.config = None
+
+        self.assertEqual(service.botInfo.header['x-api-key'], "")
+
+        question = "Hello"
+        response = service.ask_question(self._client_context, question)
+        self.assertEqual('{"response": "Hello"}', response)
+        self.assertEqual('200', service._status_code)
+
+    def test_ask_question_Illegal_status(self):
+
+        config = BrainServiceConfiguration("__PUBLISHEDBOT__")
+        config._host = "test_publishdbot"
+
+        response_data = '{"response": "Hello"}'
+        request_api = MockPublishedBotAPI(status=500, response=response_data)
+        service = PublishedBotService(config=config, api=request_api)
+        self.assertIsNotNone(service)
+
+        bot_info = PublicBotInfo("https://cotobadesign.co.jp/bots/PublishedBot/ask", 'api_key')
+
+        bot_info._locale = "ja-JP"
+        bot_info._time = "2019-01-01T00:00:00+09:00"
+        bot_info._topic = "morning"
+        bot_info._deleteVariable = True
+        bot_info._metadata = "Test Data"
+        bot_info._config = '{"logLevel": "debug"}'
+
+        service.botInfo = bot_info
+        service.userId = "user00"
 
         question = "Hello"
         response = service.ask_question(self._client_context, question)
         self.assertEqual('', response)
+        self.assertEqual('500', service._status_code)
 
     def test_ask_question_exception(self):
 
         config = BrainServiceConfiguration("__PUBLISHEDBOT__")
         config._host = "test_publishdbot"
 
-        self._client_context.bot.brain.configuration._bot_name = "RequestBot"
-        self._client_context.bot.brain.configuration._manager_name = "Bot_API_key"
-
         response_data = '{"response": "Hello"}'
         request_api = MockPublishedBotAPI(response=response_data, throw_exception=True)
         service = PublishedBotService(config=config, api=request_api)
         self.assertIsNotNone(service)
 
-        service.botId = "PublishedBot"
-        service.botHost = None
-        service.locale = None
-        service.time = None
+        bot_info = PublicBotInfo("https://cotobadesign.co.jp/bots/PublishedBot/ask", 'api_key')
+
+        bot_info._locale = "ja-JP"
+        bot_info._time = "2019-01-01T00:00:00+09:00"
+        bot_info._topic = "morning"
+        bot_info._deleteVariable = True
+        bot_info._metadata = "Test Data"
+        bot_info._config = '{"logLevel": "debug"}'
+
+        service.botInfo = bot_info
         service.userId = "user00"
-        service.topic = None
-        service.deleteVariable = None
-        service.metadata = None
-        service.config = None
 
         question = "Hello"
         response = service.ask_question(self._client_context, question)
         self.assertEqual('', response)
+        self.assertEqual('000', service._status_code)

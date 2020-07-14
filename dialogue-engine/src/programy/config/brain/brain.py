@@ -47,9 +47,6 @@ from programy.utils.substitutions.substitues import Substitutions
 class BrainConfiguration(BaseContainerConfigurationData):
 
     def __init__(self, section_name="brain"):
-        self._bot_name = None
-        self._manager_name = None
-
         self._overrides = BrainOverridesConfiguration()
         self._defaults = BrainDefaultsConfiguration()
         self._binaries = BrainBinariesConfiguration()
@@ -62,14 +59,6 @@ class BrainConfiguration(BaseContainerConfigurationData):
         self._debugfiles = BrainDebugFilesConfiguration()
         self._nlu = BrainNluConfiguration()
         BaseContainerConfigurationData.__init__(self, section_name)
-
-    @property
-    def bot_name(self):
-        return self._bot_name
-
-    @property
-    def manager_name(self):
-        return self._manager_name
 
     @property
     def overrides(self):
@@ -132,9 +121,6 @@ class BrainConfiguration(BaseContainerConfigurationData):
     def load_configuration(self, configuration_file, bot_root, subs: Substitutions = None):
         brain_config = configuration_file.get_section(self.section_name)
         if brain_config is not None:
-            self._bot_name = configuration_file.get_option(brain_config, "bot_name")
-            self._manager_name = configuration_file.get_option(brain_config, "manager_name")
-
             self._overrides.load_config_section(configuration_file, brain_config, bot_root, subs=subs)
             self._defaults.load_config_section(configuration_file, brain_config, bot_root, subs=subs)
             self._binaries.load_config_section(configuration_file, brain_config, bot_root, subs=subs)
@@ -148,13 +134,6 @@ class BrainConfiguration(BaseContainerConfigurationData):
             self._nlu.load_config_section(configuration_file, brain_config, bot_root, subs=subs)
 
     def to_yaml(self, data, defaults=True):
-        if defaults is True:
-            data['bot_name'] = None
-            data['manager_name'] = None
-        else:
-            data['bot_name'] = self._bot_name
-            data['manager_name'] = self._manager_name
-
         self.config_to_yaml(data, self._overrides, defaults)
         self.config_to_yaml(data, self._defaults, defaults)
         self.config_to_yaml(data, self._binaries, defaults)

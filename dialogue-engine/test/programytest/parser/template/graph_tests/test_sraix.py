@@ -22,11 +22,16 @@ from programy.parser.exceptions import ParserException
 from programy.services.service import ServiceFactory
 from programy.config.brain.services import BrainServicesConfiguration
 from programy.config.brain.service import BrainServiceConfiguration
+from programy.mappings.botnames import PublicBotInfo
 
 from programytest.parser.template.graph_tests.graph_test_client import TemplateGraphTestClient
 
 
 class TemplateGraphSraixTests(TemplateGraphTestClient):
+
+    def set_collection_botnames(self):
+        bot_info = PublicBotInfo("http://localhost/bot", None)
+        self._client_context.brain.botnames.add_botname("testbot", bot_info, "botnames.yaml", 0)
 
     def set_service_config(self):
         service1 = BrainServiceConfiguration("ask")
@@ -57,18 +62,19 @@ class TemplateGraphSraixTests(TemplateGraphTestClient):
     def test_sraix_template_PublishedBot_attribs(self):
         template = ET.fromstring("""
             <template>
-                <sraix botId="testbot" host="www.co.jp" default="unknown">
+                <sraix botName="testbot" default="unknown">
+                    <userId>user</userId>
                     Ask this question
                 </sraix>
             </template>
             """)
+        self.set_collection_botnames()
         ast = self._graph.parse_template_expression(template)
         self.assertIsInstance(ast, TemplateNode)
         self.assertIsNotNone(ast.children)
         self.assertIsNotNone(ast.children[0])
         self.assertIsInstance(ast.children[0], TemplateSRAIXNode)
-        self.assertEqual("testbot", ast.children[0]._botId)
-        self.assertEqual("www.co.jp", ast.children[0]._botHost)
+        self.assertEqual("testbot", ast.children[0]._botName)
         self.assertEqual("unknown", ast.children[0]._default)
 
     def test_sraix_template_CustomService_attribs(self):
@@ -125,7 +131,7 @@ class TemplateGraphSraixTests(TemplateGraphTestClient):
     def test_sraix_template_PublishedBot_children(self):
         template = ET.fromstring("""
             <template>
-                <sraix botId="publishedBot">
+                <sraix botName="testbot">
                     <locale>ja-JP</locale>
                     <time>2019-01-01:00:00:00+09:00</time>
                     <userId>1234567890</userId>
@@ -137,12 +143,13 @@ class TemplateGraphSraixTests(TemplateGraphTestClient):
                 </sraix>
             </template>
             """)
+        self.set_collection_botnames()
         ast = self._graph.parse_template_expression(template)
         self.assertIsInstance(ast, TemplateNode)
         self.assertIsNotNone(ast.children)
         self.assertIsNotNone(ast.children[0])
         self.assertIsInstance(ast.children[0], TemplateSRAIXNode)
-        self.assertEqual("publishedBot", ast.children[0]._botId)
+        self.assertEqual("testbot", ast.children[0]._botName)
         self.assertEqual("ja-JP", ast.children[0]._locale.children[0].word)
         self.assertEqual("2019-01-01:00:00:00+09:00", ast.children[0]._time.children[0].word)
         self.assertEqual("1234567890", ast.children[0]._userId.children[0].word)
@@ -190,23 +197,25 @@ class TemplateGraphSraixTests(TemplateGraphTestClient):
     def test_sraix_template_PublishedBot_invalid_attribute(self):
         template = ET.fromstring("""
             <template>
-                <sraix botId="publishedBot" apiKey="00000000"
+                <sraix botName="testbot"
                     locale="ja-JP" time="2019-01-01:00:00:00+09:00"
-                    userId="1234567890" topic="*" deleteVariable="false"
+                    topic="*" deleteVariable="false"
                     metadata="1234567890" config="logLevel=debug">
+                    <userId>1234567890</userId>
                     Hellow
                 </sraix>
             </template>
             """)
+        self.set_collection_botnames()
         ast = self._graph.parse_template_expression(template)
         self.assertIsInstance(ast, TemplateNode)
         self.assertIsNotNone(ast.children)
         self.assertIsNotNone(ast.children[0])
         self.assertIsInstance(ast.children[0], TemplateSRAIXNode)
-        self.assertEqual("publishedBot", ast.children[0]._botId)
+        self.assertEqual("testbot", ast.children[0]._botName)
         self.assertIsNone(ast.children[0]._locale)
         self.assertIsNone(ast.children[0]._time)
-        self.assertIsNone(ast.children[0]._userId)
+        self.assertEqual("1234567890", ast.children[0]._userId.children[0].word)
         self.assertIsNone(ast.children[0]._topic)
         self.assertIsNone(ast.children[0]._deleteVariable)
         self.assertIsNone(ast.children[0]._metadata)
@@ -217,32 +226,35 @@ class TemplateGraphSraixTests(TemplateGraphTestClient):
             <template>
                 <sraix>
                     <host>hostname</host>
-                    <botId>publishedBot</botId>
+                    <botName>testbot</botName>
                     <apiKey>00000000</apiKey>
                     <service>test</service>
                     <default>unknown"</default>
                 </sraix>
             </template>
             """)
+        self.set_collection_botnames()
         ast = self._graph.parse_template_expression(template)
         self.assertIsInstance(ast, TemplateNode)
         self.assertIsNotNone(ast.children)
         self.assertIsNotNone(ast.children[0])
         self.assertIsInstance(ast.children[0], TemplateSRAIXNode)
         self.assertEqual("hostname", ast.children[0]._host.children[0].word)
-        self.assertIsNone(ast.children[0]._botId)
+        self.assertIsNone(ast.children[0]._botName)
         self.assertIsNone(ast.children[0]._service)
         self.assertIsNone(ast.children[0]._default)
 
     def test_sraix_template_GeneralRest_and_PublishedBot(self):
         template = ET.fromstring("""
             <template>
-                <sraix botId="publishedBot">
+                <sraix botName="testbot">
+                    <userId>username</userId>
                     <host>hostname</host>
                     Hello
                 </sraix>
             </template>
             """)
+        self.set_collection_botnames()
         with self.assertRaises(ParserException):
             self._graph.parse_template_expression(template)
 
@@ -262,11 +274,13 @@ class TemplateGraphSraixTests(TemplateGraphTestClient):
     def test_sraix_template_PublishedBot_CustomService(self):
         template = ET.fromstring("""
             <template>
-                <sraix botId="publishedBot" service="test">
+                <sraix botName="testbotot" service="test">
+                    <userId>username</userId>
                     Hello
                 </sraix>
             </template>
             """)
         self.set_service_config()
+        self.set_collection_botnames()
         with self.assertRaises(ParserException):
             self._graph.parse_template_expression(template)

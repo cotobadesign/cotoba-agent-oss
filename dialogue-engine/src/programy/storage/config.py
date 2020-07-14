@@ -187,6 +187,7 @@ class StorageConfiguration(BaseConfigurationData):
         amap[StorageFactory.LOGS] = 'file'
 
         amap[StorageFactory.NLU_SERVERS] = 'file'
+        amap[StorageFactory.BOT_NAMES] = 'file'
         amap[StorageFactory.MAPS] = 'file'
         amap[StorageFactory.SETS] = 'file'
         amap[StorageFactory.RDF] = 'file'

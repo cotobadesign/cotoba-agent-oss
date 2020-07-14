@@ -51,6 +51,7 @@ class FileStore(Store):
     LOGS_STORAGE = 'logs_storage'
 
     NLU_SERVERS_STORAGE = 'nlu_servers_storage'
+    BOT_NAMES_STORAGE = 'bot_names_storage'
     SETS_STORAGE = 'sets_storage'
     MAPS_STORAGE = 'maps_storage'
     RDF_STORAGE = 'rdf_storage'

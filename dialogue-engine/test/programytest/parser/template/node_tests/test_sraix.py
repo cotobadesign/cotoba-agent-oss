@@ -22,6 +22,7 @@ from programy.parser.template.nodes.word import TemplateWordNode
 from programy.services.service import ServiceFactory
 from programy.config.brain.brain import BrainConfiguration
 from programy.config.brain.service import BrainServiceConfiguration
+from programy.mappings.botnames import PublicBotInfo
 
 from programytest.parser.base import ParserTestsBaseClass
 
@@ -35,6 +36,10 @@ class MockTemplateSRAIXNode(TemplateSRAIXNode):
 
 
 class TemplateSRAIXNodeTests(ParserTestsBaseClass):
+
+    def set_collection_botnames(self):
+        bot_info = PublicBotInfo("http://localhost/test", None)
+        self._client_context.brain.botnames.add_botname("testbot", bot_info, "botnames.yaml", 0)
 
     def test_node_unsupported_attributes(self):
         root = TemplateNode()
@@ -93,12 +98,11 @@ class TemplateSRAIXNodeTests(ParserTestsBaseClass):
 
         node = TemplateSRAIXNode()
         self.assertIsNotNone(node)
-        node._botId = "publishedBot"
-        node._botHost = "www.co.jp"
+        node._botName = "testbot"
         node._default = "unknown"
 
         node._locale = TemplateWordNode("ja-JP")
-        node._time = TemplateWordNode("2019-01-01:00:00:00+09:00")
+        node._time = TemplateWordNode("2019-01-01T00:00:00+09:00")
         node._userId = TemplateWordNode("1234567890")
         node._topic = TemplateWordNode("*")
         node._deleteVariable = TemplateWordNode("false")
@@ -106,7 +110,7 @@ class TemplateSRAIXNodeTests(ParserTestsBaseClass):
         node._config = TemplateWordNode('{"config":{"logLevel":"debug"}}')
         node.append(TemplateWordNode("Hello"))
 
-        self.assertEqual("publishedBot", node.botId)
+        self.assertEqual("testbot", node.botName)
 
         root.append(node)
         self.assertEqual(len(root.children), 1)
@@ -114,8 +118,8 @@ class TemplateSRAIXNodeTests(ParserTestsBaseClass):
         with self.assertRaises(Exception):
             node.resolve_to_string(self._client_context)
 
-        self.assertEqual('[SRAIX (botID=publishedBot, host=www.co.jp, default=unknown, locale=ja-JP, ' +
-                         'time=2019-01-01:00:00:00+09:00, userId=1234567890, topic=*, ' +
+        self.assertEqual('[SRAIX (botName=testbot, default=unknown, locale=ja-JP, ' +
+                         'time=2019-01-01T00:00:00+09:00, userId=1234567890, topic=*, ' +
                          'deleteVariable=false, metadata=1234567890, ' +
                          'config={"config":{"logLevel":"debug"}})]', node.to_string())
 
@@ -195,13 +199,12 @@ class TemplateSRAIXNodeTests(ParserTestsBaseClass):
         root = TemplateNode()
 
         node = TemplateSRAIXNode()
-        node._botId = "publishedBot"
-        node._botHost = "www.co.jp"
+        node._botName = "testbot"
         node._default = "unknown"
         root.append(node)
 
         node._locale = TemplateWordNode("ja-JP")
-        node._time = TemplateWordNode("2019-01-01:00:00:00+09:00")
+        node._time = TemplateWordNode("2019-01-01T00:00:00+09:00")
         node._userId = TemplateWordNode("1234567890")
         node._topic = TemplateWordNode("*")
         node._deleteVariable = TemplateWordNode("false")
@@ -215,16 +218,17 @@ class TemplateSRAIXNodeTests(ParserTestsBaseClass):
         xml = root.xml_tree(self._client_context)
         self.assertIsNotNone(xml)
         xml_str = ET.tostring(xml, "utf-8").decode("utf-8")
-        self.assertEqual('<template><sraix botId="publishedBot" default="unknown" host="www.co.jp">' +
-                         '<locale>ja-JP</locale><time>2019-01-01:00:00:00+09:00</time><userId>1234567890</userId>' +
+        self.assertEqual('<template><sraix botName="testbot" default="unknown">' +
+                         '<locale>ja-JP</locale><time>2019-01-01T00:00:00+09:00</time><userId>1234567890</userId>' +
                          '<topic>*</topic><deleteVariable>false</deleteVariable><metadata>1234567890</metadata>' +
                          '<config>{"config":{"logLevel":"debug"}}</config>Hello</sraix></template>',
                          xml_str)
 
-    def test_to_xml_PublishedBot_only_botid(self):
+    def test_to_xml_PublishedBot_only_botNmae(self):
         root = TemplateNode()
         node = TemplateSRAIXNode()
-        node._botId = "publishedBot"
+        node._botName = "testbot"
+        node._userId = TemplateWordNode("1234567890")
         node.append(TemplateWordNode("Hello"))
         root.append(node)
 
@@ -234,7 +238,7 @@ class TemplateSRAIXNodeTests(ParserTestsBaseClass):
         xml = root.xml_tree(self._client_context)
         self.assertIsNotNone(xml)
         xml_str = ET.tostring(xml, "utf-8").decode("utf-8")
-        self.assertEqual('<template><sraix botId="publishedBot">Hello</sraix></template>', xml_str)
+        self.assertEqual('<template><sraix botName="testbot"><userId>1234567890</userId>Hello</sraix></template>', xml_str)
 
     def test_to_xml_CustomService(self):
         root = TemplateNode()
@@ -399,9 +403,9 @@ class TemplateSRAIXNodeTests(ParserTestsBaseClass):
 
         root = TemplateNode()
         node = TemplateSRAIXNode()
-        node._botId = "testBot"
+        node._botName = "testbot"
         node._locale = TemplateWordNode('ja-JP')
-        node._time = TemplateWordNode('2019-01-01:00:00:00+09:00')
+        node._time = TemplateWordNode('2019-01-01T00:00:00+09:00')
         node._userId = TemplateWordNode('1234567890')
         node._topic = TemplateWordNode('*')
         node._deleteVariable = TemplateWordNode('false')
@@ -410,6 +414,7 @@ class TemplateSRAIXNodeTests(ParserTestsBaseClass):
         node.append(TemplateWordNode("Hello"))
         root.append(node)
 
+        self.set_collection_botnames()
         self.assertEqual("asked", node.resolve(self._client_context))
 
         conversation = self._client_context.bot.get_conversation(self._client_context)
@@ -422,9 +427,9 @@ class TemplateSRAIXNodeTests(ParserTestsBaseClass):
         service.set_response('{"response": "asked"}')
 
         self.assertEqual("asked", node.resolve(self._client_context))
-        self.assertEqual('{"testBot": {"response": "asked"}}', question.property('__SUBAGENT_EXTBOT__'))
+        self.assertEqual('{"testbot": {"response": "asked"}}', question.property('__SUBAGENT_EXTBOT__'))
 
-    def test_call_PublishedBot_only_botid(self):
+    def test_call_PublishedBot_only_botname(self):
         service_config = BrainServiceConfiguration("__PUBLISHEDBOT__")
         service_config._classname = 'programytest.services.test_service.MockService'
         brain_config = BrainConfiguration()
@@ -435,10 +440,12 @@ class TemplateSRAIXNodeTests(ParserTestsBaseClass):
         root = TemplateNode()
 
         node = TemplateSRAIXNode()
-        node._botId = "testBot"
+        node._botName = "testbot"
+        node._userId = TemplateWordNode('1234567890')
         root.append(node)
         node.append(TemplateWordNode("Hello"))
 
+        self.set_collection_botnames()
         self.assertEqual("asked", node.resolve(self._client_context))
 
     def test_call_PublishedBot_topic(self):
@@ -451,13 +458,15 @@ class TemplateSRAIXNodeTests(ParserTestsBaseClass):
 
         root = TemplateNode()
         node = TemplateSRAIXNode()
-        node._botId = "testBot"
+        node._botName = "testbot"
+        node._userId = TemplateWordNode('1234567890')
         node.append(TemplateWordNode("Hello"))
         root.append(node)
 
         conversation = self._client_context.bot.get_conversation(self._client_context)
         conversation.set_property('topic', 'morning')
 
+        self.set_collection_botnames()
         self.assertEqual("asked", node.resolve(self._client_context))
 
         node._topic = TemplateWordNode("evening")
@@ -472,11 +481,13 @@ class TemplateSRAIXNodeTests(ParserTestsBaseClass):
 
         root = TemplateNode()
         node = TemplateSRAIXNode()
-        node._botId = "testBot"
+        node._botName = "testbot"
+        node._userId = TemplateWordNode('1234567890')
         node._deleteVariable = TemplateWordNode('true')
         node.append(TemplateWordNode("Hello"))
         root.append(node)
 
+        self.set_collection_botnames()
         self.assertEqual("asked", node.resolve(self._client_context))
 
     def test_call_PublishedBot_response_none(self):
@@ -488,13 +499,15 @@ class TemplateSRAIXNodeTests(ParserTestsBaseClass):
 
         root = TemplateNode()
         node = TemplateSRAIXNode()
-        node._botId = "testBot"
+        node._botName = "testbot"
+        node._userId = TemplateWordNode('1234567890')
         node.append(TemplateWordNode("Hello"))
         root.append(node)
 
         service = ServiceFactory.get_service("__PUBLISHEDBOT__")
         service.set_response(None)
 
+        self.set_collection_botnames()
         self.assertIsNone(node.resolve(self._client_context))
 
     def test_call_PublishedBot_response_empty(self):
@@ -506,13 +519,15 @@ class TemplateSRAIXNodeTests(ParserTestsBaseClass):
 
         root = TemplateNode()
         node = TemplateSRAIXNode()
-        node._botId = "testBot"
+        node._botName = "testbot"
+        node._userId = TemplateWordNode('1234567890')
         node.append(TemplateWordNode("Hello"))
         root.append(node)
 
         service = ServiceFactory.get_service("__PUBLISHEDBOT__")
         service.set_response("")
 
+        self.set_collection_botnames()
         self.assertEqual("", node.resolve(self._client_context))
 
         conversation = self._client_context.bot.get_conversation(self._client_context)
@@ -532,7 +547,8 @@ class TemplateSRAIXNodeTests(ParserTestsBaseClass):
 
         root = TemplateNode()
         node = TemplateSRAIXNode()
-        node._botId = "testBot"
+        node._botName = "testbot"
+        node._userId = TemplateWordNode('1234567890')
         node._default = "unknown"
         node.append(TemplateWordNode("Hello"))
         root.append(node)
@@ -540,6 +556,7 @@ class TemplateSRAIXNodeTests(ParserTestsBaseClass):
         service = ServiceFactory.get_service("__PUBLISHEDBOT__")
         service.set_response("")
 
+        self.set_collection_botnames()
         self.assertEqual("unknown", node.resolve(self._client_context))
 
         conversation = self._client_context.bot.get_conversation(self._client_context)
@@ -549,7 +566,7 @@ class TemplateSRAIXNodeTests(ParserTestsBaseClass):
         self.assertIsNotNone(conversation.current_question())
 
         self.assertEqual("unknown", node.resolve(self._client_context))
-        self.assertEqual("unknown", question.property('__SUBAGENT_EXTBOT__.testBot'))
+        self.assertEqual("unknown", question.property('__SUBAGENT_EXTBOT__.testbot'))
 
     def test_call_CustomService(self):
         service_config = BrainServiceConfiguration("mock")
