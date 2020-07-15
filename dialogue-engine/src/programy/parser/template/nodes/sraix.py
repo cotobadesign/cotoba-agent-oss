@@ -98,6 +98,7 @@ class TemplateSRAIXNode(TemplateNode):
     def botName(self):
         return self._botName
 
+    @property
     def template(self):
         return self._template
 

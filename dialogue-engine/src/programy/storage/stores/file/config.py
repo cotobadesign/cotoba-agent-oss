@@ -186,6 +186,7 @@ class FileStorageConfiguration(BaseConfigurationData):
     def bot_names_storage(self):
         return self._bot_names_storage
 
+    @property
     def rest_templates_storage(self):
         return self._rest_templates_storage
 
@@ -415,7 +416,7 @@ class FileStorageConfiguration(BaseConfigurationData):
 
         amap[FileStore.REST_TEMPLATES_STORAGE] = FileStoreConfiguration(file=tmpdir + os.sep + "properties/rest_templates.yaml",
                                                                         format="yaml", encoding="utf-8", delete_on_start=False)
- 
+
         amap[FileStore.SPELLING_STORAGE] = FileStoreConfiguration(file=tmpdir + os.sep + "spelling/corpus.txt", format="text",
                                                                   encoding="utf-8", delete_on_start=False)
 

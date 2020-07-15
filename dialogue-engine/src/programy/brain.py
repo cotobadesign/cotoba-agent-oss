@@ -192,6 +192,7 @@ class Brain(object):
     def botnames(self):
         return self._botnames_collection
 
+    @property
     def rest_templates(self):
         return self._rest_templates_collection
 
