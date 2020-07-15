@@ -67,17 +67,22 @@ class RestParameters(object):
 
     def set_method(self, method):
         if method is not None:
-            method = method.upper()
-            if method in self.AVAILABLE_METHOD:
-                self._method = method
-            else:
-                return False
+            method = method.strip()
+            if method != '':
+                method = method.upper()
+                if method in self.AVAILABLE_METHOD:
+                    self._method = method
+                else:
+                    return False
         return True
 
     def set_query(self, query):
         if query is not None:
             try:
                 query_dict = ast.literal_eval("{" + query + "}")
+                for key in query_dict.keys():
+                    if key == '':
+                        return False
                 self._query = query_dict
             except Exception:
                 return False
@@ -87,6 +92,11 @@ class RestParameters(object):
         if header is not None:
             try:
                 header_dict = ast.literal_eval("{" + header + "}")
+                for key, value in header_dict.items():
+                    if key == '':
+                        return False
+                    if type(value) is not str:
+                        return False
                 self._header = header_dict
             except Exception:
                 return False
@@ -107,6 +117,15 @@ class RestParameters(object):
     def join_header(self, header):
         if len(self._header) == 0:
             return self.set_header(header)
+
+        if header is not None:
+            try:
+                header_dict = ast.literal_eval("{" + header + "}")
+                for key, value in header_dict.items():
+                    if type(value) is not str:
+                        return False
+            except Exception:
+                return False
 
         new_header, success = self._cocatenate_dict(self._header, header)
         if success is True:
@@ -151,6 +170,9 @@ class RestParameters(object):
 
         try:
             option_dict = ast.literal_eval("{" + option + "}")
+            for key in option_dict.keys():
+                if key == '':
+                    return None, False
         except Exception:
             return None, False
 
@@ -206,7 +228,7 @@ class RestTemplatesCollection(object):
         if template_name not in self._templates:
             self._templates[template_name] = params
         else:
-            error_info = "duplicate template_name='%s'" % name
+            error_info = "duplicate template_name='%s' (host='%s' is invalid)" % (name, params.host)
             self.set_error_info(filename, idx, error_info)
             return
 

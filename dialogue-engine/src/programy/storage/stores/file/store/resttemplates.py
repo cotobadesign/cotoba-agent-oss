@@ -54,14 +54,14 @@ class FileRestTemplatesStore(FileStore, RestTemplatesStore):
         except Exception as excep:
             YLogger.exception(self, "Failed to load REST-Template [%s]", excep, filename)
             error_info = "illegal yaml format"
-            collection.set_error_info(filename, 0, error_info)
+            collection.set_error_info(filename, None, error_info)
 
     def _make_rest_params(self, collection, template_yaml):
         error_info = None
         host = self._get_yaml_option(template_yaml, 'host')
         params = collection.make_rest_params(host)
         if params.host is None:
-            error_info = "invalid host parameter [%s]" % host
+            error_info = "no host parameter"
             return None, error_info
         method = self._get_yaml_option(template_yaml, 'method')
         if params.set_method(method) is False:
@@ -88,8 +88,15 @@ class FileRestTemplatesStore(FileStore, RestTemplatesStore):
         return section.keys()
 
     def _get_yaml_option(self, section, option_name):
+        if type(section) is not dict:
+            return None
         if option_name in section:
-            return section[option_name]
+            if section[option_name] is None:
+                return None
+            elif type(section[option_name]) is str:
+                return section[option_name]
+            else:
+                return str(section[option_name])
         return None
 
     def get_storage(self):
