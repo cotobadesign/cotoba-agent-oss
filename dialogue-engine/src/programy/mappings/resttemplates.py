@@ -62,13 +62,17 @@ class RestParameters(object):
     def change_host(self, host):
         if host is not None:
             host = host.strip()
-            if host != '':
-                self._host = host
+            if host == '':
+                return False
+            self._host = host
+        return True
 
     def set_method(self, method):
         if method is not None:
             method = method.strip()
-            if method != '':
+            if method == '':
+                self._method = 'GET'
+            else:
                 method = method.upper()
                 if method in self.AVAILABLE_METHOD:
                     self._method = method
@@ -92,12 +96,17 @@ class RestParameters(object):
         if header is not None:
             try:
                 header_dict = ast.literal_eval("{" + header + "}")
+                new_dict = {}
                 for key, value in header_dict.items():
                     if key == '':
                         return False
+                    if value is None:
+                        continue
                     if type(value) is not str:
                         return False
-                self._header = header_dict
+                    new_dict[key] = value
+
+                self._header = new_dict
             except Exception:
                 return False
         return True
@@ -122,8 +131,9 @@ class RestParameters(object):
             try:
                 header_dict = ast.literal_eval("{" + header + "}")
                 for key, value in header_dict.items():
-                    if type(value) is not str:
-                        return False
+                    if value is not None:
+                        if type(value) is not str:
+                            return False
             except Exception:
                 return False
 
@@ -146,7 +156,7 @@ class RestParameters(object):
         try:
             org_body = json.loads(self._body)
         except Exception:
-            org_body = body
+            org_body = self._body
 
         try:
             join_body = json.loads(body)
@@ -160,16 +170,25 @@ class RestParameters(object):
                         del org_body[key]
                         continue
                 org_body[key] = value
-            self._body = json.dumps(org_body, ensure_ascii=False)
+            if len(org_body) == 0:
+                self._body = None
+            else:
+                self._body = json.dumps(org_body, ensure_ascii=False)
         else:
-            self._body = join_body
+            if type(join_body) is dict:
+                self._body = json.dumps(join_body, ensure_ascii=False)
+            else:
+                self._body = join_body
 
     def _cocatenate_dict(self, self_dict, option):
-        if option is not None:
+        if option is None:
             return self_dict, True
 
         try:
             option_dict = ast.literal_eval("{" + option + "}")
+            if len(option_dict) == 0:
+                return {}, True
+
             for key in option_dict.keys():
                 if key == '':
                     return None, False
@@ -184,7 +203,8 @@ class RestParameters(object):
                 else:
                     new_dict[key] = value
             else:
-                new_dict[key] = value
+                if value is not None:
+                    new_dict[key] = value
         return new_dict, True
 
 

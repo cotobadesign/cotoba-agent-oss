@@ -156,9 +156,11 @@ class TemplateSRAIXNode(TemplateNode):
         error_msg = None
         if self._template is None:
             exec_params = RestParameters(self.host)
-            if self.body is not None:
+            if exec_params.host is None:
+                error_msg = "sraix subagent-rest : invalid host parameter [%s]" % self.host
+            if error_msg is None and self.body is not None:
                 exec_params.set_body(self.body)
-            if self.method is not None:
+            if error_msg is None and self.method is not None:
                 if exec_params.set_method(self.method) is False:
                     error_msg = "sraix subagent-rest : invalid method parameter [%s]" % self.method
             if error_msg is None and self.query is not None:
@@ -176,10 +178,11 @@ class TemplateSRAIXNode(TemplateNode):
 
             exec_params = copy.copy(restParams)
             if self.host is not None:
-                exec_params.change_host(self.host)
-            if self.body is not None:
+                if exec_params.change_host(self.host) is False:
+                    error_msg = "sraix subagent-rest : invalid host parameter [%s]" % self.host
+            if error_msg is None and self.body is not None:
                 exec_params.join_body(self.body)
-            if self.method is not None:
+            if error_msg is None and self.method is not None:
                 if exec_params.set_method(self.method) is False:
                     error_msg = "sraix subagent-rest : invalid method parameter [%s]" % self.method
             if error_msg is None and self.query is not None:
