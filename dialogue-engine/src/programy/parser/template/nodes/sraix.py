@@ -92,6 +92,8 @@ class TemplateSRAIXNode(TemplateNode):
 
         self._service = None
 
+        self._nlu = None
+
         self._default = None
 
     @property
@@ -105,6 +107,10 @@ class TemplateSRAIXNode(TemplateNode):
     @property
     def service(self):
         return self._service
+
+    @property
+    def nlu(self):
+        return self._nlu
 
     @property
     def default(self):
@@ -315,6 +321,7 @@ class TemplateSRAIXNode(TemplateNode):
                         else:
                             response = response_data
                     except Exception:
+                        YLogger.error(client_context, "SRAIX bot[%s] : invalid response", self._botName, response)
                         if self.default is not None:
                             response = self.default
                         else:
@@ -323,6 +330,57 @@ class TemplateSRAIXNode(TemplateNode):
                     if self.default is not None:
                         response = self.default
                     variableName += ".%s" % self._botName
+                    conversation.current_question().set_property(variableName, response)
+        return response
+
+    def _nlu_interface(self, client_context):
+        resolved = self.resolve_children_to_string(client_context)
+        YLogger.debug(client_context, "[%s] resolved to [%s]", self.to_string(), resolved)
+
+        serverInfo = client_context.brain.nlu_servers.server_info(self.nlu)
+        if serverInfo is None:
+            error_msg = "sraix subagent-bot : NLU server[%s] not found" % self.nlu
+            YLogger.debug(client_context, error_msg)
+            raise Exception(error_msg)
+
+        nlu = client_context.brain.nlu
+        response = nlu.nluCall(client_context, serverInfo.url, serverInfo.apikey, resolved)
+        YLogger.debug(client_context, "SRAIX nlu [%s] return [%s]", self.nlu, response)
+
+        conversation = client_context.bot.get_conversation(client_context)
+        status_code = ''
+        try:
+            status_code = nlu.get_status_code()
+        except NotImplementedError:
+            pass
+        if conversation.has_current_question() is True:
+            conversation.current_question().set_property('__SUBAGENT_STATUS_CODE__', status_code)
+
+        if response is None:
+            response = ''
+            if self.default is not None:
+                response = self.default
+        else:
+            if conversation.has_current_question() is False:
+                if self.default is not None:
+                    response = self.default
+            else:
+                variableName = "__SUBAGENT_NLU__"
+                if response != '':
+                    try:
+                        response_json = json.loads(response)
+                        save_dic = {self.nlu: response_json}
+                        conversation.current_question().set_property(variableName, json.dumps(save_dic, ensure_ascii=False))
+                    except Exception:
+                        YLogger.error(client_context, "SRAIX NLU[%s] : invalid response", self._nlu, response)
+                        if self.default is not None:
+                            response = self.default
+                        else:
+                            response = ''
+                else:
+                    if self.default is not None:
+                        response = self.default
+                    variableName += ".%s" % self.nlu
                     conversation.current_question().set_property(variableName, response)
         return response
 
@@ -376,6 +434,10 @@ class TemplateSRAIXNode(TemplateNode):
             response = self._published_REST_interface(client_context)
             return response
 
+        elif self._nlu is not None:
+            response = self._nlu_interface(client_context)
+            return response
+
         else:
             YLogger.debug(client_context, "Sorry SRAIX does not currently have an implementation for [%s]", self._service)
             return ''
@@ -427,6 +489,12 @@ class TemplateSRAIXNode(TemplateNode):
                 texts += ", body=%s" % self.body
             texts += ")]"
             return texts
+        elif self._nlu is not None:
+            texts = "[SRAIX (nlu=%s" % self.nlu
+            if self._default is not None:
+                texts += ", default=%s" % self.default
+            texts += ")]"
+            return texts
 
         return "[SRAIX ()]"
 
@@ -472,6 +540,11 @@ class TemplateSRAIXNode(TemplateNode):
                 xml += '<header>%s</header>' % self._header.to_xml(client_context)
             if self._body is not None:
                 xml += '<body>%s</body>' % self._body.to_xml(client_context)
+        elif self._nlu is not None:
+            xml += ' nlu="%s"' % self._nlu
+            if self._default is not None:
+                xml += ' default="%s"' % self._default
+            xml += '>'
         else:
             xml += '>'
 
@@ -551,6 +624,13 @@ class TemplateSRAIXNode(TemplateNode):
             mode_count += 1
             self._service = service_name
 
+        if 'nlu' in expression.attrib:
+            nlu_name = expression.attrib['nlu']
+            if graph.aiml_parser.brain.nlu_servers.contains(nlu_name) is None:
+                raise ParserException("NLU server[%s] not found" % nlu_name, xml_element=expression, nodename='sraix')
+            mode_count += 1
+            self._nlu = nlu_name
+
         if 'default' in expression.attrib:
             self._default = expression.attrib['default']
 
@@ -592,6 +672,9 @@ class TemplateSRAIXNode(TemplateNode):
 
             elif tag_name == 'service':
                 YLogger.warning(self, "'service' element not supported in sraix, moved to config, see documentation")
+
+            elif tag_name == 'nlu':
+                YLogger.warning(self, "'nlu' element not supported in sraix, moved to config, see documentation")
 
             elif tag_name == 'default':
                 YLogger.warning(self, "'default' element not supported in sraix, moved to config, see documentation")
