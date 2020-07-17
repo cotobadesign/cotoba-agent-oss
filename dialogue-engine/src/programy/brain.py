@@ -229,6 +229,10 @@ class Brain(object):
         return self._nlu
 
     @property
+    def nlu_servers(self):
+        return self._nlu_collection
+
+    @property
     def security(self):
         return self._security
 
@@ -306,6 +310,11 @@ class Brain(object):
     def _load_person2s(self):
         self._person2_collection.empty()
         self._person2_collection.load(self.bot.client.storage_factory)
+
+    def _load_nlu_servers(self):
+        self._nlu_collection.empty()
+        self._nlu_collection.load(self.bot.client.storage_factory)
+        self._nlu_collection.make_match_nlu_list()
 
     def _load_botnames(self):
         self._botnames_collection.empty()
@@ -385,6 +394,7 @@ class Brain(object):
         self._load_persons()
         self._load_person2s()
         self._load_default_variables()
+        self._load_nlu_servers()
         self._load_botnames()
         self._load_rest_templates()
         self._load_rdfs()
@@ -576,7 +586,7 @@ class Brain(object):
                 question.sentences[question._current_sentence_no].matched_node = json_matchedNode
 
     def multi_nlu_match(self, client_context, conversation, topic_pattern, that_pattern):
-        nlu_list = self._nlu_collection.servers
+        nlu_list = self._nlu_collection.match_nlus
         match_context = None
 
         for server_name in nlu_list:
