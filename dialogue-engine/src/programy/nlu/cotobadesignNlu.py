@@ -27,11 +27,16 @@ class CotobadesignNlu(NluRequest):
         NluRequest.__init__(self, config)
 
         self._requests_api = requests
+        self._status_code = ''
 
     def set_request_api(self, api):
         self._requests_api = api
 
+    def get_status_code(self):
+        return self._status_code
+
     def nluCall(self, client_context, url, apikey, utterance):
+        self._status_code = ''
 
         params = {
             "utterance": utterance,
@@ -41,6 +46,7 @@ class CotobadesignNlu(NluRequest):
         headers = {'Content-Type': 'application/json', 'x-api-key': apikey}
         try:
             response = self._requests_api.post(url=url, headers=headers, data=json_data)
+            self._status_code = str(response.status_code)
             if response.status_code == 200:
                 return response.text.strip()
             else:
