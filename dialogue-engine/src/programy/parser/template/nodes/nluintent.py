@@ -41,11 +41,16 @@ import json
 
 class TemplateNluIntentNode(TemplateNode):
 
+    VARIABLE_TYPE = ['name', 'data', 'var']
+
     def __init__(self):
         TemplateNode.__init__(self)
         self._intentName = None
         self._itemName = None
         self._index = None
+
+        self._varName = None
+        self._varType = None
 
     def resolve_children(self, client_context):
         if self._children:
@@ -62,13 +67,32 @@ class TemplateNluIntentNode(TemplateNode):
         except Exception:
             intentIndex = 0
 
+        try:
+            if self._varName is None:
+                value = conversation.current_question().property("__SYSTEM_NLUDATA__")
+                if value is None:
+                    YLogger.error(self, "TemplateNluintentNode __SYSTEM_NLUDATA__ is None")
+                    return resolved
+            else:
+                if self._varType == 'name':
+                    value = conversation.property(self._varName)
+                elif self._varType == 'data':
+                    value = conversation.data_property(self._varName)
+                else:
+                    value = conversation.current_question().property(self._varName)
+                if value is None:
+                    YLogger.error(self, "TemplateNluintentNode %s is None" % self._varName)
+                    return resolved
+        except Exception:
+            YLogger.error(self, "TemplateNluintentNode failed to load NLU result")
+            return resolved
+
         intents = None
         try:
-            value = conversation.current_question().property("__SYSTEM_NLUDATA__")
             json_dict = json.loads(value)
             intents = json_dict["intents"]
         except Exception:
-            YLogger.error(self, "TemplateNluintentNode failed to load __SYSTEM_NLUDATA__")
+            YLogger.error(self, "TemplateNluintentNode intents not found in target data")
             return resolved
 
         intentsKeyName = "intent"
@@ -123,7 +147,11 @@ class TemplateNluIntentNode(TemplateNode):
         return "[nluintent]"
 
     def to_xml(self, client_context):
-        xml = "<nluintent>"
+        xml = "<nluintent"
+        if self._varName is not None:
+            xml += ' target="%s"' % self._varName
+            xml += ' type="%s"' % self._varType
+        xml += ">"
         xml += "<name>"
         xml += self._intentName.to_xml(client_context)
         xml += "</name>"
@@ -153,6 +181,17 @@ class TemplateNluIntentNode(TemplateNode):
         if 'index' in expression.attrib:
             self._index = self.parse_attrib_value_as_word_node(graph, expression, 'index')
 
+        if 'target' in expression.attrib:
+            var_name = expression.attrib['target']
+            if var_name != '':
+                self._varName = var_name
+        if 'type' in expression.attrib:
+            var_type = expression.attrib['type']
+            if var_type in self.VARIABLE_TYPE:
+                self._varType = var_type
+            else:
+                raise ParserException("Invalid variable type [%s]" % var_type, xml_element=expression, nodename='nluintent')
+
         self.parse_text(graph, self.get_text_from_element(expression))
 
         for child in expression:
@@ -170,3 +209,6 @@ class TemplateNluIntentNode(TemplateNode):
 
         if self._intentName is None or self._itemName is None:
             raise ParserException("Missing either intent or item", xml_element=expression, nodename='nluintent')
+
+        if self._varName is not None and self._varType is None:
+            self._varType = 'var'
