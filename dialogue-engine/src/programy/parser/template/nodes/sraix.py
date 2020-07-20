@@ -626,7 +626,7 @@ class TemplateSRAIXNode(TemplateNode):
 
         if 'nlu' in expression.attrib:
             nlu_name = expression.attrib['nlu']
-            if graph.aiml_parser.brain.nlu_servers.contains(nlu_name) is None:
+            if graph.aiml_parser.brain.nlu_servers.contains(nlu_name) is False:
                 raise ParserException("NLU server[%s] not found" % nlu_name, xml_element=expression, nodename='sraix')
             mode_count += 1
             self._nlu = nlu_name
