@@ -614,6 +614,7 @@ class PatternNode(object):
                 if depth == 0:
                     words.check_words()
 
+                org_word_no = word_no
                 result = child.equals(client_context, words, word_no)
                 if result.matched is True:
                     word_no = result.word_no
@@ -629,9 +630,11 @@ class PatternNode(object):
                         return match, word_no
                     else:
                         context.pop_match()
+                        word_no = org_word_no
         else:
             for child in reversed(children):  # for NLU matching.
 
+                org_word_no = word_no
                 result = child.equals(client_context, words, word_no)
                 if result.matched is True:
                     word_no = result.word_no
@@ -647,6 +650,7 @@ class PatternNode(object):
                         return match, word_no
                     else:
                         context.pop_match()
+                        word_no = org_word_no
 
         return None, word_no
 
