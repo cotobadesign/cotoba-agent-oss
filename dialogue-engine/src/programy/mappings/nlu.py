@@ -115,7 +115,7 @@ class NluCollection(object):
             return
 
         if server_name in self._servers:
-            error_info = "NLU server [%s] already exist" % server_name
+            error_info = "NLU server [%s] already exist" % name
             self.set_servers_error(filename, index, error_info)
             return
 
