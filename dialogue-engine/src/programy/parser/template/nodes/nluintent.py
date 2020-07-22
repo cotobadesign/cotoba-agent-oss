@@ -51,6 +51,7 @@ class TemplateNluIntentNode(TemplateNode):
 
         self._varName = None
         self._varType = None
+        self._keys = None
 
     def resolve_children(self, client_context):
         if self._children:
@@ -90,6 +91,15 @@ class TemplateNluIntentNode(TemplateNode):
         intents = None
         try:
             json_dict = json.loads(value)
+            if self._keys is not None:
+                first = True
+                for key in self._keys:
+                    if first:
+                        first = False
+                        continue
+                    json_dict = json_dict[key]
+                    if key == self._keys[-1]:
+                        break
             intents = json_dict["intents"]
         except Exception:
             YLogger.error(self, "TemplateNluintentNode intents not found in target data")
@@ -184,7 +194,12 @@ class TemplateNluIntentNode(TemplateNode):
         if 'target' in expression.attrib:
             var_name = expression.attrib['target']
             if var_name != '':
-                self._varName = var_name
+                keys = var_name.split('.')
+                self._varName = keys[0]
+                if len(keys) == 1:
+                    self._keys = None
+                else:
+                    self._keys = keys
         if 'type' in expression.attrib:
             var_type = expression.attrib['type']
             if var_type in self.VARIABLE_TYPE:
