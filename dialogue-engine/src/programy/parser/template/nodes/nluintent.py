@@ -73,6 +73,7 @@ class TemplateNluIntentNode(TemplateNode):
                 value = conversation.current_question().property("__SYSTEM_NLUDATA__")
                 if value is None:
                     YLogger.error(self, "TemplateNluintentNode __SYSTEM_NLUDATA__ is None")
+                    resolved = TemplateGetNode.get_default_value(client_context)
                     return resolved
             else:
                 if self._varType == 'name':
@@ -86,6 +87,7 @@ class TemplateNluIntentNode(TemplateNode):
                     return resolved
         except Exception:
             YLogger.error(self, "TemplateNluintentNode failed to load NLU result")
+            resolved = TemplateGetNode.get_default_value(client_context)
             return resolved
 
         intents = None
@@ -103,6 +105,7 @@ class TemplateNluIntentNode(TemplateNode):
             intents = json_dict["intents"]
         except Exception:
             YLogger.error(self, "TemplateNluintentNode intents not found in target data")
+            resolved = TemplateGetNode.get_default_value(client_context)
             return resolved
 
         intentsKeyName = "intent"

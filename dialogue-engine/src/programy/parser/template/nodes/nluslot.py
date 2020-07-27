@@ -73,6 +73,7 @@ class TemplateNluSlotNode(TemplateNode):
                 value = conversation.current_question().property("__SYSTEM_NLUDATA__")
                 if value is None:
                     YLogger.error(self, "TemplateNluSlotNode __SYSTEM_NLUDATA__ is None")
+                    resolved = TemplateGetNode.get_default_value(client_context)
                     return resolved
             else:
                 if self._varType == 'name':
@@ -86,6 +87,7 @@ class TemplateNluSlotNode(TemplateNode):
                     return resolved
         except Exception:
             YLogger.error(self, "TemplateNluSlotNode failed to load NLU result")
+            resolved = TemplateGetNode.get_default_value(client_context)
             return resolved
 
         slots = None
@@ -103,6 +105,7 @@ class TemplateNluSlotNode(TemplateNode):
             slots = json_dict["slots"]
         except Exception:
             YLogger.error(self, "TemplateNluSlotNode slots not found in target data")
+            resolved = TemplateGetNode.get_default_value(client_context)
             return resolved
 
         slotsKeyName = "slot"
