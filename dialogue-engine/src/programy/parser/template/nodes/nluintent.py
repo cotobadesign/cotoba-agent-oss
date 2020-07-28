@@ -85,6 +85,7 @@ class TemplateNluIntentNode(TemplateNode):
                     value = conversation.current_question().property(self._varName)
                 if value is None:
                     YLogger.error(self, "TemplateNluintentNode %s is None" % self._varName)
+                    resolved = TemplateGetNode.get_default_value(client_context)
                     return resolved
         except Exception:
             YLogger.error(self, "TemplateNluintentNode failed to load NLU result")
