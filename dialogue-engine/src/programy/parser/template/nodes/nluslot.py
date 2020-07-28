@@ -42,6 +42,7 @@ import json
 class TemplateNluSlotNode(TemplateNode):
 
     VARIABLE_TYPE = ['name', 'data', 'var']
+    VAR_NLU_DATA = '__SUBAGENT_NLU__'
 
     def __init__(self):
         TemplateNode.__init__(self)
@@ -199,12 +200,7 @@ class TemplateNluSlotNode(TemplateNode):
         if 'target' in expression.attrib:
             var_name = expression.attrib['target']
             if var_name != '':
-                keys = var_name.split('.')
-                self._varName = keys[0]
-                if len(keys) == 1:
-                    self._keys = None
-                else:
-                    self._keys = keys
+                self._varName = var_name
         if 'type' in expression.attrib:
             var_type = expression.attrib['type']
             if var_type in self.VARIABLE_TYPE:
@@ -230,5 +226,14 @@ class TemplateNluSlotNode(TemplateNode):
         if self._slotName is None or self._itemName is None:
             raise ParserException("Missing either slot or item", xml_element=expression, nodename='nluslot')
 
-        if self._varName is not None and self._varType is None:
-            self._varType = 'var'
+        if self._varName is None:
+            self._varType = None
+        else:
+            if self._varType is None:
+                self._varType = 'var'
+
+        if self._varType == 'var':
+            keys = self._varName.split('.')
+            if keys[0] == self.VAR_NLU_DATA and len(keys) == 2:
+                self._varName = keys[0]
+                self._keys = keys
