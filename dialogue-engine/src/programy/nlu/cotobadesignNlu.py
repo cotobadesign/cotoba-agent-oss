@@ -41,6 +41,10 @@ class CotobadesignNlu(NluRequest):
         if utterance is None or utterance == '':
             return None
 
+        if self._configuration.max_utterance_length > 0:
+            if self._configuration.max_utterance_length < len(utterance):
+                return None
+
         params = {
             "utterance": utterance,
         }
