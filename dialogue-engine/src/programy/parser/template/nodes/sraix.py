@@ -321,7 +321,9 @@ class TemplateSRAIXNode(TemplateNode):
                         else:
                             response = response_data
                     except Exception:
-                        YLogger.error(client_context, "SRAIX bot[%s] : invalid response", self._botName, response)
+                        YLogger.error(client_context, "SRAIX bot[%s] : invalid response[%s]", self._botName, response)
+                        save_dic = {self._botName: response}
+                        conversation.current_question().set_property(variableName, json.dumps(save_dic, ensure_ascii=False))
                         if self.default is not None:
                             response = self.default
                         else:
@@ -372,7 +374,9 @@ class TemplateSRAIXNode(TemplateNode):
                         save_dic = {self.nlu: response_json}
                         conversation.current_question().set_property(variableName, json.dumps(save_dic, ensure_ascii=False))
                     except Exception:
-                        YLogger.error(client_context, "SRAIX NLU[%s] : invalid response", self._nlu, response)
+                        YLogger.error(client_context, "SRAIX NLU[%s] : invalid response[%s]", self._nlu, response)
+                        save_dic = {self.nlu: response}
+                        conversation.current_question().set_property(variableName, json.dumps(save_dic, ensure_ascii=False))
                         if self.default is not None:
                             response = self.default
                         else:
