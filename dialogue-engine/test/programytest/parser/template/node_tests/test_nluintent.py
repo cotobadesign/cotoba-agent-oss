@@ -233,7 +233,7 @@ class TemplateNluIntentNodeTests(ParserTestsBaseClass):
 
         result = root.resolve(self._client_context)
         self.assertIsNotNone(result)
-        self.assertEqual("", result)
+        self.assertEqual("unknown", result)
 
     def test_nluintent_invalid_index(self):
         root = TemplateNode()
