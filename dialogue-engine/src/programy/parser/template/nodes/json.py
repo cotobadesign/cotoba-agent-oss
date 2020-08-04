@@ -682,6 +682,7 @@ class TemplateJsonNode(TemplateNode):
         if texts[0] == '{' or texts[0] == '[':
             texts1 = texts.replace(self.JSON_CHILD_MARK, '""')
             texts2 = texts.replace(self.JSON_CHILD_MARK, '"key": "value"')
+            texts3 = texts.replace(self.JSON_CHILD_MARK, 'x')
             try:
                 json.loads(texts1)
                 return True
@@ -689,6 +690,11 @@ class TemplateJsonNode(TemplateNode):
                 pass
             try:
                 json.loads(texts2)
+                return True
+            except Exception:
+                pass
+            try:
+                json.loads(texts3)
             except Exception:
                 return False
         else:
