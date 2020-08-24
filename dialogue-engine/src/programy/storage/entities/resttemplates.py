@@ -13,10 +13,12 @@ THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRI
 AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,
 TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 """
-import unittest
 
 
-class RequestsAPITests(unittest.TestCase):
+class RestTemplatesStore(object):
 
-    def test_init(self):
-        pass
+    def load(self, rest_collection):
+        raise NotImplementedError("load missing from RestTemplates Store")
+
+    def reload_all(self, rest_collection):
+        raise NotImplementedError("reload_all missing RestTemplates Store")

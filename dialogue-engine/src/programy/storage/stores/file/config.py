@@ -84,6 +84,7 @@ class FileStorageConfiguration(BaseConfigurationData):
         self._defaults_storage = FileStoreConfiguration(file=tmpdir + os.sep + "properties/defaults.txt", format="text", encoding="utf-8", delete_on_start=False)
         self._nlu_servers_storage = FileStoreConfiguration(file=tmpdir + os.sep + "properties/nlu_servers.yaml", format="yaml", encoding="utf-8", delete_on_start=False)
         self._bot_names_storage = FileStoreConfiguration(file=tmpdir + os.sep + "properties/botnames.yaml", format="yaml", encoding="utf-8", delete_on_start=False)
+        self._rest_templates_storage = FileStoreConfiguration(file=tmpdir + os.sep + "properties/rest_templates.yaml", format="yaml", encoding="utf-8", delete_on_start=False)
 
         self._spelling_storage = FileStoreConfiguration(file=tmpdir + os.sep + "spelling/corpus.txt", format="text", encoding="utf-8", delete_on_start=False)
 
@@ -186,6 +187,10 @@ class FileStorageConfiguration(BaseConfigurationData):
         return self._bot_names_storage
 
     @property
+    def rest_templates_storage(self):
+        return self._rest_templates_storage
+
+    @property
     def spelling_storage(self):
         return self._spelling_storage
 
@@ -264,6 +269,7 @@ class FileStorageConfiguration(BaseConfigurationData):
             self.load_storage_config(self._defaults_storage, FileStore.DEFAULTS_STORAGE, configuration_file, storage, bot_root, subs=subs)
             self.load_storage_config(self._nlu_servers_storage, FileStore.NLU_SERVERS_STORAGE, configuration_file, storage, bot_root, subs=subs)
             self.load_storage_config(self._bot_names_storage, FileStore.BOT_NAMES_STORAGE, configuration_file, storage, bot_root, subs=subs)
+            self.load_storage_config(self._rest_templates_storage, FileStore.REST_TEMPLATES_STORAGE, configuration_file, storage, bot_root, subs=subs)
 
             self.load_storage_config(self._spelling_storage, FileStore.SPELLING_STORAGE, configuration_file, storage, bot_root, subs=subs)
 
@@ -338,6 +344,7 @@ class FileStorageConfiguration(BaseConfigurationData):
         amap[FileStore.DEFAULTS_STORAGE] = self._defaults_storage
         amap[FileStore.NLU_SERVERS_STORAGE] = self._nlu_servers_storage
         amap[FileStore.BOT_NAMES_STORAGE] = self._bot_names_storage
+        amap[FileStore.REST_TEMPLATES_STORAGE] = self._rest_templates_storage
 
         amap[FileStore.SPELLING_STORAGE] = self._spelling_storage
 
@@ -406,6 +413,9 @@ class FileStorageConfiguration(BaseConfigurationData):
                                                                      encoding="utf-8", delete_on_start=False)
         amap[FileStore.BOT_NAMES_STORAGE] = FileStoreConfiguration(file=tmpdir + os.sep + "properties/botnames.yaml", format="yaml",
                                                                    encoding="utf-8", delete_on_start=False)
+
+        amap[FileStore.REST_TEMPLATES_STORAGE] = FileStoreConfiguration(file=tmpdir + os.sep + "properties/rest_templates.yaml",
+                                                                        format="yaml", encoding="utf-8", delete_on_start=False)
 
         amap[FileStore.SPELLING_STORAGE] = FileStoreConfiguration(file=tmpdir + os.sep + "spelling/corpus.txt", format="text",
                                                                   encoding="utf-8", delete_on_start=False)

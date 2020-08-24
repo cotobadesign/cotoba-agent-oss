@@ -37,6 +37,7 @@ from programy.storage.stores.file.store.conversations import FileConversationSto
 from programy.storage.stores.file.store.logs import FileLogsStore
 from programy.storage.stores.file.store.nlu import FileNLUStore
 from programy.storage.stores.file.store.botnames import FileBotNamesStore
+from programy.storage.stores.file.store.resttemplates import FileRestTemplatesStore
 from programy.storage.stores.file.store.sets import FileSetsStore
 from programy.storage.stores.file.store.maps import FileMapsStore
 from programy.storage.stores.file.store.rdfs import FileRDFStore
@@ -100,6 +101,9 @@ class FileStorageEngine(StorageEngine):
 
     def bot_names_store(self):
         return FileBotNamesStore(self)
+
+    def rest_templates_store(self):
+        return FileRestTemplatesStore(self)
 
     def sets_store(self):
         return FileSetsStore(self)

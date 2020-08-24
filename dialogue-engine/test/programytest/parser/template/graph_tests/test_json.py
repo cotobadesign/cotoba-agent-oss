@@ -577,8 +577,11 @@ class TemplateGraphJsonTests(TemplateGraphTestClient):
                 <json name="json_data.key_1">{"key": "<get name="get_data" />"}</json>
             </template>
             """)
-        with self.assertRaises(ParserException):
-            self._graph.parse_template_expression(template)
+        ast = self._graph.parse_template_expression(template)
+        json_node = ast.children[0]
+        self.assertEqual(json_node._name.resolve(self._client_context), "json_data.key_1")
+        json_data = '{\"key\": "' + TemplateJsonNode.JSON_CHILD_IN + 'unknown' + TemplateJsonNode.JSON_CHILD_OUT + '"}'
+        self.assertEqual(json_node.resolve_children(self._client_context), json_data)
 
     def test_json_template_other(self):
         template = ET.fromstring("""

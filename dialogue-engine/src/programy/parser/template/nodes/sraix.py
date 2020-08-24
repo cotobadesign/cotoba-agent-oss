@@ -31,7 +31,6 @@ TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR TH
 """
 
 import json
-import ast
 import copy
 
 from programy.utils.logging.ylogger import YLogger
@@ -40,6 +39,7 @@ from programy.parser.template.nodes.base import TemplateNode
 from programy.services.service import ServiceFactory
 from programy.parser.exceptions import ParserException
 from programy.utils.text.text import TextUtils
+from programy.mappings.resttemplates import RestParameters
 
 
 class TemplateSRAIXSubNode(TemplateNode):
@@ -74,6 +74,7 @@ class TemplateSRAIXNode(TemplateNode):
     def __init__(self):
         TemplateNode.__init__(self)
 
+        self._template = None
         self._host = None
         self._method = None
         self._query = None
@@ -98,6 +99,10 @@ class TemplateSRAIXNode(TemplateNode):
         return self._botName
 
     @property
+    def template(self):
+        return self._template
+
+    @property
     def service(self):
         return self._service
 
@@ -108,6 +113,10 @@ class TemplateSRAIXNode(TemplateNode):
     @botName.setter
     def botName(self, botName):
         self._botName = botName
+
+    @template.setter
+    def template(self, template):
+        self._template = template
 
     @service.setter
     def service(self, service):
@@ -122,15 +131,15 @@ class TemplateSRAIXNode(TemplateNode):
         return rep_text
 
     def _published_REST_interface(self, client_context):
+        self.host = None
         self.method = None
         self.query = None
         self.header = None
         self.body = None
 
-        self.host = self._host.resolve(client_context)
-        if self._method is None:
-            self.method = 'GET'
-        else:
+        if self._host is not None:
+            self.host = self._host.resolve(client_context)
+        if self._method is not None:
             self.method = self._method.resolve(client_context)
         if self._query is not None:
             shift_text = self._query.resolve(client_context)
@@ -144,29 +153,58 @@ class TemplateSRAIXNode(TemplateNode):
         resolved = self.resolve_children_to_string(client_context)
         YLogger.debug(client_context, "[%s] resolved to [%s]", self.to_string(), resolved)
 
-        bot_service = ServiceFactory.get_service(self.SERVICE_PUBLISHED_REST)
-        bot_service.host = self.host
-        bot_service.method = self.method
-        try:
-            if self.query is None:
-                bot_service.query = self.query
-            else:
-                bot_service.query = ast.literal_eval("{" + self.query + "}")
-            if self.header is None:
-                bot_service.header = self.header
-            else:
-                bot_service.header = ast.literal_eval("{" + self.header + "}")
-            bot_service.body = self.body
-            response = bot_service.ask_question(client_context, resolved)
-            YLogger.debug(client_context, "SRAIX host [%s] return [%s]", self.host, response)
-        except Exception:
-            YLogger.debug(client_context, "SRAIX Rest parameter convet failed")
-            response = ''
+        error_msg = None
+        if self._template is None:
+            exec_params = RestParameters(self.host)
+            if exec_params.host is None:
+                error_msg = "sraix subagent-rest : invalid host parameter [%s]" % self.host
+            if error_msg is None and self.body is not None:
+                exec_params.set_body(self.body)
+            if error_msg is None and self.method is not None:
+                if exec_params.set_method(self.method) is False:
+                    error_msg = "sraix subagent-rest : invalid method parameter [%s]" % self.method
+            if error_msg is None and self.query is not None:
+                if exec_params.set_query(self.query) is False:
+                    error_msg = "sraix subagent-rest : invalid query parameter [%s]" % self.query
+            if error_msg is None and self.header is not None:
+                if exec_params.set_header(self.header) is False:
+                    error_msg = "sraix subagent-rest : invalid locale parameter [%s]" % self.header
+        else:
+            restParams = client_context.brain.rest_templates.rest_template(self._template)
+            if restParams is None:
+                error_msg = "sraix subagent-rest : REST-Template[%s] not found" % self._template
+                YLogger.debug(client_context, error_msg)
+                raise Exception(error_msg)
+
+            exec_params = copy.copy(restParams)
+            if self.host is not None:
+                if exec_params.change_host(self.host) is False:
+                    error_msg = "sraix subagent-rest : invalid host parameter [%s]" % self.host
+            if error_msg is None and self.body is not None:
+                exec_params.join_body(self.body)
+            if error_msg is None and self.method is not None:
+                if exec_params.set_method(self.method) is False:
+                    error_msg = "sraix subagent-rest : invalid method parameter [%s]" % self.method
+            if error_msg is None and self.query is not None:
+                if exec_params.join_query(self.query) is False:
+                    error_msg = "sraix subagent-rest : invalid query parameter [%s]" % self.query
+            if error_msg is None and self.header is not None:
+                if exec_params.join_header(self.header) is False:
+                    error_msg = "sraix subagent-rest : invalid header parameter [%s]" % self.header
+
+        if error_msg is not None:
+            YLogger.debug(client_context, error_msg)
+            raise Exception(error_msg)
+
+        rest_service = ServiceFactory.get_service(self.SERVICE_PUBLISHED_REST)
+        rest_service.params = exec_params
+        response = rest_service.ask_question(client_context, resolved)
+        YLogger.debug(client_context, "SRAIX host [%s] return [%s]", exec_params.host, response)
 
         conversation = client_context.bot.get_conversation(client_context)
         status_code = ''
         try:
-            status_code = bot_service.get_status_code()
+            status_code = rest_service.get_status_code()
         except NotImplementedError:
             pass
         if conversation.has_current_question() is True:
@@ -334,7 +372,7 @@ class TemplateSRAIXNode(TemplateNode):
             response = self._published_Bot_interface(client_context)
             return response
 
-        elif self._host is not None:
+        elif self._host is not None or self._template is not None:
             response = self._published_REST_interface(client_context)
             return response
 
@@ -369,8 +407,14 @@ class TemplateSRAIXNode(TemplateNode):
                 texts += ", config=%s" % self.config
             texts += ")]"
             return texts
-        elif self._host is not None:
-            texts = "[SRAIX (host=%s" % self.host
+        elif self._template is not None or self._host is not None:
+            texts = "[SRAIX ("
+            if self._template is not None:
+                texts += "template=%s" % self.template
+                if self._host is not None:
+                    texts += ", host=%s" % self.host
+            else:
+                texts += "host=%s" % self.host
             if self._default is not None:
                 texts += ", default=%s" % self.default
             if self._method is not None:
@@ -412,11 +456,14 @@ class TemplateSRAIXNode(TemplateNode):
                 xml += '<metadata>%s</metadata>' % self._metadata.to_xml(client_context)
             if self._config is not None:
                 xml += '<config>%s</config>' % self._config.to_xml(client_context)
-        elif self._host is not None:
+        elif self._template is not None or self._host is not None:
+            if self._template is not None:
+                xml += ' template="%s"' % self.template
             if self._default is not None:
                 xml += ' default="%s"' % self._default
             xml += '>'
-            xml += '<host>%s</host>' % self._host.to_xml(client_context)
+            if self._host is not None:
+                xml += '<host>%s</host>' % self._host.to_xml(client_context)
             if self._method is not None:
                 xml += '<method>%s</method>' % self._method.to_xml(client_context)
             if self._query is not None:
@@ -461,6 +508,12 @@ class TemplateSRAIXNode(TemplateNode):
     def parse_expression(self, graph, expression):
         mode_count = 0
 
+        if 'template' in expression.attrib:
+            template = expression.attrib['template']
+            if graph.aiml_parser.brain.rest_templates.rest_template(template) is None:
+                raise ParserException("REST=Template[%s] not found" % template, xml_element=expression, nodename='sraix')
+            mode_count += 1
+            self._template = template
         if 'method' in expression.attrib:
             YLogger.warning(self, "'method' attrib not supported in sraix, moved to config, see documentation")
         if 'query' in expression.attrib:
@@ -508,7 +561,8 @@ class TemplateSRAIXNode(TemplateNode):
             tag_name = TextUtils.tag_from_text(child.tag)
 
             if tag_name == 'host':
-                mode_count += 1
+                if self._template is None or self._host is not None:
+                    mode_count += 1
                 self._host = self._parse_template_node(graph, child, 'host', False)
             elif tag_name == 'method':
                 self._method = self._parse_template_node(graph, child, 'method', False)
