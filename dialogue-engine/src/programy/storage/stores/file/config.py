@@ -81,6 +81,8 @@ class FileStorageConfiguration(BaseConfigurationData):
         self._regex_storage = FileStoreConfiguration(file=tmpdir + os.sep + "lookups/regex.txt", format="text", encoding="utf-8", delete_on_start=False)
 
         self._properties_storage = FileStoreConfiguration(file=tmpdir + os.sep + "properties/properties.txt", format="text", encoding="utf-8", delete_on_start=False)
+        self._properties_json_storage = FileStoreConfiguration(dirs=[tmpdir + os.sep + "properties" + os.sep + "json"], extension="json", subdirs=False, format="text",
+                                                               encoding="utf-8", delete_on_start=False)
         self._defaults_storage = FileStoreConfiguration(file=tmpdir + os.sep + "properties/defaults.txt", format="text", encoding="utf-8", delete_on_start=False)
         self._nlu_servers_storage = FileStoreConfiguration(file=tmpdir + os.sep + "properties/nlu_servers.yaml", format="yaml", encoding="utf-8", delete_on_start=False)
         self._bot_names_storage = FileStoreConfiguration(file=tmpdir + os.sep + "properties/botnames.yaml", format="yaml", encoding="utf-8", delete_on_start=False)
@@ -175,6 +177,10 @@ class FileStorageConfiguration(BaseConfigurationData):
         return self._properties_storage
 
     @property
+    def properties_json_storage(self):
+        return self._properties_json_storage
+
+    @property
     def defaults_storage(self):
         return self._defaults_storage
 
@@ -266,6 +272,7 @@ class FileStorageConfiguration(BaseConfigurationData):
             self.load_storage_config(self._regex_storage, FileStore.REGEX_STORAGE, configuration_file, storage, bot_root, subs=subs)
 
             self.load_storage_config(self._properties_storage, FileStore.PROPERTIES_STORAGE, configuration_file, storage, bot_root, subs=subs)
+            self.load_storage_config(self._properties_json_storage, FileStore.PROPERTIES_JSON_STORAGE, configuration_file, storage, bot_root, subs=subs)
             self.load_storage_config(self._defaults_storage, FileStore.DEFAULTS_STORAGE, configuration_file, storage, bot_root, subs=subs)
             self.load_storage_config(self._nlu_servers_storage, FileStore.NLU_SERVERS_STORAGE, configuration_file, storage, bot_root, subs=subs)
             self.load_storage_config(self._bot_names_storage, FileStore.BOT_NAMES_STORAGE, configuration_file, storage, bot_root, subs=subs)
@@ -341,6 +348,7 @@ class FileStorageConfiguration(BaseConfigurationData):
         amap[FileStore.REGEX_STORAGE] = self._regex_storage
 
         amap[FileStore.PROPERTIES_STORAGE] = self._properties_storage
+        amap[FileStore.PROPERTIES_JSON_STORAGE] = self._properties_json_storage
         amap[FileStore.DEFAULTS_STORAGE] = self._defaults_storage
         amap[FileStore.NLU_SERVERS_STORAGE] = self._nlu_servers_storage
         amap[FileStore.BOT_NAMES_STORAGE] = self._bot_names_storage
@@ -407,6 +415,8 @@ class FileStorageConfiguration(BaseConfigurationData):
 
         amap[FileStore.PROPERTIES_STORAGE] = FileStoreConfiguration(file=tmpdir + os.sep + "properties/properties.txt", format="text",
                                                                     encoding="utf-8", delete_on_start=False)
+        amap[FileStore.PROPERTIES_JSON_STORAGE] = FileStoreConfiguration(dirs=[tmpdir + os.sep + "properties" + os.sep + "json"], extension="json",
+                                                                         subdirs=False, format="text", encoding="utf-8", delete_on_start=False)
         amap[FileStore.DEFAULTS_STORAGE] = FileStoreConfiguration(file=tmpdir + os.sep + "properties/defaults.txt", format="text",
                                                                   encoding="utf-8", delete_on_start=False)
         amap[FileStore.NLU_SERVERS_STORAGE] = FileStoreConfiguration(file=tmpdir + os.sep + "properties/nlu_servers.yaml", format="yaml",
