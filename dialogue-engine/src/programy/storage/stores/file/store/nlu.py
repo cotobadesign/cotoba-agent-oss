@@ -45,41 +45,80 @@ class FileNLUStore(FileStore, NLUStore):
     def _load_file_contents(self, nlu_collection, filename):
         YLogger.debug(self, "Loading NLU_Servers [%s]", filename)
         server_index = 0
+        nlu_index = 0
         try:
             with open(filename, 'r+', encoding="utf-8") as yml_file:
                 yaml_data = yaml.load(yml_file, Loader=yaml.SafeLoader)
                 if yaml_data is not None:
-                    nlu_section = self._get_section(yaml_data, 'nlu')
-                    if nlu_section is not None:
-                        if type(nlu_section) is not list:
-                            nlu_section = [nlu_section]
-                        for server_info in nlu_section:
+                    servers_section = self._get_section(yaml_data, 'servers')
+                    if servers_section is not None:
+                        servers = self._get_keys(servers_section)
+                        for server in servers:
+                            server_info = self._get_section(servers_section, server)
                             url = self._get_yaml_option(server_info, "url")
                             if url is not None:
                                 apikey = self._get_yaml_option(server_info, "apikey")
-                                server_name = str(server_index)
-                                nlu_collection.add_server(server_name, url, apikey, filename, server_index)
+                                nlu_collection.add_server(server, url, apikey, filename, server_index)
                             else:
-                                error_info = "url parameter not found"
-                                nlu_collection.set_error_info(filename, server_index, error_info)
+                                error_info = "url parameter not found in servers"
+                                nlu_collection.set_servers_error(filename, server_index, error_info)
                             server_index += 1
-                    else:
-                        error_info = "nlu section not found"
-                        nlu_collection.set_error_info(filename, None, error_info)
+
+                    if nlu_collection.set_matchlist is True:
+                        nlu_section = self._get_section(yaml_data, 'nlu')
+                        if nlu_section is not None:
+                            if type(nlu_section) is not list:
+                                nlu_section = [nlu_section]
+                            for server_info in nlu_section:
+                                name = self._get_yaml_option(server_info, "name")
+                                if name is not None:
+                                    if nlu_collection.server_info(name) is None:
+                                        error_info = "server[%s] not found" % name
+                                        nlu_collection.set_nlus_error(filename, nlu_index, error_info)
+                                        nlu_index += 1
+                                        continue
+                                url = self._get_yaml_option(server_info, "url")
+                                if url is not None:
+                                    if name is not None:
+                                        error_info = "exist both parameters name[%s] and url[%s]" % (name, url)
+                                        nlu_collection.set_nlus_error(filename, nlu_index, error_info)
+                                    else:
+                                        apikey = self._get_yaml_option(server_info, "apikey")
+                                        nlu_collection.add_nlu_by_url(url, apikey, filename, nlu_index)
+                                else:
+                                    if name is not None:
+                                        nlu_collection.add_nlu_by_name(name, filename, nlu_index)
+                                    else:
+                                        error_info = "url parameter not found in nlu"
+                                        nlu_collection.set_nlus_error(filename, nlu_index, error_info)
+                                nlu_index += 1
+                        else:
+                            error_info = "nlu section not found"
+                            nlu_collection.set_nlus_error(filename, 0, error_info)
 
         except Exception as excep:
             YLogger.exception(self, "Failed to load NLU_Servers [%s]", excep, filename)
             error_info = "illegal yaml format"
-            nlu_collection.set_error_info(filename, 0, error_info)
+            nlu_collection.set_servers_error(filename, 0, error_info)
 
     def _get_section(self, yaml_data, section_name):
         if section_name in yaml_data:
             return yaml_data[section_name]
         return None
 
+    def _get_keys(self, section):
+        return section.keys()
+
     def _get_yaml_option(self, section, option_name):
+        if type(section) is not dict:
+            return None
         if option_name in section:
-            return section[option_name]
+            if section[option_name] is None:
+                return None
+            elif type(section[option_name]) is str:
+                return section[option_name]
+            else:
+                return str(section[option_name])
         return None
 
     def _get_storage_path(self):

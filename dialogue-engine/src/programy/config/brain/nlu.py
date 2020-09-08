@@ -48,6 +48,7 @@ class BrainNluConfiguration(BaseConfigurationData):
         self._url = BrainNluConfiguration.DEFAULT_URL
         self._apikey = BrainNluConfiguration.DEFAULT_APIKEY
         self._use_file = BrainNluConfiguration.DEFAULT_USE_FILE
+        self._max_utterance_length = 0
 
     @property
     def classname(self):
@@ -65,6 +66,10 @@ class BrainNluConfiguration(BaseConfigurationData):
     def use_file(self):
         return self._use_file
 
+    @property
+    def max_utterance_length(self):
+        return self._max_utterance_length
+
     def check_for_license_keys(self, license_keys):
         BaseConfigurationData.check_for_license_keys(self, license_keys)
 
@@ -75,6 +80,7 @@ class BrainNluConfiguration(BaseConfigurationData):
             self._url = configuration_file.get_option(nlu, "url", missing_value=BrainNluConfiguration.DEFAULT_URL, subs=subs)
             self._apikey = configuration_file.get_option(nlu, "apikey", missing_value=BrainNluConfiguration.DEFAULT_APIKEY, subs=subs)
             self._use_file = configuration_file.get_bool_option(nlu, "use_file", missing_value=BrainNluConfiguration.DEFAULT_USE_FILE, subs=subs)
+            self._max_utterance_length = configuration_file.get_int_option(nlu, "max_utterance_length", missing_value=0, subs=subs)
             if self._apikey == 'None':
                 self._apikey = ''
         else:
@@ -86,8 +92,10 @@ class BrainNluConfiguration(BaseConfigurationData):
             data['url'] = BrainNluConfiguration.DEFAULT_URL
             data['apikey'] = BrainNluConfiguration.DEFAULT_APIKEY
             data['use_file'] = BrainNluConfiguration.DEFAULT_USE_FILE
+            data['max_utterance_length'] = 0
         else:
             data['classname'] = self._classname
             data['url'] = self._url
             data['apikey'] = self._apikey
             data['use_file'] = self._use_file
+            data['max_utterance_length'] = self._max_utterance_length

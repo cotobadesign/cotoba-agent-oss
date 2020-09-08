@@ -27,11 +27,23 @@ class CotobadesignNlu(NluRequest):
         NluRequest.__init__(self, config)
 
         self._requests_api = requests
+        self._status_code = ''
 
     def set_request_api(self, api):
         self._requests_api = api
 
+    def get_status_code(self):
+        return self._status_code
+
     def nluCall(self, client_context, url, apikey, utterance):
+        self._status_code = ''
+
+        if utterance is None or utterance == '':
+            return None
+
+        if self._configuration.max_utterance_length > 0:
+            if self._configuration.max_utterance_length < len(utterance):
+                return None
 
         params = {
             "utterance": utterance,
@@ -40,12 +52,14 @@ class CotobadesignNlu(NluRequest):
 
         headers = {'Content-Type': 'application/json', 'x-api-key': apikey}
         try:
+            self._status_code = '000'
             response = self._requests_api.post(url=url, headers=headers, data=json_data)
+            self._status_code = str(response.status_code)
             if response.status_code == 200:
                 return response.text.strip()
             else:
                 YLogger.debug(client_context, "NLU Error status code[%d]", response.status_code)
         except Exception as excep:
-            YLogger.error(client_context, "Failed to NLU Comminucation: %s", str(excep))
+            YLogger.debug(client_context, "Failed to NLU Comminucation: %s", str(excep))
 
         return None

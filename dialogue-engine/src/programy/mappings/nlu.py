@@ -32,6 +32,7 @@ TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR TH
 
 from programy.utils.logging.ylogger import YLogger
 from programy.storage.factory import StorageFactory
+from programy.utils.language.japanese import JapaneseLanguage
 
 
 class NluServerInfo(object):
@@ -52,6 +53,10 @@ class NluServerInfo(object):
 class NluCollection(object):
 
     def __init__(self, client, nlu_configration, errors_dict=None):
+        self._set_matchlist = False
+        if nlu_configration.use_file is not None:
+            self._set_matchlist = nlu_configration.use_file
+
         if errors_dict is None:
             self._errors_dict = None
         else:
@@ -65,26 +70,25 @@ class NluCollection(object):
 
         self._servers = []
         self._serverInfo = {}
+        self._match_nlus = []
         self._check_urls = []
 
-        if nlu_configration.use_file is True:
-            self.make_nlu_list(client)
-
-        if len(self._servers) == 0:
-            if self._defaultInfo is not None:
-                self._servers.append('default')
-                self._serverInfo['default'] = self._defaultInfo
-
-        if len(self._servers) == 0:
-            YLogger.debug(self, "NLU server not defined")
+    @property
+    def set_matchlist(self):
+        return self._set_matchlist
 
     @property
     def servers(self):
         return self._servers
 
+    @property
+    def match_nlus(self):
+        return self._match_nlus
+
     def empty(self):
         self._servers.clear()
         self._serverInfo.clear()
+        self._match_nlus.clear()
         self._check_urls.clear()
 
     def remove(self, server_name):
@@ -94,63 +98,139 @@ class NluCollection(object):
             pass
         self._serverInfo.pop(server_name, None)
 
-    def set_error_info(self, filename, index, description):
+    def set_servers_error(self, filename, index, description):
         if self._errors_dict is not None:
-            error_info = {'file': filename, 'index': index, 'description': description}
+            error_info = {'file': filename, 'server-index': index, 'description': description}
             self._errors_dict.append(error_info)
 
-    def add_server(self, server_name, url, apikey, filename=None, index=0):
+    def set_nlus_error(self, filename, index, description):
+        if self._errors_dict is not None:
+            error_info = {'file': filename, 'nlu-index': index, 'description': description}
+            self._errors_dict.append(error_info)
+
+    def add_server(self, name, url, apikey, filename=None, index=0):
+        server_name = self._convert_name(name)
         if server_name is None:
             YLogger.debug(self, "NLU parameter no server_name")
             return
 
-        server_name = server_name.strip()
         if server_name in self._servers:
-            YLogger.debug(self, "NLU server [%s] already exist", server_name)
+            error_info = "NLU server [%s] already exist" % name
+            self.set_servers_error(filename, index, error_info)
             return
 
-        if url is None or url == '':
-            if self._defaultInfo is None:
-                error_info = "invalid url[%s] apikey[%s]" % (url, apikey)
-                self.set_error_info(filename, index, error_info)
-                return
-            else:
-                url = self._defaultInfo.url
+        if url is None:
+            error_info = "invalid url[%s] apikey[%s]" % (url, apikey)
+            self.set_servers_error(filename, index, error_info)
+            return
         else:
             url = url.strip()
-        if apikey is None or apikey == '' or apikey == 'None':
+            if url == '':
+                error_info = "invalid url[%s] apikey[%s]" % (url, apikey)
+                self.set_servers_error(filename, index, error_info)
+                return
+
+        if apikey is None:
             apikey = ''
         else:
-            try:
-                apikey = apikey.strip()
-            except Exception:
+            apikey = apikey.strip()
+            if apikey == '' or apikey == 'None':
+                apikey = ''
+
+        YLogger.debug(self, "Adding NLU server name[%s] url[%s] apikey[%s] to server_list", server_name, url, apikey)
+        server_info = NluServerInfo(url, apikey)
+        self._servers.append(server_name)
+        self._serverInfo[server_name] = server_info
+
+    def add_nlu_by_url(self, url, apikey, filename=None, index=0):
+        if url is None:
+            error_info = "invalid url[%s] apikey[%s]" % (url, apikey)
+            self.set_nlus_error(filename, index, error_info)
+            return
+        else:
+            url = url.strip()
+            if url == '':
+                error_info = "invalid url[%s] apikey[%s]" % (url, apikey)
+                self.set_nlus_error(filename, index, error_info)
+                return
+
+        if apikey is None:
+            apikey = ''
+        else:
+            apikey = apikey.strip()
+            if apikey == '' or apikey == 'None':
                 apikey = ''
 
         if url in self._check_urls:
             error_info = "Duplicate url[%s] apikey[%s]" % (url, apikey)
-            self.set_error_info(filename, index, error_info)
+            self.set_nlus_error(filename, index, error_info)
             return
 
-        YLogger.debug(self, "Adding NLU server_name[%s] url[%s] apikey[%s] to server_list", server_name, url, apikey)
-        server = NluServerInfo(url, apikey)
+        YLogger.debug(self, "Adding Matching-NLU url[%s] apikey[%s] to nlu_list", url, apikey)
+        server_info = NluServerInfo(url, apikey)
+        server_name = "NONAME-" + str(index)
         self._servers.append(server_name)
-        self._serverInfo[server_name] = server
+        self._match_nlus.append(server_name)
+        self._serverInfo[server_name] = server_info
         self._check_urls.append(url)
 
-    def contains(self, server_name):
+    def add_nlu_by_name(self, name, filename=None, index=0):
+        server_name = self._convert_name(name)
+        if server_name is None:
+            YLogger.debug(self, "NLU parameter no server_name")
+            return
+
+        server_info = self.server_info(server_name)
+        if server_info is None:
+            error_info = "NLU server name[%s] not found" % server_name
+            self.set_nlus_error(filename, index, error_info)
+            return
+
+        if server_info.url in self._check_urls:
+            error_info = "Duplicate url[%s] in name[%s]" % (server_info.url, server_name)
+            self.set_nlus_error(filename, index, error_info)
+            return
+
+        YLogger.debug(self, "Adding Matching-NLU server_name[%s] to nlu_list", name)
+        self._match_nlus.append(server_name)
+        self._check_urls.append(server_info.url)
+
+    def contains(self, name):
+        server_name = self._convert_name(name)
         return bool(server_name in self._servers)
 
-    def server_info(self, server_name):
+    def server_info(self, name):
+        server_name = self._convert_name(name)
         if self.contains(server_name) is False:
             return None
 
         return self._serverInfo[server_name]
 
-    def make_nlu_list(self, client):
-        storage_factory = client.storage_factory
+    def _convert_name(self, name):
+        if name is None:
+            return name
+        else:
+            name = name.strip()
+            if name == '':
+                return None
+
+        server_name = JapaneseLanguage.zenhan_normalize(name)
+        server_name = server_name.upper()
+        return server_name
+
+    def load(self, storage_factory):
         if storage_factory.entity_storage_engine_available(StorageFactory.NLU_SERVERS) is True:
             nlu_storage_engine = storage_factory.entity_storage_engine(StorageFactory.NLU_SERVERS)
             if nlu_storage_engine:
                 nlu_storage_store = nlu_storage_engine.nlu_store()
                 if nlu_storage_engine:
                     nlu_storage_store.load(self)
+
+    def make_match_nlu_list(self):
+        if len(self._match_nlus) == 0:
+            if self._defaultInfo is not None:
+                self._servers.append('DEFAULT')
+                self._match_nlus.append('DEFAULT')
+                self._serverInfo['DEFAULT'] = self._defaultInfo
+            else:
+                YLogger.debug(self, "NLU server not defined")
