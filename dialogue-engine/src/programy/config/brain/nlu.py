@@ -40,6 +40,7 @@ class BrainNluConfiguration(BaseConfigurationData):
     DEFAULT_CLASSNAME = "programy.nlu.nlu.NluRequest"
     DEFAULT_URL = "http://localhost:3000/run"
     DEFAULT_APIKEY = ""
+    DEFAULT_TIMEOUT = 10
     DEFAULT_USE_FILE = False
 
     def __init__(self):
@@ -47,6 +48,7 @@ class BrainNluConfiguration(BaseConfigurationData):
         self._classname = BrainNluConfiguration.DEFAULT_CLASSNAME
         self._url = BrainNluConfiguration.DEFAULT_URL
         self._apikey = BrainNluConfiguration.DEFAULT_APIKEY
+        self._timeout = BrainNluConfiguration.DEFAULT_TIMEOUT
         self._use_file = BrainNluConfiguration.DEFAULT_USE_FILE
         self._max_utterance_length = 0
 
@@ -61,6 +63,10 @@ class BrainNluConfiguration(BaseConfigurationData):
     @property
     def apikey(self):
         return self._apikey
+
+    @property
+    def timeout(self):
+        return self._timeout
 
     @property
     def use_file(self):
@@ -79,6 +85,7 @@ class BrainNluConfiguration(BaseConfigurationData):
             self._classname = configuration_file.get_option(nlu, "classname", missing_value=BrainNluConfiguration.DEFAULT_CLASSNAME, subs=subs)
             self._url = configuration_file.get_option(nlu, "url", missing_value=BrainNluConfiguration.DEFAULT_URL, subs=subs)
             self._apikey = configuration_file.get_option(nlu, "apikey", missing_value=BrainNluConfiguration.DEFAULT_APIKEY, subs=subs)
+            self._timeout = configuration_file.get_int_option(nlu, "timeout", missing_value=BrainNluConfiguration.DEFAULT_TIMEOUT, subs=subs)
             self._use_file = configuration_file.get_bool_option(nlu, "use_file", missing_value=BrainNluConfiguration.DEFAULT_USE_FILE, subs=subs)
             self._max_utterance_length = configuration_file.get_int_option(nlu, "max_utterance_length", missing_value=0, subs=subs)
             if self._apikey == 'None':
@@ -91,11 +98,13 @@ class BrainNluConfiguration(BaseConfigurationData):
             data['classname'] = BrainNluConfiguration.DEFAULT_CLASSNAME
             data['url'] = BrainNluConfiguration.DEFAULT_URL
             data['apikey'] = BrainNluConfiguration.DEFAULT_APIKEY
+            data['timeout'] = BrainNluConfiguration.DEFAULT_TIMEOUT
             data['use_file'] = BrainNluConfiguration.DEFAULT_USE_FILE
             data['max_utterance_length'] = 0
         else:
             data['classname'] = self._classname
             data['url'] = self._url
             data['apikey'] = self._apikey
+            data['timeout'] = self._timeout
             data['use_file'] = self._use_file
             data['max_utterance_length'] = self._max_utterance_length
