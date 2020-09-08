@@ -29,7 +29,7 @@ class MockService(Service):
     def set_response(self, response):
         self._response = response
 
-    def ask_question(self, context: str, question: str):
+    def ask_question(self, context: str, question: str, timeout=None):
         return self._response
 
 

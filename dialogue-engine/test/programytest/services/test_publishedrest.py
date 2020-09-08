@@ -58,16 +58,16 @@ class MockPublishedRestRequest(object):
     def __init__(self, response=None):
         self._response = response
 
-    def get(self, url, params, headers, data):
+    def get(self, url, params, headers, data, timeout=None):
         return MockRequestsResponse(self._response, 200)
 
-    def post(self, url, params, headers, data):
+    def post(self, url, params, headers, data, timeout=None):
         return MockRequestsResponse(self._response, 200)
 
-    def put(self, url, params, headers, data):
+    def put(self, url, params, headers, data, timeout=None):
         return MockRequestsResponse(self._response, 200)
 
-    def delete(self, url, params, headers, data):
+    def delete(self, url, params, headers, data, timeout=None):
         return MockRequestsResponse(self._response, 200)
 
 
@@ -78,25 +78,25 @@ class MockPublishedRestAPI(object):
         self._response = response
         self._throw_exception = throw_exception
 
-    def get(self, url, query, header, body):
+    def get(self, url, query, header, body, timeout=None):
         if self._throw_exception is True:
             raise Exception(self._response)
         else:
             return MockRequestsResponse(self._response, self._status_code)
 
-    def post(self, url, query, header, body):
+    def post(self, url, query, header, body, timeout=None):
         if self._throw_exception is True:
             raise Exception(self._response)
         else:
             return MockRequestsResponse(self._response, self._status_code)
 
-    def put(self, url, query, header, body):
+    def put(self, url, query, header, body, timeout=None):
         if self._throw_exception is True:
             raise Exception(self._response)
         else:
             return MockRequestsResponse(self._response, self._status_code)
 
-    def delete(self, url, query, header, body):
+    def delete(self, url, query, header, body, timeout=None):
         if self._throw_exception is True:
             raise Exception(self._response)
         else:

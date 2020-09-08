@@ -29,7 +29,7 @@ class DummyNlu(NluRequest):
     def set_request_api(self, api):
         pass
 
-    def nluCall(self, client_context, url, apikey, utternce):
+    def nluCall(self, client_context, url, apikey, utternce, timeout=None):
         nlu_result_a = """{
             "intents": [
                 {"intent": "transportation", "score":
