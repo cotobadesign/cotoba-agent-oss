@@ -32,6 +32,8 @@ TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR TH
 from programy.utils.logging.ylogger import YLogger
 import requests
 import json
+import time
+from requests.exceptions import Timeout
 
 from programy.services.service import Service
 from programy.config.brain.service import BrainServiceConfiguration
@@ -45,8 +47,8 @@ class PublishedBotAPI(object):
         else:
             self._requests_api = request_api
 
-    def post(self, url, header, data):
-        return self._requests_api.post(url, headers=header, data=data)
+    def post(self, url, header, data, timeout=None):
+        return self._requests_api.post(url, headers=header, data=data, timeout=timeout)
 
 
 class PublishedBotService(Service):
@@ -62,6 +64,10 @@ class PublishedBotService(Service):
         self._botInfo = None
         self._userId = None
         self._status_code = ''
+        self._latency = ''
+
+        self._start_time = None
+        self._end_time = None
 
     @property
     def botInfo(self):
@@ -109,8 +115,17 @@ class PublishedBotService(Service):
     def get_status_code(self):
         return self._status_code
 
-    def ask_question(self, client_context, question: str):
+    def get_latency(self):
+        return self._latency
+
+    def _check_latency(self):
+        self._end_time = time.time()
+        latency = self._end_time - self._start_time
+        return str(latency)
+
+    def ask_question(self, client_context, question: str, timeout=10):
         self._status_code = ''
+        self._latency = ''
 
         if self._botInfo is None or self._userId is None:
             YLogger.debug(client_context, "No botName Info or userId")
@@ -122,13 +137,15 @@ class PublishedBotService(Service):
 
         bot_url = self._botInfo.url
 
+        self._start_time = time.time()
         try:
             headers = self._botInfo.header
             payload = self._format_payload(client_context, self._botInfo, question)
             bodys = payload.encode('UTF-8')
 
             self._status_code = '000'
-            response = self.api.post(bot_url, header=headers, data=bodys)
+            response = self.api.post(bot_url, header=headers, data=bodys, timeout=timeout)
+            self._latency = self._check_latency()
             self._status_code = str(response.status_code)
             if response.status_code == 200:
                 return response.text
@@ -136,7 +153,12 @@ class PublishedBotService(Service):
                 YLogger.debug(client_context, "Error status code[%d]", response.status_code)
                 return ""
 
+        except Timeout as excep:
+            self._status_code = '001'
+            self._latency = self._check_latency()
+            YLogger.debug(client_context, "Public-Bot Comminucation Timeout: %s", str(excep))
         except Exception as excep:
-            YLogger.error(client_context, "Failed to Public-Bot Comminucation: %s", str(excep))
+            self._latency = self._check_latency()
+            YLogger.debug(client_context, "Failed to Public-Bot Comminucation: %s", str(excep))
 
         return ""

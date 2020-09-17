@@ -64,6 +64,8 @@ from programy.parser.exceptions import LimitOverException
 from programy.dialog.convo_vars import ConversationVariables
 from programy.storage.factory import StorageFactory
 
+import json
+
 
 class Brain(object):
 
@@ -587,14 +589,27 @@ class Brain(object):
 
     def multi_nlu_match(self, client_context, conversation, topic_pattern, that_pattern):
         nlu_list = self._nlu_collection.match_nlus
+        timeout = self._nlu_collection.timeout
         match_context = None
 
+        conversation.current_question().set_property("__MATCH_NLU_LATENCY__", '')
+        latency_list = []
+        nluResult = None
         for server_name in nlu_list:
             try:
                 server = self._nlu_collection.server_info(server_name)
-                nluResult = self._nlu.nluCall(client_context, server.url, server.apikey, self._nlu_utterance)
+                nluResult = self._nlu.nluCall(client_context, server.url, server.apikey, self._nlu_utterance, timeout)
             except NotImplementedError:
                 raise
+
+            try:
+                latency = self._nlu.get_latency()
+                if latency is None or latency == '':
+                    latency = '0.0'
+                latency_list.append({server_name: float(latency)})
+                YLogger.debug(client_context, "Matcher NLU-Call [%s] latency[%s]", server_name, latency)
+            except NotImplementedError:
+                pass
 
             conversation.current_question().set_property("__SYSTEM_NLUDATA__", nluResult)
             if nluResult is not None:
@@ -610,6 +625,19 @@ class Brain(object):
                     if len(match_context.matched_nodes) != 3 or \
                        match_context.matched_nodes[0].matched_node.is_wildcard() is False:
                         break
+
+        if nluResult is None:
+            client_context.match_nlu = True
+            sentence = Sentence(client_context.brain.tokenizer, self.NLU_UTTERANCE)
+            match_context = self._aiml_parser.match_sentence(client_context,
+                                                             sentence,
+                                                             topic_pattern=topic_pattern,
+                                                             that_pattern=that_pattern)
+            client_context.match_nlu = False
+
+        if len(latency_list) > 0 and client_context.nlu_latency is True:
+            latency_dict = {"latency": latency_list}
+            conversation.current_question().set_property("__MATCH_NLU_LATENCY__", json.dumps(latency_dict, ensure_ascii=False))
 
         if match_context is None:
             conversation.current_question().set_property("__SYSTEM_NLUDATA__", None)

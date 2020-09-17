@@ -39,7 +39,7 @@ class DummyNlu(NluRequest):
     def set_request_api(self, api):
         pass
 
-    def nluCall(self, client_context, url, apikey, utternce):
+    def nluCall(self, client_context, url, apikey, utternce, timeout=None):
         nlu_result_1 = """{
             "intents": [
                 {"intent": "transportation", "score": 0.9 },
@@ -165,7 +165,7 @@ class BrainNLUTests(unittest.TestCase):
 
         response = self._client_context.bot.ask_question(self._client_context, "No Response")
         self.assertIsNotNone(response)
-        self.assertEqual(response, "")
+        self.assertEqual(response, "Not NLU wild-card.")
 
     def test_nlu_response_wildcard(self):
         client = NluTestClient('nlu.aiml', response_type='2')

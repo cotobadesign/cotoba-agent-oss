@@ -96,6 +96,21 @@ class FileNLUStore(FileStore, NLUStore):
                             error_info = "nlu section not found"
                             nlu_collection.set_nlus_error(filename, 0, error_info)
 
+                        timeout_val = self._get_section(yaml_data, 'timeout')
+                        if timeout_val is not None:
+                            timeout = 0
+                            if type(timeout_val) is int:
+                                timeout = timeout_val
+                            elif type(timeout_val) is str:
+                                try:
+                                    timeout = int(timeout)
+                                except Exception:
+                                    pass
+                            if timeout > 0:
+                                nlu_collection.timeout = timeout
+                            else:
+                                nlu_collection.set_timeout_error(filename, timeout_val)
+
         except Exception as excep:
             YLogger.exception(self, "Failed to load NLU_Servers [%s]", excep, filename)
             error_info = "illegal yaml format"

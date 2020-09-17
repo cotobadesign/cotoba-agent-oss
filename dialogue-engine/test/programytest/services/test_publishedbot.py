@@ -42,7 +42,7 @@ class MockPublishedBotRequest(object):
     def __init__(self, response=None):
         self._response = response
 
-    def post(self, url, headers, data):
+    def post(self, url, headers, data, timeout=None):
         return MockRequestsResponse(self._response, 200)
 
 
@@ -53,7 +53,7 @@ class MockPublishedBotAPI(object):
         self._response = response
         self._throw_exception = throw_exception
 
-    def post(self, url, header, data):
+    def post(self, url, header, data, timeout=None):
         if self._throw_exception is True:
             raise Exception(self._response)
         else:

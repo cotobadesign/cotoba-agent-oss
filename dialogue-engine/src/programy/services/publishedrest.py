@@ -34,6 +34,8 @@ import requests
 import urllib
 import json
 import xmltodict
+import time
+from requests.exceptions import Timeout
 
 from programy.services.service import Service
 from programy.config.brain.service import BrainServiceConfiguration
@@ -47,20 +49,20 @@ class PublishedRestAPI(object):
         else:
             self._requests_api = request_api
 
-    def get(self, url, query, header, body):
-        return self._requests_api.get(url, params=query, headers=header, data=body)
+    def get(self, url, query, header, body, timeout=None):
+        return self._requests_api.get(url, params=query, headers=header, data=body, timeout=timeout)
 
-    def post(self, url, query, header, body):
-        return self._requests_api.post(url, params=query, headers=header, data=body)
+    def post(self, url, query, header, body, timeout=None):
+        return self._requests_api.post(url, params=query, headers=header, data=body, timeout=timeout)
 
-    def put(self, url, query, header, body):
-        return self._requests_api.put(url, params=query, headers=header, data=body)
+    def put(self, url, query, header, body, timeout=None):
+        return self._requests_api.put(url, params=query, headers=header, data=body, timeout=timeout)
 
-    def delete(self, url, query, header, body):
-        return self._requests_api.delete(url, params=query, headers=header, data=body)
+    def delete(self, url, query, header, body, timeout=None):
+        return self._requests_api.delete(url, params=query, headers=header, data=body, timeout=timeout)
 
-    def patch(self, url, query, header, body):
-        return self._requests_api.patch(url, params=query, headers=header, data=body)
+    def patch(self, url, query, header, body, timeout=None):
+        return self._requests_api.patch(url, params=query, headers=header, data=body, timeout=timeout)
 
 
 class PublishedRestService(Service):
@@ -75,6 +77,10 @@ class PublishedRestService(Service):
 
         self._params = None
         self._status_code = ''
+        self._latency = ''
+
+        self._start_time = None
+        self._end_time = None
 
     @property
     def params(self):
@@ -113,8 +119,17 @@ class PublishedRestService(Service):
     def get_status_code(self):
         return self._status_code
 
-    def ask_question(self, client_context, question: str):
+    def get_latency(self):
+        return self._latency
+
+    def _check_latency(self):
+        self._end_time = time.time()
+        latency = self._end_time - self._start_time
+        return str(latency)
+
+    def ask_question(self, client_context, question: str, timeout=10):
         self._status_code = ''
+        self._latency = ''
 
         if self.params is None:
             return ""
@@ -159,21 +174,23 @@ class PublishedRestService(Service):
         else:
             body = None
 
+        self._start_time = time.time()
         try:
             self._status_code = '000'
             if self.params.method == 'GET':
-                response = self.api.get(self.params.host, query=query, header=header, body=body)
+                response = self.api.get(self.params.host, query=query, header=header, body=body, timeout=timeout)
             elif self.params.method == 'POST':
-                response = self.api.post(self.params.host, query=query, header=header, body=body)
+                response = self.api.post(self.params.host, query=query, header=header, body=body, timeout=timeout)
             elif self.params.method == 'PUT':
-                response = self.api.put(self.params.host, query=query, header=header, body=body)
+                response = self.api.put(self.params.host, query=query, header=header, body=body, timeout=timeout)
             elif self.params.method == 'DELETE':
-                response = self.api.delete(self.params.host, query=query, header=header, body=body)
+                response = self.api.delete(self.params.host, query=query, header=header, body=body, timeout=timeout)
             elif self.params.method == 'PATCH':
-                response = self.api.patch(self.params.host, query=query, header=header, body=body)
+                response = self.api.patch(self.params.host, query=query, header=header, body=body, timeout=timeout)
             else:
                 raise Exception("Unsupported REST method [%s]" % self.params.method)
 
+            self._latency = self._check_latency()
             self._status_code = str(response.status_code)
             if response.status_code == 200:
                 content_type = response.headers.get('Content-Type')
@@ -193,7 +210,12 @@ class PublishedRestService(Service):
                 YLogger.debug(client_context, "Error status code[%d]", response.status_code)
                 return ""
 
+        except Timeout as excep:
+            self._status_code = '001'
+            self._latency = self._check_latency()
+            YLogger.debug(client_context, "General-REST Comminucation Timeout: %s", str(excep))
         except Exception as excep:
+            self._latency = self._check_latency()
             YLogger.debug(client_context, "Failed to General-REST Comminucation: %s", str(excep))
 
         return ""

@@ -36,7 +36,7 @@ class MockSanicYadlanClient(SanicYadlanClient):
         self.aborted = True
         raise Exception("Pretending to abort!")
 
-    def ask_question(self, userid, question, userInfo, deleteVariable, loglevel):
+    def ask_question(self, userid, question, userInfo, deleteVariable, loglevel, nlu_latency=True):
         if self.ask_question_exception is True:
             raise Exception("Something bad happened")
         return self.answer, question

@@ -68,10 +68,20 @@ class NluCollection(object):
         else:
             self._defaultInfo = NluServerInfo(nlu_configration.url, nlu_configration.apikey)
 
+        self._timeout = nlu_configration.timeout
+
         self._servers = []
         self._serverInfo = {}
         self._match_nlus = []
         self._check_urls = []
+
+    @property
+    def timeout(self):
+        return self._timeout
+
+    @timeout.setter
+    def timeout(self, timeout):
+        self._timeout = timeout
 
     @property
     def set_matchlist(self):
@@ -106,6 +116,12 @@ class NluCollection(object):
     def set_nlus_error(self, filename, index, description):
         if self._errors_dict is not None:
             error_info = {'file': filename, 'nlu-index': index, 'description': description}
+            self._errors_dict.append(error_info)
+
+    def set_timeout_error(self, filename, value):
+        if self._errors_dict is not None:
+            description = "invalid timeout parameter[%s]" % value
+            error_info = {'file': filename, 'description': description}
             self._errors_dict.append(error_info)
 
     def add_server(self, name, url, apikey, filename=None, index=0):

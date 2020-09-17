@@ -33,10 +33,10 @@ class MockRestAPI(object):
         self.status_code = status_code
         self.response = response
 
-    def get(self, host):
+    def get(self, host, timeout=None):
         return MockRestResponse(self.status_code, self.response)
 
-    def post(self, host, data):
+    def post(self, host, data, timeout=None):
         return MockRestResponse(self.status_code, self.response)
 
 

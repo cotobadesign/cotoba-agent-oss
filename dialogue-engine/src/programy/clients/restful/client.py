@@ -166,7 +166,7 @@ class RestBotClient(BotClient):
                 response_dic["metadata"] = metadata
             return response_dic
 
-    def ask_question(self, userid, question, userInfo, deleteVariable, loglevel):
+    def ask_question(self, userid, question, userInfo, deleteVariable, loglevel, nlu_latency=True):
         response = ""
         utterance = ""
         try:
@@ -174,6 +174,7 @@ class RestBotClient(BotClient):
             client_context.userInfo = userInfo
             client_context.deleteVariable = deleteVariable
             client_context.log_level = loglevel
+            client_context.nlu_latency = nlu_latency
             client_context.server_mode = getattr(self, '_server_mode', False)
 
             response = client_context.bot.ask_question(client_context, question, responselogger=self)
@@ -195,6 +196,17 @@ class RestBotClient(BotClient):
                 raise Exception('ServerError: %s, status_code=%s', error_msg, self._status_code)
         return level
 
+    def get_config_nlu_latency(self, rest_request):
+        latency = self.get_config_option(rest_request, 'nlu_latency')
+        if latency is not None:
+            if type(latency) is bool:
+                return latency
+            elif type(latency) is str:
+                latency = latency.upper()
+                if latency == "FALSE":
+                    return False
+        return True
+
     def process_request(self, request):
         question = "Unknown"
         userid = "Unknown"
@@ -213,8 +225,9 @@ class RestBotClient(BotClient):
             userInfo = UserInfo(self, request)
             deleteVariable = self.get_deleteVariable(request)
             loglevel = self.get_config_loglevel(request)
+            nlu_latency = self.get_config_nlu_latency(request)
 
-            answer, utterance = self.ask_question(userid, question, userInfo, deleteVariable, loglevel)
+            answer, utterance = self.ask_question(userid, question, userInfo, deleteVariable, loglevel, nlu_latency)
             if utterance is not None:
                 question = utterance
 
