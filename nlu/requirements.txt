@@ -3,3 +3,6 @@ mecab-python3==0.996.5
 tqdm
 docker-compose
 fugashi==0.1.9
+spacy==2.2.4
+hydra-colorlog==0.1.4
+hydra-core==0.11.3
