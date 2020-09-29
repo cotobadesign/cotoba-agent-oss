@@ -65,6 +65,7 @@ class FileStore(Store):
     REGEX_STORAGE = 'regex_templates_storage'
 
     PROPERTIES_STORAGE = 'properties_storage'
+    PROPERTIES_JSON_STORAGE = 'properties_json_storage'
     DEFAULTS_STORAGE = 'defaults_storage'
 
     SPELLING_STORAGE = 'spelling_corpus_storage'

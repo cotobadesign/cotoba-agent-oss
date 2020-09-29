@@ -32,6 +32,7 @@ TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR TH
 
 from programy.storage.engine import StorageEngine
 from programy.storage.stores.file.store.properties import FilePropertyStore
+from programy.storage.stores.file.store.properties_json import FilePropertyJsonStore
 from programy.storage.stores.file.store.properties import FileDefaultVariablesStore
 from programy.storage.stores.file.store.conversations import FileConversationStore
 from programy.storage.stores.file.store.logs import FileLogsStore
@@ -134,6 +135,9 @@ class FileStorageEngine(StorageEngine):
 
     def property_store(self):
         return FilePropertyStore(self)
+
+    def property_json_store(self):
+        return FilePropertyJsonStore(self)
 
     def defaults_store(self):
         return FileDefaultVariablesStore(self)

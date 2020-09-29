@@ -329,6 +329,7 @@ class Brain(object):
     def _load_properties(self):
         self._properties_collection.empty()
         self._properties_collection.load(self.bot.client.storage_factory)
+        self._properties_collection.load_json(self.bot.client.storage_factory)
 
     def _load_default_variables(self):
         self._default_variables_collection.empty()

@@ -201,6 +201,7 @@ class StorageConfiguration(BaseConfigurationData):
         amap[StorageFactory.REGEX_TEMPLATES] = 'file'
 
         amap[StorageFactory.PROPERTIES] = 'file'
+        amap[StorageFactory.PROPERTIES_JSON] = 'file'
         amap[StorageFactory.DEFAULTS] = 'file'
 
         amap[StorageFactory.SPELLING_CORPUS] = 'file'

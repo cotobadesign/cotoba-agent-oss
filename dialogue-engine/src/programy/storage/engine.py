@@ -109,6 +109,9 @@ class StorageEngine(object):
     def property_store(self):
         raise NotImplementedError("Engine does not support property storage")
 
+    def property_json_store(self):
+        raise NotImplementedError("Engine does not support property_json storage")
+
     def defaults_store(self):
         raise NotImplementedError("Engine does not support defaults storage")
 
