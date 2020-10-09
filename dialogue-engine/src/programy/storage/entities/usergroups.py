@@ -106,7 +106,7 @@ class UserGroupsStore(object):
                             YLogger.debug(self, "Group [%s] already exists in group [%s]", inner_group_name, group_name)
 
                 if 'users' in yaml_obj:
-                    users_list = yaml_obj['groups']
+                    users_list = yaml_obj['users']
                     splits = users_list.split(",")
                     for user_name in splits:
                         user_name = user_name.strip()
@@ -143,11 +143,11 @@ class UserGroupsStore(object):
                     YLogger.error(self, "Unknown group id [%s] in group [%s]", sub_group_id, group_id)
             group.add_groups(new_groups[:])
 
-            new_users = []
             for sub_user_id in group.users:
-                if sub_user_id in usergroups.users:
-                    new_user = usergroups.users[sub_user_id]
-                    new_users.append(new_user)
+                if sub_user_id not in usergroups.users:
+                    new_user = User(sub_user_id)
+                    for role in group.roles:
+                        new_user.add_role(role)
+                    usergroups.users[new_user.userid] = new_user
                 else:
-                    YLogger.error(self, "Unknown user id [%s] in group [%s]", sub_user_id, group_id)
-            group.add_users(new_users[:])
+                    YLogger.error(self, "Duplicate user id [%s] in group [%s]", sub_user_id, group_id)
