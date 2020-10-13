@@ -13,7 +13,6 @@ THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRI
 AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,
 TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 """
-import re
 import json
 import iso8601
 
@@ -134,7 +133,7 @@ class PublicBotInfo(object):
         if topic is None:
             return True
         topic = topic.strip()
-        if topic == '' or topic == '*':
+        if topic == '':
             return True
 
         self._topic = topic

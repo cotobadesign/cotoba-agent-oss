@@ -233,7 +233,7 @@ class TemplateNluSlotNodeTests(ParserTestsBaseClass):
 
         result = root.resolve(self._client_context)
         self.assertIsNotNone(result)
-        self.assertEqual("", result)
+        self.assertEqual("unknown", result)
 
     def test_nluslot_invalid_index(self):
         root = TemplateNode()

@@ -39,6 +39,7 @@ from programy.mappings.gender import GenderCollection
 from programy.mappings.maps import MapCollection
 from programy.mappings.nlu import NluCollection
 from programy.mappings.botnames import BotNamesCollection
+from programy.mappings.resttemplates import RestTemplatesCollection
 from programy.mappings.normal import NormalCollection
 from programy.mappings.person import PersonCollection
 from programy.mappings.person import Person2Collection
@@ -62,6 +63,8 @@ from programy.nlu.nlu import NluRequest
 from programy.parser.exceptions import LimitOverException
 from programy.dialog.convo_vars import ConversationVariables
 from programy.storage.factory import StorageFactory
+
+import json
 
 
 class Brain(object):
@@ -97,6 +100,7 @@ class Brain(object):
         self._properties_collection = PropertiesCollection(errors_dict)
         self._default_variables_collection = DefaultVariablesCollection(errors_dict)
         self._botnames_collection = BotNamesCollection(errors_dict)
+        self._rest_templates_collection = RestTemplatesCollection(errors_dict)
 
         self._preprocessors = PreProcessorCollection(errors_dict)
         self._postprocessors = PostProcessorCollection(errors_dict)
@@ -191,6 +195,10 @@ class Brain(object):
         return self._botnames_collection
 
     @property
+    def rest_templates(self):
+        return self._rest_templates_collection
+
+    @property
     def preprocessors(self):
         return self._preprocessors
 
@@ -221,6 +229,10 @@ class Brain(object):
     @property
     def nlu(self):
         return self._nlu
+
+    @property
+    def nlu_servers(self):
+        return self._nlu_collection
 
     @property
     def security(self):
@@ -301,13 +313,23 @@ class Brain(object):
         self._person2_collection.empty()
         self._person2_collection.load(self.bot.client.storage_factory)
 
+    def _load_nlu_servers(self):
+        self._nlu_collection.empty()
+        self._nlu_collection.load(self.bot.client.storage_factory)
+        self._nlu_collection.make_match_nlu_list()
+
     def _load_botnames(self):
         self._botnames_collection.empty()
         self._botnames_collection.load(self.bot.client.storage_factory)
 
+    def _load_rest_templates(self):
+        self._rest_templates_collection.empty()
+        self._rest_templates_collection.load(self.bot.client.storage_factory)
+
     def _load_properties(self):
         self._properties_collection.empty()
         self._properties_collection.load(self.bot.client.storage_factory)
+        self._properties_collection.load_json(self.bot.client.storage_factory)
 
     def _load_default_variables(self):
         self._default_variables_collection.empty()
@@ -375,7 +397,9 @@ class Brain(object):
         self._load_persons()
         self._load_person2s()
         self._load_default_variables()
+        self._load_nlu_servers()
         self._load_botnames()
+        self._load_rest_templates()
         self._load_rdfs()
         self._load_sets()
         self._load_maps()
@@ -565,15 +589,28 @@ class Brain(object):
                 question.sentences[question._current_sentence_no].matched_node = json_matchedNode
 
     def multi_nlu_match(self, client_context, conversation, topic_pattern, that_pattern):
-        nlu_list = self._nlu_collection.servers
+        nlu_list = self._nlu_collection.match_nlus
+        timeout = self._nlu_collection.timeout
         match_context = None
 
+        conversation.current_question().set_property("__MATCH_NLU_LATENCY__", '')
+        latency_list = []
+        nluResult = None
         for server_name in nlu_list:
             try:
                 server = self._nlu_collection.server_info(server_name)
-                nluResult = self._nlu.nluCall(client_context, server.url, server.apikey, self._nlu_utterance)
+                nluResult = self._nlu.nluCall(client_context, server.url, server.apikey, self._nlu_utterance, timeout)
             except NotImplementedError:
                 raise
+
+            try:
+                latency = self._nlu.get_latency()
+                if latency is None or latency == '':
+                    latency = '0.0'
+                latency_list.append({server_name: float(latency)})
+                YLogger.debug(client_context, "Matcher NLU-Call [%s] latency[%s]", server_name, latency)
+            except NotImplementedError:
+                pass
 
             conversation.current_question().set_property("__SYSTEM_NLUDATA__", nluResult)
             if nluResult is not None:
@@ -589,6 +626,19 @@ class Brain(object):
                     if len(match_context.matched_nodes) != 3 or \
                        match_context.matched_nodes[0].matched_node.is_wildcard() is False:
                         break
+
+        if nluResult is None:
+            client_context.match_nlu = True
+            sentence = Sentence(client_context.brain.tokenizer, self.NLU_UTTERANCE)
+            match_context = self._aiml_parser.match_sentence(client_context,
+                                                             sentence,
+                                                             topic_pattern=topic_pattern,
+                                                             that_pattern=that_pattern)
+            client_context.match_nlu = False
+
+        if len(latency_list) > 0 and client_context.nlu_latency is True:
+            latency_dict = {"latency": latency_list}
+            conversation.current_question().set_property("__MATCH_NLU_LATENCY__", json.dumps(latency_dict, ensure_ascii=False))
 
         if match_context is None:
             conversation.current_question().set_property("__SYSTEM_NLUDATA__", None)

@@ -51,6 +51,7 @@ class ClientContext(object):
         self._log_level = None
         self._match_nlu = False
         self._match_type = None
+        self._nlu_latency = True
 
     def ylogger_type(self):
         return "context"
@@ -126,6 +127,14 @@ class ClientContext(object):
     @match_type.setter
     def match_type(self, match_type):
         self._match_type = match_type
+
+    @property
+    def nlu_latency(self):
+        return self._nlu_latency
+
+    @nlu_latency.setter
+    def nlu_latency(self, nlu_latency):
+        self._nlu_latency = nlu_latency
 
     def get_loglevel(self):
         return self._log_level

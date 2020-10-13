@@ -188,6 +188,7 @@ class StorageConfiguration(BaseConfigurationData):
 
         amap[StorageFactory.NLU_SERVERS] = 'file'
         amap[StorageFactory.BOT_NAMES] = 'file'
+        amap[StorageFactory.REST_TEMPLATES] = 'file'
         amap[StorageFactory.MAPS] = 'file'
         amap[StorageFactory.SETS] = 'file'
         amap[StorageFactory.RDF] = 'file'
@@ -200,6 +201,7 @@ class StorageConfiguration(BaseConfigurationData):
         amap[StorageFactory.REGEX_TEMPLATES] = 'file'
 
         amap[StorageFactory.PROPERTIES] = 'file'
+        amap[StorageFactory.PROPERTIES_JSON] = 'file'
         amap[StorageFactory.DEFAULTS] = 'file'
 
         amap[StorageFactory.SPELLING_CORPUS] = 'file'
