@@ -327,7 +327,7 @@ brain:
 
     # Binary
     binaries:
-      save_binary: true
+      save_binary: false
       load_binary: false
       load_aiml_on_binary_fail: true
 
