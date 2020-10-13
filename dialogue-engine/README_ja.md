@@ -12,7 +12,7 @@ COTOBA Agent dialogue engine、その機能、詳細については、[ドキュ
 # システム要件
 
 COTOBA Agent dialogue engineはMac OSX,Linux,Windowsのクロスプラットフォームで動作します。  
-プログラムはPython3で記述されており、バージョンは3.7で動作確認をしています。
+プログラムはPython3で記述されており、バージョンは3.7および3.8で動作確認をしています。
 
 
 # クイックスタート
