@@ -281,13 +281,4 @@
             <srai>今何時</srai>
         </template>
     </category>
-    <category>
-        <pattern>
-        *
-        </pattern>
-        <template>
-        ちょっと、難しい質問ですね。
-        </template>
-    </category>
-
 </aiml>
