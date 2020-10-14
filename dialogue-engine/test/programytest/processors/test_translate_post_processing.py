@@ -82,4 +82,4 @@ class PostProcessingTests(unittest.TestCase):
 
         result = self.post_process("He said ' Hello World '.")
         self.assertIsNotNone(result)
-        self.assertEqual('Il a dit "Bonjour tout le monde".', result)
+        self.assertEqual('Il a dit «Hello World».', result)

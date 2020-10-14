@@ -94,7 +94,11 @@ class YamlConfigurationFile(BaseConfigurationFile):
             option_value = section[option_name]
             if isinstance(option_value, bool):
                 return option_value
-            return bool(self._replace_subs(subs, option_value))
+            try:
+                bool_val = bool(self._replace_subs(subs, option_value))
+                return bool_val
+            except Exception:
+                pass
 
         YLogger.debug(self, "Missing value for [%s] in config, return default value %s", option_name, missing_value)
         return missing_value
@@ -104,7 +108,11 @@ class YamlConfigurationFile(BaseConfigurationFile):
             option_value = section[option_name]
             if isinstance(option_value, int):
                 return option_value
-            return int(self._replace_subs(subs, option_value))
+            try:
+                int_val = int(self._replace_subs(subs, option_value))
+                return int_val
+            except Exception:
+                pass
 
         YLogger.debug(self, "Missing value for [%s] in config, return default value %d", option_name, missing_value)
         return missing_value

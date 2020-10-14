@@ -31,7 +31,6 @@ TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR TH
 """
 
 import json
-import ast
 import copy
 
 from programy.utils.logging.ylogger import YLogger
@@ -40,6 +39,7 @@ from programy.parser.template.nodes.base import TemplateNode
 from programy.services.service import ServiceFactory
 from programy.parser.exceptions import ParserException
 from programy.utils.text.text import TextUtils
+from programy.mappings.resttemplates import RestParameters
 
 
 class TemplateSRAIXSubNode(TemplateNode):
@@ -70,10 +70,12 @@ class TemplateSRAIXNode(TemplateNode):
     SERVICE_PUBLISHED_BOT = '__PublishedBot__'
     SRAIX_CHILD_IN = '\uF010'
     SRAIX_CHILD_OUT = '\uF011'
+    SRAIX_DEFAULT_TIMEOUT = 10
 
     def __init__(self):
         TemplateNode.__init__(self)
 
+        self._template = None
         self._host = None
         self._method = None
         self._query = None
@@ -91,23 +93,42 @@ class TemplateSRAIXNode(TemplateNode):
 
         self._service = None
 
+        self._nlu = None
+
         self._default = None
+        self._timeout = None
 
     @property
     def botName(self):
         return self._botName
 
     @property
+    def template(self):
+        return self._template
+
+    @property
     def service(self):
         return self._service
+
+    @property
+    def nlu(self):
+        return self._nlu
 
     @property
     def default(self):
         return self._default
 
+    @property
+    def timeout(self):
+        return self._timeout
+
     @botName.setter
     def botName(self, botName):
         self._botName = botName
+
+    @template.setter
+    def template(self, template):
+        self._template = template
 
     @service.setter
     def service(self, service):
@@ -122,15 +143,15 @@ class TemplateSRAIXNode(TemplateNode):
         return rep_text
 
     def _published_REST_interface(self, client_context):
+        self.host = None
         self.method = None
         self.query = None
         self.header = None
         self.body = None
 
-        self.host = self._host.resolve(client_context)
-        if self._method is None:
-            self.method = 'GET'
-        else:
+        if self._host is not None:
+            self.host = self._host.resolve(client_context)
+        if self._method is not None:
             self.method = self._method.resolve(client_context)
         if self._query is not None:
             shift_text = self._query.resolve(client_context)
@@ -144,33 +165,72 @@ class TemplateSRAIXNode(TemplateNode):
         resolved = self.resolve_children_to_string(client_context)
         YLogger.debug(client_context, "[%s] resolved to [%s]", self.to_string(), resolved)
 
-        bot_service = ServiceFactory.get_service(self.SERVICE_PUBLISHED_REST)
-        bot_service.host = self.host
-        bot_service.method = self.method
-        try:
-            if self.query is None:
-                bot_service.query = self.query
-            else:
-                bot_service.query = ast.literal_eval("{" + self.query + "}")
-            if self.header is None:
-                bot_service.header = self.header
-            else:
-                bot_service.header = ast.literal_eval("{" + self.header + "}")
-            bot_service.body = self.body
-            response = bot_service.ask_question(client_context, resolved)
-            YLogger.debug(client_context, "SRAIX host [%s] return [%s]", self.host, response)
-        except Exception:
-            YLogger.debug(client_context, "SRAIX Rest parameter convet failed")
-            response = ''
+        error_msg = None
+        if self._template is None:
+            exec_params = RestParameters(self.host)
+            if exec_params.host is None:
+                error_msg = "sraix subagent-rest : invalid host parameter [%s]" % self.host
+            if error_msg is None and self.body is not None:
+                exec_params.set_body(self.body)
+            if error_msg is None and self.method is not None:
+                if exec_params.set_method(self.method) is False:
+                    error_msg = "sraix subagent-rest : invalid method parameter [%s]" % self.method
+            if error_msg is None and self.query is not None:
+                if exec_params.set_query(self.query) is False:
+                    error_msg = "sraix subagent-rest : invalid query parameter [%s]" % self.query
+            if error_msg is None and self.header is not None:
+                if exec_params.set_header(self.header) is False:
+                    error_msg = "sraix subagent-rest : invalid locale parameter [%s]" % self.header
+        else:
+            restParams = client_context.brain.rest_templates.rest_template(self._template)
+            if restParams is None:
+                error_msg = "sraix subagent-rest : REST-Template[%s] not found" % self._template
+                YLogger.debug(client_context, error_msg)
+                raise Exception(error_msg)
+
+            exec_params = copy.copy(restParams)
+            if self.host is not None:
+                if exec_params.change_host(self.host) is False:
+                    error_msg = "sraix subagent-rest : invalid host parameter [%s]" % self.host
+            if error_msg is None and self.body is not None:
+                exec_params.join_body(self.body)
+            if error_msg is None and self.method is not None:
+                if exec_params.set_method(self.method) is False:
+                    error_msg = "sraix subagent-rest : invalid method parameter [%s]" % self.method
+            if error_msg is None and self.query is not None:
+                if exec_params.join_query(self.query) is False:
+                    error_msg = "sraix subagent-rest : invalid query parameter [%s]" % self.query
+            if error_msg is None and self.header is not None:
+                if exec_params.join_header(self.header) is False:
+                    error_msg = "sraix subagent-rest : invalid header parameter [%s]" % self.header
+
+        if error_msg is not None:
+            YLogger.debug(client_context, error_msg)
+            raise Exception(error_msg)
+
+        rest_service = ServiceFactory.get_service(self.SERVICE_PUBLISHED_REST)
+        rest_service.params = exec_params
+        if self._timeout is None:
+            timeout = self.SRAIX_DEFAULT_TIMEOUT
+        else:
+            timeout = self._timeout
+        response = rest_service.ask_question(client_context, resolved, timeout)
+        YLogger.debug(client_context, "SRAIX host [%s] return [%s]", exec_params.host, response)
 
         conversation = client_context.bot.get_conversation(client_context)
         status_code = ''
+        latency = ''
         try:
-            status_code = bot_service.get_status_code()
+            status_code = rest_service.get_status_code()
+        except NotImplementedError:
+            pass
+        try:
+            latency = rest_service.get_latency()
         except NotImplementedError:
             pass
         if conversation.has_current_question() is True:
             conversation.current_question().set_property('__SUBAGENT_STATUS_CODE__', status_code)
+            conversation.current_question().set_property('__SUBAGENT_LATENCY__', latency)
 
         if response is not None:
             if response == '' and self.default is not None:
@@ -249,16 +309,26 @@ class TemplateSRAIXNode(TemplateNode):
 
         bot_service.botInfo = exec_botInfo
         bot_service.userId = self.userId
-        response = bot_service.ask_question(client_context, resolved)
+        if self._timeout is None:
+            timeout = self.SRAIX_DEFAULT_TIMEOUT
+        else:
+            timeout = self._timeout
+        response = bot_service.ask_question(client_context, resolved, timeout)
         YLogger.debug(client_context, "SRAIX botName [%s] return [%s]", self._botName, response)
 
         status_code = ''
+        latency = ''
         try:
             status_code = bot_service.get_status_code()
         except NotImplementedError:
             pass
+        try:
+            latency = bot_service.get_latency()
+        except NotImplementedError:
+            pass
         if conversation.has_current_question() is True:
             conversation.current_question().set_property('__SUBAGENT_STATUS_CODE__', status_code)
+            conversation.current_question().set_property('__SUBAGENT_LATENCY__', latency)
 
         if response is not None:
             if conversation.has_current_question() is False:
@@ -277,6 +347,9 @@ class TemplateSRAIXNode(TemplateNode):
                         else:
                             response = response_data
                     except Exception:
+                        YLogger.error(client_context, "SRAIX bot[%s] : invalid response[%s]", self._botName, response)
+                        save_dic = {self._botName: response}
+                        conversation.current_question().set_property(variableName, json.dumps(save_dic, ensure_ascii=False))
                         if self.default is not None:
                             response = self.default
                         else:
@@ -288,26 +361,100 @@ class TemplateSRAIXNode(TemplateNode):
                     conversation.current_question().set_property(variableName, response)
         return response
 
+    def _nlu_interface(self, client_context):
+        resolved = self.resolve_children_to_string(client_context)
+        YLogger.debug(client_context, "[%s] resolved to [%s]", self.to_string(), resolved)
+
+        serverInfo = client_context.brain.nlu_servers.server_info(self.nlu)
+        if serverInfo is None:
+            error_msg = "sraix subagent-bot : NLU server[%s] not found" % self.nlu
+            YLogger.debug(client_context, error_msg)
+            raise Exception(error_msg)
+
+        nlu = client_context.brain.nlu
+        if self._timeout is None:
+            timeout = self.SRAIX_DEFAULT_TIMEOUT
+        else:
+            timeout = self._timeout
+        response = nlu.nluCall(client_context, serverInfo.url, serverInfo.apikey, resolved, timeout)
+        YLogger.debug(client_context, "SRAIX nlu [%s] return [%s]", self.nlu, response)
+
+        conversation = client_context.bot.get_conversation(client_context)
+        status_code = ''
+        latency = ''
+        try:
+            status_code = nlu.get_status_code()
+        except NotImplementedError:
+            pass
+        try:
+            latency = nlu.get_latency()
+        except NotImplementedError:
+            pass
+        if conversation.has_current_question() is True:
+            conversation.current_question().set_property('__SUBAGENT_STATUS_CODE__', status_code)
+            conversation.current_question().set_property('__SUBAGENT_LATENCY__', latency)
+
+        if response is None:
+            response = ''
+            if self.default is not None:
+                response = self.default
+        else:
+            if conversation.has_current_question() is False:
+                if self.default is not None:
+                    response = self.default
+            else:
+                variableName = "__SUBAGENT_NLU__"
+                if response != '':
+                    try:
+                        response_json = json.loads(response)
+                        save_dic = {self.nlu: response_json}
+                        conversation.current_question().set_property(variableName, json.dumps(save_dic, ensure_ascii=False))
+                    except Exception:
+                        YLogger.error(client_context, "SRAIX NLU[%s] : invalid response[%s]", self._nlu, response)
+                        save_dic = {self.nlu: response}
+                        conversation.current_question().set_property(variableName, json.dumps(save_dic, ensure_ascii=False))
+                        if self.default is not None:
+                            response = self.default
+                        else:
+                            response = ''
+                else:
+                    if self.default is not None:
+                        response = self.default
+                    variableName += ".%s" % self.nlu
+                    conversation.current_question().set_property(variableName, response)
+        return response
+
     def resolve_to_string(self, client_context):
         conversation = client_context.bot.get_conversation(client_context)
         if conversation.has_current_question() is True:
             conversation.current_question().set_property('__SUBAGENT_STATUS_CODE__', '')
+            conversation.current_question().set_property('__SUBAGENT_LATENCY___', '')
 
         if self._service is not None:
             resolved = self.resolve_children_to_string(client_context)
             YLogger.debug(client_context, "[%s] resolved to [%s]", self.to_string(), resolved)
 
             bot_service = ServiceFactory.get_service(self.service)
-            response = bot_service.ask_question(client_context, resolved)
+            if self._timeout is None:
+                timeout = self.SRAIX_DEFAULT_TIMEOUT
+            else:
+                timeout = self._timeout
+            response = bot_service.ask_question(client_context, resolved, timeout)
             YLogger.debug(client_context, "SRAIX service [%s] return [%s]", self.service, response)
 
             status_code = ''
+            latency = ''
             try:
                 status_code = bot_service.get_status_code()
             except NotImplementedError:
                 pass
+            try:
+                latency = bot_service.get_latency()
+            except NotImplementedError:
+                pass
             if conversation.has_current_question() is True:
                 conversation.current_question().set_property('__SUBAGENT_STATUS_CODE__', status_code)
+                conversation.current_question().set_property('__SUBAGENT_LATENCY__', latency)
 
             if response is not None:
                 if conversation.has_current_question() is False:
@@ -334,8 +481,12 @@ class TemplateSRAIXNode(TemplateNode):
             response = self._published_Bot_interface(client_context)
             return response
 
-        elif self._host is not None:
+        elif self._host is not None or self._template is not None:
             response = self._published_REST_interface(client_context)
+            return response
+
+        elif self._nlu is not None:
+            response = self._nlu_interface(client_context)
             return response
 
         else:
@@ -347,12 +498,16 @@ class TemplateSRAIXNode(TemplateNode):
             texts = "[SRAIX (service=%s" % self.service
             if self._default is not None:
                 texts += ", default=%s" % self.default
+            if self._timeout is not None:
+                texts += ", timeout=%s" % self.timeout
             texts += ")]"
             return texts
         elif self._botName is not None:
             texts = "[SRAIX (botName=%s" % self.botName
             if self._default is not None:
                 texts += ", default=%s" % self.default
+            if self._timeout is not None:
+                texts += ", timeout=%s" % self.timeout
             if self._locale is not None:
                 texts += ", locale=%s" % self.locale
             if self._time is not None:
@@ -369,10 +524,18 @@ class TemplateSRAIXNode(TemplateNode):
                 texts += ", config=%s" % self.config
             texts += ")]"
             return texts
-        elif self._host is not None:
-            texts = "[SRAIX (host=%s" % self.host
+        elif self._template is not None or self._host is not None:
+            texts = "[SRAIX ("
+            if self._template is not None:
+                texts += "template=%s" % self.template
+                if self._host is not None:
+                    texts += ", host=%s" % self.host
+            else:
+                texts += "host=%s" % self.host
             if self._default is not None:
                 texts += ", default=%s" % self.default
+            if self._timeout is not None:
+                texts += ", timeout=%s" % self.timeout
             if self._method is not None:
                 texts += ", method=%s" % self.method
             if self._query is not None:
@@ -381,6 +544,14 @@ class TemplateSRAIXNode(TemplateNode):
                 texts += ", header={%s}" % self.header
             if self._body is not None:
                 texts += ", body=%s" % self.body
+            texts += ")]"
+            return texts
+        elif self._nlu is not None:
+            texts = "[SRAIX (nlu=%s" % self.nlu
+            if self._default is not None:
+                texts += ", default=%s" % self.default
+            if self._timeout is not None:
+                texts += ", timeout=%s" % self.timeout
             texts += ")]"
             return texts
 
@@ -392,11 +563,15 @@ class TemplateSRAIXNode(TemplateNode):
             xml += ' service="%s"' % self._service
             if self._default is not None:
                 xml += ' default="%s"' % self._default
+            if self._timeout is not None:
+                xml += ' timeout="%s"' % self._timeout
             xml += '>'
         elif self._botName is not None:
             xml += ' botName="%s"' % self._botName
             if self._default is not None:
                 xml += ' default="%s"' % self._default
+            if self._timeout is not None:
+                xml += ' timeout="%s"' % self._timeout
             xml += '>'
             if self._locale is not None:
                 xml += '<locale>%s</locale>' % self._locale.to_xml(client_context)
@@ -412,11 +587,16 @@ class TemplateSRAIXNode(TemplateNode):
                 xml += '<metadata>%s</metadata>' % self._metadata.to_xml(client_context)
             if self._config is not None:
                 xml += '<config>%s</config>' % self._config.to_xml(client_context)
-        elif self._host is not None:
+        elif self._template is not None or self._host is not None:
+            if self._template is not None:
+                xml += ' template="%s"' % self.template
             if self._default is not None:
                 xml += ' default="%s"' % self._default
+            if self._timeout is not None:
+                xml += ' timeout="%s"' % self._timeout
             xml += '>'
-            xml += '<host>%s</host>' % self._host.to_xml(client_context)
+            if self._host is not None:
+                xml += '<host>%s</host>' % self._host.to_xml(client_context)
             if self._method is not None:
                 xml += '<method>%s</method>' % self._method.to_xml(client_context)
             if self._query is not None:
@@ -425,6 +605,13 @@ class TemplateSRAIXNode(TemplateNode):
                 xml += '<header>%s</header>' % self._header.to_xml(client_context)
             if self._body is not None:
                 xml += '<body>%s</body>' % self._body.to_xml(client_context)
+        elif self._nlu is not None:
+            xml += ' nlu="%s"' % self._nlu
+            if self._default is not None:
+                xml += ' default="%s"' % self._default
+            if self._timeout is not None:
+                xml += ' timeout="%s"' % self._timeout
+            xml += '>'
         else:
             xml += '>'
 
@@ -461,6 +648,12 @@ class TemplateSRAIXNode(TemplateNode):
     def parse_expression(self, graph, expression):
         mode_count = 0
 
+        if 'template' in expression.attrib:
+            template = expression.attrib['template']
+            if graph.aiml_parser.brain.rest_templates.rest_template(template) is None:
+                raise ParserException("REST=Template[%s] not found" % template, xml_element=expression, nodename='sraix')
+            mode_count += 1
+            self._template = template
         if 'method' in expression.attrib:
             YLogger.warning(self, "'method' attrib not supported in sraix, moved to config, see documentation")
         if 'query' in expression.attrib:
@@ -498,8 +691,25 @@ class TemplateSRAIXNode(TemplateNode):
             mode_count += 1
             self._service = service_name
 
+        if 'nlu' in expression.attrib:
+            nlu_name = expression.attrib['nlu']
+            if graph.aiml_parser.brain.nlu_servers.contains(nlu_name) is False:
+                raise ParserException("NLU server[%s] not found" % nlu_name, xml_element=expression, nodename='sraix')
+            mode_count += 1
+            self._nlu = nlu_name
+
         if 'default' in expression.attrib:
             self._default = expression.attrib['default']
+
+        if 'timeout' in expression.attrib:
+            timeout_param = expression.attrib['timeout']
+            try:
+                timeout = int(timeout_param)
+            except Exception:
+                raise ParserException("timeout[%s] not integer" % timeout_param, xml_element=expression, nodename='sraix')
+            if timeout < 1:
+                raise ParserException("timeout[%s] < 1" % timeout_param, xml_element=expression, nodename='sraix')
+            self._timeout = timeout
 
         head_text = self.get_text_from_element(expression)
         self.parse_text(graph, head_text)
@@ -508,7 +718,8 @@ class TemplateSRAIXNode(TemplateNode):
             tag_name = TextUtils.tag_from_text(child.tag)
 
             if tag_name == 'host':
-                mode_count += 1
+                if self._template is None or self._host is not None:
+                    mode_count += 1
                 self._host = self._parse_template_node(graph, child, 'host', False)
             elif tag_name == 'method':
                 self._method = self._parse_template_node(graph, child, 'method', False)
@@ -539,8 +750,14 @@ class TemplateSRAIXNode(TemplateNode):
             elif tag_name == 'service':
                 YLogger.warning(self, "'service' element not supported in sraix, moved to config, see documentation")
 
+            elif tag_name == 'nlu':
+                YLogger.warning(self, "'nlu' element not supported in sraix, moved to config, see documentation")
+
             elif tag_name == 'default':
                 YLogger.warning(self, "'default' element not supported in sraix, moved to config, see documentation")
+
+            elif tag_name == 'timeout':
+                YLogger.warning(self, "'timeout' element not supported in sraix, moved to config, see documentation")
 
             else:
                 graph.parse_tag_expression(child, self)

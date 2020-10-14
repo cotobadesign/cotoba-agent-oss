@@ -111,6 +111,17 @@ class PropertiesCollection(BasePropertiesCollection):
     def get_store(self, engine):
         return engine.property_store()
 
+    def load_json(self, storage_factory):
+        name = StorageFactory.PROPERTIES_JSON
+        if storage_factory.entity_storage_engine_available(name) is True:
+            engine = storage_factory.entity_storage_engine(name)
+            if engine:
+                try:
+                    store = engine.property_json_store()
+                    store.load_all(self)
+                except Exception as e:
+                    YLogger.exception(self, "Failed to load %s from properties_json storage", e, name)
+
 
 class DefaultVariablesCollection(BasePropertiesCollection):
 

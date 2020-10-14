@@ -31,6 +31,8 @@ TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR TH
 """
 from programy.utils.logging.ylogger import YLogger
 import requests
+import time
+from requests.exceptions import Timeout
 
 from programy.services.service import Service
 from programy.config.brain.service import BrainServiceConfiguration
@@ -38,11 +40,11 @@ from programy.config.brain.service import BrainServiceConfiguration
 
 class RestAPI(object):
 
-    def get(self, url):
-        return requests.get(url)
+    def get(self, url, timeout=None):
+        return requests.get(url, timeout=timeout)
 
-    def post(self, url, data):
-        return requests.post(url, data=data)
+    def post(self, url, data, timeout=None):
+        return requests.post(url, data=data, timeout=timeout)
 
 
 class GenericRESTService(Service):
@@ -72,6 +74,12 @@ class GenericRESTService(Service):
         if config.url is not None:
             self.url = config.url
 
+        self._status_code = ''
+        self._latency = ''
+
+        self._start_time = None
+        self._end_time = None
+
     def _format_url(self):
         if self.port is not None:
             host_port = "http://%s:%s" % (self.host, self.port)
@@ -92,26 +100,49 @@ class GenericRESTService(Service):
     def _parse_response(self, text):
         return text
 
-    def ask_question(self, client_context, question: str):
+    def get_status_code(self):
+        return self._status_code
 
+    def get_latency(self):
+        return self._latency
+
+    def _check_latency(self):
+        self._end_time = time.time()
+        latency = self._end_time - self._start_time
+        return str(latency)
+
+    def ask_question(self, client_context, question: str, timeout=10):
+        self._status_code = ''
+        self._latency = ''
+
+        self._start_time = time.time()
         try:
             url = self._format_url()
 
             if self.method == 'GET':
+                self._status_code = '000'
                 full_url = self._format_get_url(url, client_context, question)
-                response = self.api.get(full_url)
+                response = self.api.get(full_url, timeout)
             elif self.method == 'POST':
+                self._status_code = '000'
                 payload = self._format_payload(client_context, question)
-                response = self.api.post(url, data=payload)
+                response = self.api.post(url, payload, timeout)
             else:
                 raise Exception("Unsupported REST method [%s]" % self.method)
 
+            self._latency = self._check_latency()
+            self._status_code = str(response.status_code)
             if response.status_code != 200:
                 YLogger.error(client_context, "[%s] return status code [%d]", self.host, response.status_code)
             else:
                 return self._parse_response(response.text)
 
+        except Timeout as excep:
+            self._status_code = '001'
+            self._latency = self._check_latency()
+            YLogger.debug(client_context, "Timeout: %s", str(excep))
         except Exception as excep:
-            YLogger.exception(client_context, "Failed to resolve", excep)
+            self._latency = self._check_latency()
+            YLogger.debug(client_context, "Failed to resolve: %s", str(excep))
 
         return ""

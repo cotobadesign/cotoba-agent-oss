@@ -27,7 +27,13 @@ class NluRequest(object):
 
         self._configuration = nlu_configration
 
-    def nluCall(self, client_context, url, apikey, utterance):
+    def nluCall(self, client_context, url, apikey, utterance, timeout=None):
+        raise NotImplementedError()
+
+    def get_status_code(self):
+        raise NotImplementedError()
+
+    def get_latency(self):
         raise NotImplementedError()
 
     @staticmethod

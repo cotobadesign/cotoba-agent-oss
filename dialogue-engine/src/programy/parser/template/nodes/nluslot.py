@@ -41,11 +41,18 @@ import json
 
 class TemplateNluSlotNode(TemplateNode):
 
+    VARIABLE_TYPE = ['name', 'data', 'var']
+    VAR_NLU_DATA = '__SUBAGENT_NLU__'
+
     def __init__(self):
         TemplateNode.__init__(self)
         self._slotName = None
         self._itemName = None
         self._index = None
+
+        self._varName = None
+        self._varType = None
+        self._keys = None
 
     def resolve_children(self, client_context):
         if self._children:
@@ -62,13 +69,45 @@ class TemplateNluSlotNode(TemplateNode):
         except Exception:
             slotIndex = 0
 
+        try:
+            if self._varName is None:
+                value = conversation.current_question().property("__SYSTEM_NLUDATA__")
+                if value is None:
+                    YLogger.error(self, "TemplateNluSlotNode __SYSTEM_NLUDATA__ is None")
+                    resolved = TemplateGetNode.get_default_value(client_context)
+                    return resolved
+            else:
+                if self._varType == 'name':
+                    value = conversation.property(self._varName)
+                elif self._varType == 'data':
+                    value = conversation.data_property(self._varName)
+                else:
+                    value = conversation.current_question().property(self._varName)
+                if value is None:
+                    YLogger.error(self, "TemplateNluSlotNode %s is None" % self._varName)
+                    resolved = TemplateGetNode.get_default_value(client_context)
+                    return resolved
+        except Exception:
+            YLogger.error(self, "TemplateNluSlotNode failed to load NLU result")
+            resolved = TemplateGetNode.get_default_value(client_context)
+            return resolved
+
         slots = None
         try:
-            value = conversation.current_question().property("__SYSTEM_NLUDATA__")
             json_dict = json.loads(value)
+            if self._keys is not None:
+                first = True
+                for key in self._keys:
+                    if first:
+                        first = False
+                        continue
+                    json_dict = json_dict[key]
+                    if key == self._keys[-1]:
+                        break
             slots = json_dict["slots"]
         except Exception:
-            YLogger.error(self, "TemplateNluSlotNode failed to load __SYSTEM_NLUDATA__")
+            YLogger.error(self, "TemplateNluSlotNode slots not found in target data")
+            resolved = TemplateGetNode.get_default_value(client_context)
             return resolved
 
         slotsKeyName = "slot"
@@ -125,7 +164,11 @@ class TemplateNluSlotNode(TemplateNode):
         return "[nluslot]"
 
     def to_xml(self, client_context):
-        xml = "<nluslot>"
+        xml = "<nluslot"
+        if self._varName is not None:
+            xml += ' target="%s"' % self._varName
+            xml += ' type="%s"' % self._varType
+        xml += ">"
         xml += "<name>"
         xml += self._slotName.to_xml(client_context)
         xml += "</name>"
@@ -155,6 +198,17 @@ class TemplateNluSlotNode(TemplateNode):
         if 'index' in expression.attrib:
             self._index = self.parse_attrib_value_as_word_node(graph, expression, 'index')
 
+        if 'target' in expression.attrib:
+            var_name = expression.attrib['target']
+            if var_name != '':
+                self._varName = var_name
+        if 'type' in expression.attrib:
+            var_type = expression.attrib['type']
+            if var_type in self.VARIABLE_TYPE:
+                self._varType = var_type
+            else:
+                raise ParserException("Invalid variable type [%s]" % var_type, xml_element=expression, nodename='nluslot')
+
         self.parse_text(graph, self.get_text_from_element(expression))
 
         for child in expression:
@@ -172,3 +226,15 @@ class TemplateNluSlotNode(TemplateNode):
 
         if self._slotName is None or self._itemName is None:
             raise ParserException("Missing either slot or item", xml_element=expression, nodename='nluslot')
+
+        if self._varName is None:
+            self._varType = None
+        else:
+            if self._varType is None:
+                self._varType = 'var'
+
+        if self._varType == 'var':
+            keys = self._varName.split('.')
+            if keys[0] == self.VAR_NLU_DATA and len(keys) == 2:
+                self._varName = keys[0]
+                self._keys = keys

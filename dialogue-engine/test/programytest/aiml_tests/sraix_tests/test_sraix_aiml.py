@@ -39,7 +39,7 @@ class MockGenericRESTService(Service):
     def __init__(self, config: BrainServiceConfiguration):
         Service.__init__(self, config)
 
-    def ask_question(self, client_context, question: str):
+    def ask_question(self, client_context, question: str, timeout=None):
         return "ANSWER"
 
 
