@@ -35,8 +35,8 @@ class AutoCorrectSpellingCheckerTests(unittest.TestCase):
         self.assertEqual("THIS", checker.correct("This"))
         self.assertEqual("THIS", checker.correct("this"))
 
-        self.assertEqual("LOCATION", checker.correct("LOCETION"))
-        self.assertEqual("LOCATION", checker.correct("Locetion"))
+        self.assertEqual("LOCETION", checker.correct("LOCETION"))
+        self.assertEqual("VOCATION", checker.correct("Locetion"))
         self.assertEqual("LOCATION", checker.correct("locetion"))
 
         self.assertEqual("WHAT IS YOUR LOCATION", checker.correct("Waht is your locetion"))

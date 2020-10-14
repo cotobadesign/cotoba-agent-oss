@@ -11,7 +11,7 @@ Please refer to [document site]](https://cotoba-agent-oss-docs.readthedocs.io/en
 # Requirements
 
 The COTOBA Agent dialogue engine runs across the cross-platform of Mac OSX, Linux, and Windows.  
-The program is written in Python3 and the version is confirmed to work in 3.7.
+The program is written in Python3 and the version is confirmed to work in 3.7 and 3.8.
 
 
 # Quick Start
