@@ -9,7 +9,7 @@ COTOBA Agent dialogue engine、その機能、詳細については、[ドキュ
 
 
 # ライセンス
-本ソフトウェアはMITライセンスです。詳細は[COPYRIGHT](https://github.com/cotobadesign/cotoba-agent-oss/blob/master/dialogue-engine/COPYRIGHT.txt)を参照してください。
+本ソフトウェアはMITライセンスです。詳細はLICENSEを参照してください。
 
 # Contact
 * [Web site](https://www.cotoba.net)  

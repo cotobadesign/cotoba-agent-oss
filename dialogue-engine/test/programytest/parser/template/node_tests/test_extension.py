@@ -25,7 +25,7 @@ from programytest.parser.base import ParserTestsBaseClass
 class MockExtension(object):
 
     def execute(self, context, data):
-        if data is None or data is "":
+        if data is None or data == "":
             return "VALID"
         else:
             return data
