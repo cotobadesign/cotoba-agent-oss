@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<aiml version="2.0">
+    <category>
+        <pattern>
+            calc *
+        </pattern>
+        <template>
+            <extension path="calc.CalcExtension"><star/></extension>
+        </template>
+    </category>
+
+    <category>
+        <pattern>
+            wiki *
+        </pattern>
+        <template>
+            <extension path="wikipedia.WikipediaExtension"><star/></extension>
+        </template>
+    </category>
+
+    <category>
+        <pattern>
+            zip *
+        </pattern>
+        <template>
+            <extension path="zipcode.ZipcodeExtension"><star/></extension>
+        </template>
+    </category>
+
+    <category>
+        <pattern>
+            geocode *
+        </pattern>
+        <template>
+            <think>
+                <set var="user_place">東京駅</set>
+                <set var="user_lat">35.681236</set>
+                <set var="user_lng">139.767125</set>
+                
+                <set var="distance">
+                    <extension path="geocode.GeocodeExtension"><star/></extension>
+                </set>
+
+            </think>
+
+            <json var="coordinate.departure"/>
+            から
+            <json var="coordinate.arrival"/>
+            までの距離は
+            <get var="distance"/>
+            kmです。
+            
+        </template>
+    </category>
+
+
+</aiml>
