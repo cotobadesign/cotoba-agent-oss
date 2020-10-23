@@ -30,5 +30,3 @@ class ZipcodeExtension(Extension):
         except Exception:
             YLogger.debug(context, "Extension Zip2Address: None")
             return None
-
-

@@ -22,58 +22,6 @@ import requests
 import xmltodict
 from vincenty_inverse import CalcDistance
 
-"""
-# How to handle variables in AIML
-
-
-## AIML's "get" equivalent processing
-conversation = context.bot.get_conversation(context)
-
-### <get var="key"/>
-value = conversation.current_question().property("key")
-
-### <get data="key"/>
-value = conversation.data_property("key")
-
-### <get name="key"/>
-value = conversation.property("key")
-
-
-## AIML's "set" equivalent processing
-conversation = context.bot.get_conversation(context)
-
-### <set var="key">value</set>
-value = conversation.current_question().set_property("key", "value")
-
-### <set cata="key">value</set>
-value = conversation.set_data_property("key", "value")
-
-### <set name="key">value</set>
-value = conversation.property("key", "value")
-
-
-## AIML's "bot" equivalent processing
-
-### <bot name="app_version" />
-value = context.bot.brain.properties.property("app_version")
-
-
-## AIML's "json" equivalent processing
-
-### <json name="key.name"/>
-value = conversation.property("key")
-json_dict = json.loads(value)
-result = json_dict["name"]
-
-
-### <json name="key.name">Smith</json>
-value = conversation.property("key")
-json_dict = json.loads(value)
-json_dict["name"] = "Smith"
-value = conversation.set_property("key", json.dumps(json_dict, ensure_ascii=False))
-
-"""
-
 
 class GeocodeExtension(Extension):
 
@@ -108,4 +56,3 @@ class GeocodeExtension(Extension):
         except Exception:
             YLogger.debug(context, "Extension Zip2Address: None")
             return None
-

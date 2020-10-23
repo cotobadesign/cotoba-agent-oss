@@ -103,5 +103,3 @@ if __name__ == "__main__":
         except Exception:
             print("結果取得に失敗しました")
             pass
-
-
