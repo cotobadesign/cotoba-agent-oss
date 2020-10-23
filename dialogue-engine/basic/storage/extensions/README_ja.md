@@ -33,17 +33,17 @@ value = conversation.property("key")
 ##  AIMLの"set"ノードと同等の実装
 extensionでの変数値をAIMLの変数に受け渡す方法は、変数タイプ(var,data,name)毎に分かれており各々以下の実装で値を設定します。
 
-### \<set var="key">value</set>
+### \<set var="key">value\</set>
 ```
 conversation.current_question().set_property("key", "value")
 ```
 
-### \<set cata="key">value</set>
+### \<set cata="key">value\</set>
 ```
 conversation.set_data_property("key", "value")
 ```
 
-### \<set name="key">value</set>
+### \<set name="key">value\</set>
 ```
 conversation.property("key", "value")
 ```
@@ -65,16 +65,16 @@ AIMLでは全てテキスト化した情報を取り扱うため、入出力さ�
 jsonの内容はテキスト化し保持しているため、取得後json.loads()でdict型に変換し値を利用します。
 
 ```
-value = conversation.property("key")
-json_dict = json.loads(value)
-result = json_dict["name"]
+obj = conversation.property("key")
+json_dict = json.loads(obj)
+value = json_dict["name"]
 ```
 
-### \<json name="key.name">Smith</json>
+### \<json name="key.name">Smith\</json>
 pythonで変更したdict型をAIMLのjsonノードで取り扱う場合、dict型をjson.dumps()でテキスト化した情報をsetと同じ関数で設定します。
 ```
-value = conversation.property("key")
-json_dict = json.loads(value)
+obj = conversation.property("key")
+json_dict = json.loads(obj)
 json_dict["name"] = "Smith"
 conversation.set_property("key", json.dumps(json_dict, ensure_ascii=False))
 ```
