@@ -50,7 +50,7 @@ conversation.property("key", "value")
 
 
 ## AIML's "bot" equivalent processing
-The value specified in "propaties / defaults.txt" is acquired by the following implementation.
+The value specified in "propaties/propaties.txt" is acquired by the following implementation.
 
 ### <bot name="app_version" />
 ```

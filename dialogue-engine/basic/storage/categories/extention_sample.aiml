@@ -3,6 +3,9 @@
 <aiml version="2.0">
     <category>
         <pattern>
+            <!-- 数値計算 -->
+            <!-- ()を使用する計算の場合、propatiesのpunctuation_charsを無しに設定 -->
+            <!-- 入力例: calc 1/2+3*4-->
             calc *
         </pattern>
         <template>
@@ -12,6 +15,8 @@
 
     <category>
         <pattern>
+            <!-- wikibedia検索 -->
+            <!-- 入力例: wiki 東京スカイツリー -->
             wiki *
         </pattern>
         <template>
@@ -21,6 +26,8 @@
 
     <category>
         <pattern>
+            <!-- 郵便番号から住所取得 -->
+            <!-- 入力例: zip 150-0002-->
             zip *
         </pattern>
         <template>
@@ -30,10 +37,13 @@
 
     <category>
         <pattern>
+            <!-- 東京駅からの距離を計算 -->
+            <!-- 入力例:geocode 大阪駅-->
             geocode *
         </pattern>
         <template>
             <think>
+                <!-- user_place,user_lat,user_lngは、geocode.GeocodeExtension内で利用している -->
                 <set var="user_place">東京駅</set>
                 <set var="user_lat">35.681236</set>
                 <set var="user_lng">139.767125</set>
@@ -44,6 +54,7 @@
 
             </think>
 
+            <!-- coordinateは、geocode.GeocodeExtensionで生成している -->
             <json var="coordinate.departure"/>
             から
             <json var="coordinate.arrival"/>

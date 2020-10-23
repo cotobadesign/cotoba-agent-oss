@@ -50,7 +50,7 @@ conversation.property("key", "value")
 
 
 ## AIMLの"bot"ノードと同等の実装
-propaties/defaults.txtで指定した内容は、以下の実装で取得します。
+propaties/propaties.txtで指定した内容は、以下の実装で取得します。
 
 ### \<bot name="app_version" />
 ```
