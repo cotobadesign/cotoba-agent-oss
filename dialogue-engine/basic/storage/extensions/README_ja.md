@@ -79,6 +79,16 @@ json_dict["name"] = "Smith"
 conversation.set_property("key", json.dumps(json_dict, ensure_ascii=False))
 ```
 
+## AIMLの"log"ノードと同等の実装
+### \<log>ログ出力\</log>
+conversation.appenc_log()を利用。dict形式を指定する。  
+logノードと異なるのはキーを任意の値を指定できることで、key,valueに設定した文字列はそのままログに出力される。  
+
+```
+logs_msg = {"debug": "Extension Calc:" + data + "=" + result}
+conversation.append_log(logs_msg)
+```
+
 ## 戻り値
 returnで返す文字列がノードとしての処理結果となります。  
 つまりreturn値がAIMLのextensionノードの結果となり、AIML側で利用されるます。

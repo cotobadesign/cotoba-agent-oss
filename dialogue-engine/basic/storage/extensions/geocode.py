@@ -15,7 +15,6 @@ TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR TH
 """
 # geocode api : see https://www.geocoding.jp/api/
 
-from programy.utils.logging.ylogger import YLogger
 from programy.extensions.base import Extension
 import json
 import requests
@@ -37,8 +36,8 @@ class GeocodeExtension(Extension):
         return lat, lng
 
     def execute(self, context, data):
+        conversation = context.bot.get_conversation(context)
         try:
-            conversation = context.bot.get_conversation(context)
             user_place = conversation.current_question().property("user_place")
             user_lat = float(conversation.current_question().property("user_lat"))
             user_lng = float(conversation.current_question().property("user_lng"))
@@ -51,8 +50,11 @@ class GeocodeExtension(Extension):
             cd = CalcDistance()
             distance = int(cd.vincenty_inverse(user_lat, user_lng, float(lat), float(lng)))
 
+            logs_msg = {"debug": "Extension geocode diatance: " + str(distance)}
+            conversation.append_log(logs_msg)
             return str(distance)
 
         except Exception:
-            YLogger.debug(context, "Extension Zip2Address: None")
+            logs_msg = {"error": "Extension geocode: None"}
+            conversation.append_log(logs_msg)
             return None

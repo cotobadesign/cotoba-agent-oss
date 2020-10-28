@@ -23,10 +23,15 @@ class ZipcodeExtension(Extension):
 
     def execute(self, context, data):
 
+        conversation = context.bot.get_conversation(context)
         try:
             address = get_zipcode(data)
-            YLogger.debug(context, "Extension Zip2Address: %s = %s", data, address)
+
+            logs_msg = {"debug": "Extension ZipcodeExtension:" + data + "=" + address}
+            conversation.append_log(logs_msg)
+
             return address
         except Exception:
-            YLogger.debug(context, "Extension Zip2Address: None")
+            logs_msg = {"error": "Extension ZipcodeExtension: None"}
+            conversation.append_log(logs_msg)
             return None

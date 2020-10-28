@@ -13,17 +13,21 @@ THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRI
 AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,
 TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 """
-from programy.utils.logging.ylogger import YLogger
 from programy.extensions.base import Extension
 
 
 class CalcExtension(Extension):
 
     def execute(self, context, data):
+        conversation = context.bot.get_conversation(context)
         try:
             result = str(eval(data))
-            YLogger.debug(context, "Extension Calc: %s = %s", data, result)
+
+            logs_msg = {"debug": "Extension Calc:" + data + "=" + result}
+            conversation.append_log(logs_msg)
+
             return result
         except Exception:
-            YLogger.debug(context, "Extension Calc: Cannnot calc %s", data)
+            logs_msg = {"error": "Extension Calc: Cannnot calc:" + data}
+            conversation.append_log(logs_msg)
             return None

@@ -82,6 +82,16 @@ json_dict["name"] = "Smith"
 conversation.set_property("key", json.dumps(json_dict, ensure_ascii=False))
 ```
 
+## AIML's "log" equivalent processing
+### \<log>log output\</log>
+Use conversation.appenc_log () for log output. Specify the dict format.  
+The difference from the node is that you can specify any value for the key and the character string set for the key and value is output to the log as it is.
+
+```
+logs_msg = {"debug": "Extension Calc:" + data + "=" + result}
+conversation.append_log(logs_msg)
+```
+
 ## Return value
 The character string returned by "return" is the processing result as a node.
 In other words, it will be the result of the extension node of AIML and will be used on the AIML side.

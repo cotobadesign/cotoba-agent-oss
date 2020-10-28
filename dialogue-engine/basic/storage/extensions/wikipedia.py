@@ -13,7 +13,6 @@ THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRI
 AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,
 TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 """
-from programy.utils.logging.ylogger import YLogger
 from programy.extensions.base import Extension
 
 from wiki_proc import WikipediaProc
@@ -22,23 +21,30 @@ from wiki_proc import WikipediaProc
 class WikipediaExtension(Extension):
 
     def execute(self, context, data):
+        conversation = context.bot.get_conversation(context)
         wiki = WikipediaProc()
-
         try:
             search_result = wiki.search(data)
-            YLogger.debug(context, "Wikipedia search result: %s", search_result)
+            logs_msg = {"debug": "Wikipedia search result:" + search_result[0]}
+            conversation.append_log(logs_msg)
 
             if search_result is not None:
                 pageid = wiki.page(search_result[0])
-                YLogger.debug(context, "Wikipedia pageid: %d", pageid)
+
+                logs_msg = {"debug": "Wikipedia pageid:" + str(pageid)}
+                conversation.append_log(logs_msg)
 
                 contents = wiki.summary(search_result[0], pageid)
                 result = contents.split("。")[0] + "。"
             else:
-                result = None
+                result = ""
 
-            YLogger.debug(context, "Wikipedia summary: %s", result)
+            logs_msg = {"debug": "Wikipedia summary:" + result}
+            conversation.append_log(logs_msg)
+
             return result
 
         except Exception:
+            logs_msg = {"error": "Wikipedia get error"}
+            conversation.append_log(logs_msg)
             return None
