@@ -48,6 +48,9 @@ class RedisStorageConfiguration(BaseConfigurationData):
         self._prefix = "programy"
         self._drop_all_first = True
         self._expiretime = 2592000  # (60*60*24*30)
+        self._username = None
+        self._ssl = False
+        self._timeout = 1
 
     @property
     def host(self):
@@ -77,6 +80,18 @@ class RedisStorageConfiguration(BaseConfigurationData):
     def expiretime(self):
         return self._expiretime
 
+    @property
+    def username(self):
+        return self._username
+
+    @property
+    def ssl(self):
+        return self._ssl
+
+    @property
+    def timeout(self):
+        return self._timeout
+
     def check_for_license_keys(self, license_keys):
         BaseConfigurationData.check_for_license_keys(self, license_keys)
 
@@ -85,11 +100,14 @@ class RedisStorageConfiguration(BaseConfigurationData):
         if storage is not None:
             self._host = configuration_file.get_option(storage, "host", subs=subs)
             self._port = configuration_file.get_option(storage, "port", subs=subs)
-            self._password = configuration_file.get_option(storage, "password", subs=subs)
+            self._password = configuration_file.get_option(storage, "password", missing_value=None, subs=subs)
             self._db = configuration_file.get_option(storage, "db", subs=subs)
             self._prefix = configuration_file.get_option(storage, "prefix", subs=subs)
             self._drop_all_first = configuration_file.get_option(storage, "drop_all_first", subs=subs)
             self._expiretime = configuration_file.get_option(storage, "expiretime", subs=subs)
+            self._username = configuration_file.get_option(storage, "username", missing_value=None, subs=subs)
+            self._ssl = configuration_file.get_bool_option(storage, "ssl", missing_value=False, subs=subs)
+            self._timeout = configuration_file.get_int_option(storage, "timeout", missing_value=1, subs=subs)
         else:
             YLogger.error(None, "'config' section missing from storage config")
 
@@ -103,6 +121,9 @@ class RedisStorageConfiguration(BaseConfigurationData):
         config['prefix'] = self._prefix
         config['drop_all_first'] = self._drop_all_first
         config['expiretime'] = self._expiretime
+        config['username'] = self._username
+        config['ssl'] = self._ssl
+        config['timeout'] = self._timeout
 
         if len(config.keys()) > 0:
             return config
@@ -121,6 +142,9 @@ class RedisStorageConfiguration(BaseConfigurationData):
             data['prefix'] = "programy"
             data['drop_all_first'] = True
             data['expiretime'] = 2592000
+            data['username'] = None
+            data['ssl'] = False
+            data['timeout'] = 1
         else:
             data['host'] = self._host
             data['port'] = self._port
@@ -129,6 +153,9 @@ class RedisStorageConfiguration(BaseConfigurationData):
             data['prefix'] = self._prefix
             data['drop_all_first'] = self._drop_all_first
             data['expiretime'] = self._expiretime
+            data['username'] = self._username
+            data['ssl'] = self._ssl
+            data['timeout'] = self._timeout
 
     def create_engine(self):
         engine = RedisStorageEngine(self)
