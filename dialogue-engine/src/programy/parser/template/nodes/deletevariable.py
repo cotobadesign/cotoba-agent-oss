@@ -18,6 +18,7 @@ from programy.utils.logging.ylogger import YLogger
 
 from programy.parser.template.nodes.base import TemplateNode
 from programy.parser.exceptions import ParserException
+from programy.utils.text.text import TextUtils
 
 import re
 
@@ -26,8 +27,13 @@ class TemplateDeleteVariableNode(TemplateNode):
 
     def __init__(self):
         TemplateNode.__init__(self)
+        self._var_type = 'data'
         self._regex = None
         self._regex_text = None
+
+    @property
+    def var_type(self):
+        return self._var_type
 
     @property
     def regex(self):
@@ -44,36 +50,75 @@ class TemplateDeleteVariableNode(TemplateNode):
     def resolve_to_string(self, client_context):
         resolved = ''
 
-        conversation = client_context.bot.get_conversation(client_context)
-        if self._regex is None:
-            conversation.data_properties.clear()
+        if self._regex_text is not None and self._regex is None:
+            regex_text = self._regex_text.resolve(client_context)
+            try:
+                regex = re.compile(regex_text, re.IGNORECASE)
+            except Exception:
+                YLogger.debug(client_context, "[%s] invalid regex format [%s]", self.to_string(), regex_text)
+                return resolved
         else:
-            delete_list = []
-            for key in conversation.data_properties.keys():
-                regex_match = self._regex.fullmatch(key)
-                if regex_match is not None:
-                    delete_list.append(key)
+            regex = self._regex
 
-            for key in delete_list:
-                del conversation.data_properties[key]
+        conversation = client_context.bot.get_conversation(client_context)
+
+        if self._var_type == 'name':
+            if regex is None:
+                conversation.properties.clear()
+            else:
+                delete_list = []
+                for key in conversation.properties.keys():
+                    regex_match = regex.fullmatch(key)
+                    if regex_match is not None:
+                        delete_list.append(key)
+
+                for key in delete_list:
+                    del conversation.properties[key]
+        else:
+            if regex is None:
+                conversation.data_properties.clear()
+            else:
+                delete_list = []
+                for key in conversation.data_properties.keys():
+                    regex_match = regex.fullmatch(key)
+                    if regex_match is not None:
+                        delete_list.append(key)
+
+                for key in delete_list:
+                    del conversation.data_properties[key]
 
         YLogger.debug(client_context, "[%s] resolved to [%s]", self.to_string(), resolved)
         return resolved
 
     def to_string(self):
-        return "[DELETEVARIABLE]"
+        return "[DELETEVARIABLE (%s)]" % self._var_type
 
     def to_xml(self, client_context):
         xml = '<deletevariable'
+        xml += ' type="%s"' % self._var_type
         if self._regex is not None:
             xml += ' regex="%s"' % self._regex_text
         xml += ' />'
         return xml
 
     def parse_expression(self, graph, expression):
+        if 'type' in expression.attrib:
+            var_type = expression.attrib['type']
+            if var_type == 'name' or var_type == 'data':
+                self._var_type = var_type
+            else:
+                raise ParserException("Invalid variable type", xml_element=expression, nodename='deletevariable')
+
         if 'regex' in expression.attrib:
             self._regex_text = expression.attrib['regex']
             try:
                 self._regex = re.compile(self._regex_text, re.IGNORECASE)
             except Exception:
                 raise ParserException("Invalid regex format", xml_element=expression, nodename='deletevariable')
+
+        for child in expression:
+            tag_name = TextUtils.tag_from_text(child.tag)
+
+            if tag_name == 'regex':
+                self._regex_text = self.parse_children_as_word_node(graph, child)
+                self._regex = None
