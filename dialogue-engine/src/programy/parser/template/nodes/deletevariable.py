@@ -22,7 +22,7 @@ from programy.parser.exceptions import ParserException
 import re
 
 
-class TemplateClearDataNode(TemplateNode):
+class TemplateDeleteVariableNode(TemplateNode):
 
     def __init__(self):
         TemplateNode.__init__(self)
@@ -61,10 +61,10 @@ class TemplateClearDataNode(TemplateNode):
         return resolved
 
     def to_string(self):
-        return "[CLEARDATA]"
+        return "[DELETEVARIABLE]"
 
     def to_xml(self, client_context):
-        xml = '<cleardata'
+        xml = '<deletevariable'
         if self._regex is not None:
             xml += ' regex="%s"' % self._regex_text
         xml += ' />'
@@ -76,4 +76,4 @@ class TemplateClearDataNode(TemplateNode):
             try:
                 self._regex = re.compile(self._regex_text, re.IGNORECASE)
             except Exception:
-                raise ParserException("Invalid regex format", xml_element=expression, nodename='cleardata')
+                raise ParserException("Invalid regex format", xml_element=expression, nodename='deletevariable')
