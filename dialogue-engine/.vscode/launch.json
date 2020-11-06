@@ -7,12 +7,17 @@
             "request": "launch",
             "program": "${workspaceFolder}/src/programy/clients/restful/yadlan/flask/client.py",
             "console": "integratedTerminal",
-            "cwd":"${workspaceFolder}/basic/script",
+            "cwd": "${workspaceFolder}/basic/script",
             "env": {
-                "PYTHONPATH": "../../src"
+                "PYTHONPATH": "../storage/extensions:../../src"
             },
             "args": [
-                "--config","../config/config.yaml","--cformat","yaml","--logging","../config/logging.yaml"
+                "--config",
+                "../config/config.yaml",
+                "--cformat",
+                "yaml",
+                "--logging",
+                "../config/logging.yaml"
             ]
         },
         {
@@ -21,12 +26,11 @@
             "request": "launch",
             "program": "${workspaceFolder}/basic/script/simple_request.py",
             "console": "integratedTerminal",
-            "cwd":"${workspaceFolder}/basic/script",
+            "cwd": "${workspaceFolder}/basic/script",
             "env": {
-                "PYTHONPATH": "../../src"
+                "PYTHONPATH": "../storage/extensions:../../src"
             },
-            "args": [
-            ]
+            "args": []
         },
         {
             "name": "Console debug",
@@ -34,14 +38,18 @@
             "request": "launch",
             "program": "${workspaceFolder}/src/programy/clients/events/console/client.py",
             "console": "integratedTerminal",
-            "cwd":"${workspaceFolder}/basic/script",
+            "cwd": "${workspaceFolder}/basic/script",
             "env": {
-                "PYTHONPATH": "../../src"
+                "PYTHONPATH": "../storage/extensions:../../src"
             },
             "args": [
-                "--config","../config/config.yaml","--cformat","yaml","--logging","../config/logging.yaml"
+                "--config",
+                "../config/config.yaml",
+                "--cformat",
+                "yaml",
+                "--logging",
+                "../config/logging.yaml"
             ]
         }
-
     ]
 }
