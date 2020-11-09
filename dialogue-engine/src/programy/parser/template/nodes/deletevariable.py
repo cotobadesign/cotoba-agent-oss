@@ -111,6 +111,8 @@ class TemplateDeleteVariableNode(TemplateNode):
 
         if 'regex' in expression.attrib:
             self._regex_text = expression.attrib['regex']
+            if len(self._regex_text) == 0: 
+                raise ParserException("Regex parameer empty", xml_element=expression, nodename='deletevariable')
             try:
                 self._regex = re.compile(self._regex_text, re.IGNORECASE)
             except Exception:
@@ -122,3 +124,5 @@ class TemplateDeleteVariableNode(TemplateNode):
             if tag_name == 'regex':
                 self._regex_text = self.parse_children_as_word_node(graph, child)
                 self._regex = None
+                if len(self._regex_text.children) == 0: 
+                    raise ParserException("Regex parameer empty", xml_element=expression, nodename='deletevariable')
