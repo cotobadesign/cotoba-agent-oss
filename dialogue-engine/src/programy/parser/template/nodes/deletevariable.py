@@ -53,7 +53,7 @@ class TemplateDeleteVariableNode(TemplateNode):
         if self._regex_text is not None and self._regex is None:
             regex_text = self._regex_text.resolve(client_context)
             try:
-                regex = re.compile(regex_text, re.IGNORECASE)
+                regex = re.compile(regex_text)
             except Exception:
                 YLogger.debug(client_context, "[%s] invalid regex format [%s]", self.to_string(), regex_text)
                 return resolved
@@ -114,7 +114,7 @@ class TemplateDeleteVariableNode(TemplateNode):
             if len(self._regex_text) == 0: 
                 raise ParserException("Regex parameer empty", xml_element=expression, nodename='deletevariable')
             try:
-                self._regex = re.compile(self._regex_text, re.IGNORECASE)
+                self._regex = re.compile(self._regex_text)
             except Exception:
                 raise ParserException("Invalid regex format", xml_element=expression, nodename='deletevariable')
 
