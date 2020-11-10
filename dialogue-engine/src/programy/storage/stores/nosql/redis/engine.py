@@ -54,17 +54,14 @@ class RedisStorageEngine(StorageEngine):
         self._sessions_set_key = "{prefix}:sessions".format(prefix=self._prefix)
         self._expiretime = self.configuration.expiretime
 
-        if self.configuration.password is not None:
-            self._redis = redis.StrictRedis(
-                host=self.configuration.host,
-                port=self.configuration.port,
-                password=self.configuration.password,
-                db=self.configuration.db)
-        else:
-            self._redis = redis.StrictRedis(
-                host=self.configuration.host,
-                port=self.configuration.port,
-                db=self.configuration.db)
+        self._redis = redis.StrictRedis(
+            host=self.configuration.host,
+            port=self.configuration.port,
+            password=self.configuration.password,
+            db=self.configuration.db,
+            username=self.configuration.username,
+            ssl=self.configuration.ssl,
+            socket_timeout=self.configuration.timeout)
 
         if self.configuration.drop_all_first is True:
             try:

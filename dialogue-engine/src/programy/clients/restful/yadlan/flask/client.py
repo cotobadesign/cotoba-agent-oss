@@ -84,7 +84,7 @@ if __name__ == '__main__':
     REST_CLIENT = None
 
     print("Initiating Yadlan Flask Service...")
-    APP = Flask(__name__)
+    APP = Flask('yadlan')
     CORS(APP)
     APP.config['JSON_AS_ASCII'] = False
 
