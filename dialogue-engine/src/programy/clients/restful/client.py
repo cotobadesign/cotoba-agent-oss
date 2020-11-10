@@ -184,6 +184,8 @@ class RestBotClient(BotClient):
         return response, utterance
 
     def get_config_loglevel(self, rest_request):
+        if self.configuration.client_configuration.config_key is False:
+            return None
         level = self.get_config_option(rest_request, 'logLevel')
         if level is not None:
             if type(level) is not str:

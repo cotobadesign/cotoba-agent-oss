@@ -130,8 +130,10 @@ class BotClient(ResponseLogger):
         self._trigger_mgr = None
         self._configuration = None
         self._bot_root = '.'
+        self._engine_version = None
 
         self._arguments = self.parse_arguments(argument_parser=argument_parser)
+        self._engine_version = self._arguments.version
 
         self.initiate_logging(self.arguments)
 
@@ -198,6 +200,10 @@ class BotClient(ResponseLogger):
     @property
     def trigger_manager(self):
         return self._trigger_mgr
+
+    @property
+    def engine_version(self):
+        return self._engine_version
 
     def get_description(self):
         if self.configuration is not None:

@@ -116,6 +116,10 @@ if __name__ == '__main__':
         response_data, status = REST_CLIENT.process_request(request)
         latency = (time.time() - currentStartTime)
         response_data['latency'] = latency
+ 
+        if REST_CLIENT.engine_version is not None:
+            response_data['version'] = REST_CLIENT.engine_version
+
         response_data = REST_CLIENT.create_response(request, response_data, status, latency)
 
         rest_response = response.json(response_data,
@@ -137,6 +141,8 @@ if __name__ == '__main__':
 
         try:
             debugInfo, status = REST_CLIENT.process_debug_request(request)
+            if REST_CLIENT.engine_version is not None:
+                debugInfo['version'] = REST_CLIENT.engine_version
         except Exception:
             pass
 

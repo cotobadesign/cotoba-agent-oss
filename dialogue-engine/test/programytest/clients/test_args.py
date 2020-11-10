@@ -30,7 +30,8 @@ class MockArguments(object):
                  noloop=False,
                  substitutions='subs.txt',
                  stdoutlog=False,
-                 stderrlog=False
+                 stderrlog=False,
+                 version=None
                  ):
         self.bot_root = bot_root
         self.logging = logging
@@ -40,6 +41,7 @@ class MockArguments(object):
         self.substitutions = substitutions
         self.stdoutlog = stdoutlog
         self.stderrlog = stderrlog
+        self.version = version
 
 
 class MockArgumentParser(object):

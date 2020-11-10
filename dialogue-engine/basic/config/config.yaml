@@ -4,6 +4,7 @@ yadlan:
     debug: false
     workers: 10
     description: Yadlan dialog engine
+    config_key: false
 
     storage:
         entities:
