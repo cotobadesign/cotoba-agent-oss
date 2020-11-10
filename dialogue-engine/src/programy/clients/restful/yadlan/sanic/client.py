@@ -90,7 +90,7 @@ if __name__ == '__main__':
     REST_CLIENT = None
 
     print("Initiating Yadlan Sanic Service...")
-    APP = Sanic()
+    APP = Sanic(name='yadlan')
     CORS(APP)
     APP.config['JSON_AS_ASCII'] = False
 
@@ -116,7 +116,7 @@ if __name__ == '__main__':
         response_data, status = REST_CLIENT.process_request(request)
         latency = (time.time() - currentStartTime)
         response_data['latency'] = latency
- 
+
         if REST_CLIENT.engine_version is not None:
             response_data['version'] = REST_CLIENT.engine_version
 
