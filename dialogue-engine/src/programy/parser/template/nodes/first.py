@@ -50,6 +50,11 @@ class TemplateFirstNode(TemplateNode):
                 if isinstance(data, list):
                     if len(data) > 0:
                         resolved = json.dumps(data[0])
+                elif isinstance(data, dict):
+                    if len(data) > 0:
+                        for key, value in data.items():
+                            resolved = json.dumps({key: value})
+                            break
                 else:
                     raise Exception("Not what I wanted")
             except Exception:
