@@ -49,6 +49,7 @@ class StorageFactory(object):
 
     NLU_SERVERS = "nlu_servers"
     BOT_NAMES = "bot_names"
+    REST_TEMPLATES = "rest_templates"
     MAPS = "maps"
     SETS = "sets"
     RDF = "rdf"
@@ -61,6 +62,7 @@ class StorageFactory(object):
     REGEX_TEMPLATES = "regex_templates"
 
     PROPERTIES = "properties"
+    PROPERTIES_JSON = "properties_json"
     DEFAULTS = "defaults"
 
     SPELLING_CORPUS = "spelling_corpus"

@@ -4,6 +4,7 @@ yadlan:
     debug: false
     workers: 10
     description: Yadlan dialog engine
+    config_key: false
 
     storage:
         entities:
@@ -28,9 +29,11 @@ yadlan:
             regex_templates: file
 
             properties: file
+            properties_json: file
             defaults: file
             nlu_servers: file
             bot_names: file
+            rest_templates: file
 
             spelling_corpus: file
             license_keys: file
@@ -96,6 +99,9 @@ yadlan:
 
                     properties_storage:
                         file: ../storage/properties/properties.txt
+                    properties_json_storage:
+                        dirs: ../storage/properties/json
+                        extension: .json
                     defaults_storage:
                         file: ../storage/properties/defaults.txt
                     nlu_servers_storage:
@@ -103,6 +109,9 @@ yadlan:
                     bot_names_storage:
                         file: ../storage/properties/botnames.yaml
 
+                    rest_templates_storage:
+                        file: ../storage/properties/rest_templates.yaml
+    
                     spelling_corpus_storage:
                         file: ../storage/spelling/corpus.txt
 
@@ -160,9 +169,11 @@ console:
             regex_templates: file
 
             properties: file
+            properties_json: file
             defaults: file
             nlu_servers: file
             bot_names: file
+            rest_templates: file
 
             spelling_corpus: file
             license_keys: file
@@ -226,12 +237,17 @@ console:
 
                     properties_storage:
                         file: ../storage/properties/properties.txt
+                    properties_json_storage:
+                        dirs: ../storage/properties/json
+                        extension: .json
                     defaults_storage:
                         file: ../storage/properties/defaults.txt
                     nlu_servers_storage:
                         file: ../storage/properties/nlu_servers.yaml
                     bot_names_storage:
                         file: ../storage/properties/botnames.yaml
+                    rest_templates_storage:
+                        file: ../storage/properties/rest_templates.yaml
     
                     spelling_corpus_storage:
                         file: ../storage/spelling/corpus.txt

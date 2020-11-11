@@ -13,6 +13,8 @@ THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRI
 AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,
 TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 """
+
+
 class MockArguments(object):
 
     def __init__(self, bot_root=".",
@@ -22,7 +24,8 @@ class MockArguments(object):
                  noloop=False,
                  substitutions='subs.txt',
                  stdoutlog=False,
-                 stderrlog=False):
+                 stderrlog=False,
+                 version=None):
         self.bot_root = bot_root
         self.logging = logging
         self.config = config
@@ -31,11 +34,12 @@ class MockArguments(object):
         self.substitutions = substitutions
         self.stdoutlog = stdoutlog
         self.stderrlog = stderrlog
+        self.version = version
 
 
 class MockArgumentParser(object):
 
-    def __init__(self, bot_root=".", logging=None, config=None, cformat="yaml", noloop=False, substitutions='subs.txt', stdoutlog=False, stderrlog=False):
+    def __init__(self, bot_root=".", logging=None, config=None, cformat="yaml", noloop=False, substitutions='subs.txt', stdoutlog=False, stderrlog=False, version=None):
         self.bot_root = bot_root
         self.logging = logging
         self.config = config
@@ -44,6 +48,7 @@ class MockArgumentParser(object):
         self.substitutions = substitutions
         self.stdoutlog = stdoutlog
         self.stderrlog = stderrlog
+        self.version = version
 
     def add_argument(self, argument, dest=None, action=None, help=None, default=False):
         pass
@@ -56,4 +61,5 @@ class MockArgumentParser(object):
                              noloop=self.noloop,
                              substitutions=self.substitutions,
                              stdoutlog=False,
-                             stderrlog=False)
+                             stderrlog=False,
+                             version=None)

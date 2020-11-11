@@ -45,6 +45,7 @@ class ClientArguments(object):
         self._substitutions = None
         self._stdoutlog = False
         self._stderrlog = False
+        self._version = None
 
     def parse_args(self, client):
         pass
@@ -85,6 +86,10 @@ class ClientArguments(object):
     def stderrlog(self):
         return self._stderrlog
 
+    @property
+    def version(self):
+        return self._version
+
 
 class CommandLineClientArguments(ClientArguments):
 
@@ -98,6 +103,7 @@ class CommandLineClientArguments(ClientArguments):
         self._substitutions = None
         self._stdoutlog = False
         self._stderrlog = False
+        self._version = None
 
         ClientArguments.__init__(self, client)
         if parser is None:
@@ -113,6 +119,7 @@ class CommandLineClientArguments(ClientArguments):
         self.parser.add_argument('--noloop', dest='noloop', action='store_true', help='do not enter conversation loop')
         self.parser.add_argument('--stdoutlog', dest='stdoutlog', default=False, help='stdout log output setting')
         self.parser.add_argument('--stderrlog', dest='stderrlog', default=False, help='stderr log output setting')
+        self.parser.add_argument('--version', dest='version', default=None, help='dialog engine version')
 
         client.add_client_arguments(self.parser)
 
@@ -126,4 +133,5 @@ class CommandLineClientArguments(ClientArguments):
         self._substitutions = self.args.substitutions
         self._stdoutlog = self.args.stdoutlog
         self._stderrlog = self.args.stderrlog
+        self._version = self.args.version
         client.parse_args(self, self.args)

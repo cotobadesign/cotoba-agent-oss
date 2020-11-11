@@ -76,6 +76,9 @@ class StorageEngine(object):
     def bot_names_store(self):
         raise NotImplementedError("Engine does not support Bot Names storage")
 
+    def rest_templates_store(self):
+        raise NotImplementedError("Engine does not support REST_templates storage")
+
     def sets_store(self):
         raise NotImplementedError("Engine does not support sets storage")
 
@@ -105,6 +108,9 @@ class StorageEngine(object):
 
     def property_store(self):
         raise NotImplementedError("Engine does not support property storage")
+
+    def property_json_store(self):
+        raise NotImplementedError("Engine does not support property_json storage")
 
     def defaults_store(self):
         raise NotImplementedError("Engine does not support defaults storage")

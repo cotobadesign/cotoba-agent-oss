@@ -17,6 +17,7 @@ import unittest
 
 from programy.services.publishedrest import PublishedRestService, PublishedRestAPI
 from programy.services.service import BrainServiceConfiguration
+from programy.mappings.resttemplates import RestParameters
 
 from programytest.client import TestClient
 
@@ -57,16 +58,16 @@ class MockPublishedRestRequest(object):
     def __init__(self, response=None):
         self._response = response
 
-    def get(self, url, params, headers, data):
+    def get(self, url, params, headers, data, timeout=None):
         return MockRequestsResponse(self._response, 200)
 
-    def post(self, url, params, headers, data):
+    def post(self, url, params, headers, data, timeout=None):
         return MockRequestsResponse(self._response, 200)
 
-    def put(self, url, params, headers, data):
+    def put(self, url, params, headers, data, timeout=None):
         return MockRequestsResponse(self._response, 200)
 
-    def delete(self, url, params, headers, data):
+    def delete(self, url, params, headers, data, timeout=None):
         return MockRequestsResponse(self._response, 200)
 
 
@@ -77,25 +78,25 @@ class MockPublishedRestAPI(object):
         self._response = response
         self._throw_exception = throw_exception
 
-    def get(self, url, query, header, body):
+    def get(self, url, query, header, body, timeout=None):
         if self._throw_exception is True:
             raise Exception(self._response)
         else:
             return MockRequestsResponse(self._response, self._status_code)
 
-    def post(self, url, query, header, body):
+    def post(self, url, query, header, body, timeout=None):
         if self._throw_exception is True:
             raise Exception(self._response)
         else:
             return MockRequestsResponse(self._response, self._status_code)
 
-    def put(self, url, query, header, body):
+    def put(self, url, query, header, body, timeout=None):
         if self._throw_exception is True:
             raise Exception(self._response)
         else:
             return MockRequestsResponse(self._response, self._status_code)
 
-    def delete(self, url, query, header, body):
+    def delete(self, url, query, header, body, timeout=None):
         if self._throw_exception is True:
             raise Exception(self._response)
         else:
@@ -173,17 +174,18 @@ class PublishedRestServiceTests(unittest.TestCase):
         service = PublishedRestService(config=self._config)
         self.assertIsNotNone(service)
 
-        service._host = "http://test.publishdrest.url"
-        service._method = "GET"
-        service._query = '"userid": "test01", "question": "Hello"'
-        service._header = '"Content-type": "application/json;charset=UTF-8"'
-        service._body = "Hello"
+        params = RestParameters("http://test.publishdrest.url")
+        params.set_method("GET")
+        params.set_query('"userid": "test01", "question": "Hello"')
+        params.set_header('"Content-type": "application/json;charset=UTF-8"')
+        params.set_body("Hello")
+        service.params = params
 
-        self.assertEqual('http://test.publishdrest.url', service.host)
-        self.assertEqual('GET', service.method)
-        self.assertEqual('"userid": "test01", "question": "Hello"', service.query)
-        self.assertEqual('"Content-type": "application/json;charset=UTF-8"', service.header)
-        self.assertEqual('Hello', service.body)
+        self.assertEqual('http://test.publishdrest.url', service.params.host)
+        self.assertEqual('GET', service.params.method)
+        self.assertEqual({"userid": "test01", "question": "Hello"}, service.params.query)
+        self.assertEqual({"Content-type": "application/json;charset=UTF-8"}, service.params.header)
+        self.assertEqual('Hello', service.params.body)
 
     def test_ask_question_get(self):
 
@@ -192,11 +194,12 @@ class PublishedRestServiceTests(unittest.TestCase):
         service = PublishedRestService(config=self._config, api=request_api)
         self.assertIsNotNone(service)
 
-        service.host = "http://test.publishdrest.url"
-        service.method = "GET"
-        service.query = None
-        service.header = None
-        service.body = "Hello"
+        params = RestParameters("http://test.publishdrest.url")
+        params.set_method("GET")
+        params.set_query(None)
+        params.set_header(None)
+        params.set_body("Hello")
+        service.params = params
 
         question = None
         response = service.ask_question(self._client_context, question)
@@ -209,11 +212,12 @@ class PublishedRestServiceTests(unittest.TestCase):
         service = PublishedRestService(config=self._config, api=request_api)
         self.assertIsNotNone(service)
 
-        service.host = "http://test.publishdrest.url"
-        service.method = "POST"
-        service.query = None
-        service.header = None
-        service.body = "Hello"
+        params = RestParameters("http://test.publishdrest.url")
+        params.set_method("POST")
+        params.set_query(None)
+        params.set_header(None)
+        params.set_body("Hello")
+        service.params = params
 
         question = None
         response = service.ask_question(self._client_context, question)
@@ -226,11 +230,12 @@ class PublishedRestServiceTests(unittest.TestCase):
         service = PublishedRestService(config=self._config, api=request_api)
         self.assertIsNotNone(service)
 
-        service.host = "http://test.publishdrest.url"
-        service.method = "PUT"
-        service.query = None
-        service.header = None
-        service.body = "Hello"
+        params = RestParameters("http://test.publishdrest.url")
+        params.set_method("PUT")
+        params.set_query(None)
+        params.set_header(None)
+        params.set_body("Hello")
+        service.params = params
 
         question = None
         response = service.ask_question(self._client_context, question)
@@ -243,11 +248,12 @@ class PublishedRestServiceTests(unittest.TestCase):
         service = PublishedRestService(config=self._config, api=request_api)
         self.assertIsNotNone(service)
 
-        service.host = "http://test.publishdrest.url"
-        service.method = "DELETE"
-        service.query = None
-        service.header = None
-        service.body = "Hello"
+        params = RestParameters("http://test.publishdrest.url")
+        params.set_method("DELETE")
+        params.set_query(None)
+        params.set_header(None)
+        params.set_body("Hello")
+        service.params = params
 
         question = None
         response = service.ask_question(self._client_context, question)
@@ -260,15 +266,17 @@ class PublishedRestServiceTests(unittest.TestCase):
         service = PublishedRestService(config=self._config, api=request_api)
         self.assertIsNotNone(service)
 
-        service.host = "http://test.publishdrest.url"
-        service.method = "INSERT"
-        service.query = None
-        service.header = None
-        service.body = "Hello"
+        params = RestParameters("http://test.publishdrest.url")
+        self.assertFalse(params.set_method("INSERT"))
+        params.set_query(None)
+        params.set_header(None)
+        params.set_body("Hello")
+        service.params = params
 
+        self.assertEqual('GET', params.method)
         question = None
         response = service.ask_question(self._client_context, question)
-        self.assertEqual("", response)
+        self.assertEqual("Hello", response)
 
     def test_ask_question_get_parameter(self):
 
@@ -277,11 +285,12 @@ class PublishedRestServiceTests(unittest.TestCase):
         service = PublishedRestService(config=self._config, api=request_api)
         self.assertIsNotNone(service)
 
-        service.host = "http://test.publishdrest.url"
-        service.method = "GET"
-        service.query = {"userid": "test01", "question": "Hello"}
-        service.header = {"Content-type": "application/json;charset=UTF-8"}
-        service.body = '{"json": {"data": "test"}}'
+        params = RestParameters("http://test.publishdrest.url")
+        params.set_method("GET")
+        params.set_query('"userid": "test01", "question": "Hello"')
+        params.set_header('"Content-type": "application/json;charset=UTF-8"')
+        params.set_body('{"json": {"data": "test"}}')
+        service.params = params
 
         question = None
         response = service.ask_question(self._client_context, question)
@@ -294,11 +303,12 @@ class PublishedRestServiceTests(unittest.TestCase):
         service = PublishedRestService(config=self._config, api=request_api)
         self.assertIsNotNone(service)
 
-        service.host = "http://test.publishdrest.url"
-        service.method = "GET"
-        service.query = {"userid": "test01", "question": "Hello"}
-        service.header = {"Content-type": "application/json,charset=UTF-8"}
-        service.body = '{"json": {"data": "test"}}'
+        params = RestParameters("http://test.publishdrest.url")
+        params.set_method("GET")
+        params.set_query('"userid": "test01", "question": "Hello"')
+        params.set_header('"Content-type": "application/json,charset=UTF-8"')
+        params.set_body('{"json": {"data": "test"}}')
+        service.params = params
 
         question = None
         response = service.ask_question(self._client_context, question)
@@ -322,10 +332,12 @@ class PublishedRestServiceTests(unittest.TestCase):
         service = PublishedRestService(config=self._config, api=request_api)
         self.assertIsNotNone(service)
 
-        service.method = "GET"
-        service.query = '"userid": "test01", "question": "Hello"'
-        service.header = '"Content-type": "application/json,charset=UTF-8"'
-        service.body = None
+        params = RestParameters(None)
+        params.set_method("GET")
+        params.set_query('"userid": "test01", "question": "Hello"')
+        params.set_header('"Content-type": "application/json,charset=UTF-8"')
+        params.set_body(None)
+        service.params = params
 
         question = None
         response = service.ask_question(self._client_context, question)
@@ -338,11 +350,12 @@ class PublishedRestServiceTests(unittest.TestCase):
         service = PublishedRestService(config=self._config, api=request_api)
         self.assertIsNotNone(service)
 
-        service.host = "http://test.publishdrest.url"
-        service.method = "GET"
-        service.query = {"userid": "test01", "question": "Hello"}
-        service.header = {"Content-type": "application/json;charset=UTF-8"}
-        service.body = None
+        params = RestParameters("http://test.publishdrest.url")
+        params.set_method("GET")
+        params.set_query('"userid": "test01", "question": "Hello"')
+        params.set_header('"Content-type": "application/json;charset=UTF-8"')
+        params.set_body(None)
+        service.params = params
 
         question = None
         response = service.ask_question(self._client_context, question)
@@ -355,11 +368,12 @@ class PublishedRestServiceTests(unittest.TestCase):
         service = PublishedRestService(config=self._config, api=request_api)
         self.assertIsNotNone(service)
 
-        service.host = "http://test.publishdrest.url"
-        service.method = "GET"
-        service.query = {"userid": "test01", "question": "Hello"}
-        service.header = {"Content": "application/json;charset=UTF-8"}
-        service.body = '{"json": {"data": "test"}}'
+        params = RestParameters("http://test.publishdrest.url")
+        params.set_method("GET")
+        params.set_query('"userid": "test01", "question": "Hello"')
+        params.set_header('"Content": "application/json;charset=UTF-8"')
+        params.set_body('{"json": {"data": "test"}}')
+        service.params = params
 
         question = None
         response = service.ask_question(self._client_context, question)
@@ -372,11 +386,12 @@ class PublishedRestServiceTests(unittest.TestCase):
         service = PublishedRestService(config=self._config, api=request_api)
         self.assertIsNotNone(service)
 
-        service.host = "http://test.publishdrest.url"
-        service.method = "GET"
-        service.query = {"userid": "test01", "question": "Hello"}
-        service.header = {"Content-type": "application/json"}
-        service.body = '{"json": {"data": "test"}}'
+        params = RestParameters("http://test.publishdrest.url")
+        params.set_method("GET")
+        params.set_query('"userid": "test01", "question": "Hello"')
+        params.set_header('"Content-type": "application/json"')
+        params.set_body('{"json": {"data": "test"}}')
+        service.params = params
 
         question = None
         response = service.ask_question(self._client_context, question)

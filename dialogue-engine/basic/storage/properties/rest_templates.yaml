@@ -1,0 +1,14 @@
+rest:
+  template1:
+    host: 'http://localhost:5300/rest'
+    method: PUT
+    query: '"userid":"1234"'
+    header: '"Content-Type":"text/plain"'
+    body: Send Data
+
+  json1:
+    host: 'http://localhost:5300/rest'
+    method: PUT
+    query: '"userid":"1234"'
+    header: '"Content-Type":"application/json"'
+    body: '{"key1": "data1", "key2": "data2"}'

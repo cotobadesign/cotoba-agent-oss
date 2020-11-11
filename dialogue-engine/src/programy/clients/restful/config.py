@@ -44,6 +44,7 @@ class RestConfiguration(ClientConfigurationData):
         self._api_key_file = None
         self._ssl_cert_file = None
         self._ssl_key_file = None
+        self._config_key = True
 
     @property
     def host(self):
@@ -73,6 +74,10 @@ class RestConfiguration(ClientConfigurationData):
     def ssl_key_file(self):
         return self._ssl_key_file
 
+    @property
+    def config_key(self):
+        return self._config_key
+
     def check_for_license_keys(self, license_keys):
         ClientConfigurationData.check_for_license_keys(self, license_keys)
 
@@ -91,6 +96,7 @@ class RestConfiguration(ClientConfigurationData):
             self._ssl_key_file = configuration_file.get_option(rest, "ssl_key_file", subs=subs)
             if self._ssl_key_file is not None:
                 self._ssl_key_file = self.sub_bot_root(self._ssl_key_file, bot_root)
+            self._config_key = configuration_file.get_bool_option(rest, "config_key", missing_value=True, subs=subs)
             super(RestConfiguration, self).load_configuration_section(configuration_file, rest, bot_root, subs=subs)
 
     def to_yaml(self, data, defaults=True):
@@ -102,6 +108,7 @@ class RestConfiguration(ClientConfigurationData):
             data['api_key_file'] = './api.keys'
             data['ssl_cert_file'] = './rsa.cert'
             data['ssl_key_file'] = './rsa.keys'
+            data['config_key'] = True
         else:
             data['host'] = self._host
             data['port'] = self._port
@@ -110,5 +117,6 @@ class RestConfiguration(ClientConfigurationData):
             data['api_key_file'] = self._api_key_file
             data['ssl_cert_file'] = self._ssl_cert_file
             data['ssl_key_file'] = self._ssl_key_file
+            data['config_key'] = self.config_key
 
         super(RestConfiguration, self).to_yaml(data, defaults)

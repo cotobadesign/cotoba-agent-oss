@@ -52,6 +52,7 @@ class FileStore(Store):
 
     NLU_SERVERS_STORAGE = 'nlu_servers_storage'
     BOT_NAMES_STORAGE = 'bot_names_storage'
+    REST_TEMPLATES_STORAGE = 'rest_templates_storage'
     SETS_STORAGE = 'sets_storage'
     MAPS_STORAGE = 'maps_storage'
     RDF_STORAGE = 'rdf_storage'
@@ -64,6 +65,7 @@ class FileStore(Store):
     REGEX_STORAGE = 'regex_templates_storage'
 
     PROPERTIES_STORAGE = 'properties_storage'
+    PROPERTIES_JSON_STORAGE = 'properties_json_storage'
     DEFAULTS_STORAGE = 'defaults_storage'
 
     SPELLING_STORAGE = 'spelling_corpus_storage'

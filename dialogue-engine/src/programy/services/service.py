@@ -54,7 +54,11 @@ class Service(object):
         raise NotImplementedError()
 
     @abstractmethod
-    def ask_question(self, client_context, question: str):
+    def get_latency(self):
+        raise NotImplementedError()
+
+    @abstractmethod
+    def ask_question(self, client_context, question: str, timeout):
         """
         Never knowingly Implemented
         """
