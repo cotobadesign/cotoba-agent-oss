@@ -51,6 +51,16 @@ class TemplateRestNode(TemplateNode):
                 if isinstance(data, list):
                     if len(data) > 1:
                         resolved = json.dumps(data[1:])
+                elif isinstance(data, dict):
+                    data_dict = {}
+                    is_first = True
+                    if len(data) > 0:
+                        for key, value in data.items():
+                            if is_first is True:
+                                is_first = False
+                            else:
+                                data_dict[key] = value
+                    resolved = json.dumps(data_dict)
                 else:
                     raise Exception("Not what I wanted")
             except Exception:
