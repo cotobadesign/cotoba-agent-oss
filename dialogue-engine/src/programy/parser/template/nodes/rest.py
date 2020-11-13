@@ -60,7 +60,8 @@ class TemplateRestNode(TemplateNode):
                                 is_first = False
                             else:
                                 data_dict[key] = value
-                    resolved = json.dumps(data_dict)
+                    if len(data_dict) > 0:
+                        resolved = json.dumps(data_dict)
                 else:
                     raise Exception("Not what I wanted")
             except Exception:
