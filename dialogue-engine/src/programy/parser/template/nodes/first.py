@@ -49,11 +49,11 @@ class TemplateFirstNode(TemplateNode):
                 data = json.loads(result)
                 if isinstance(data, list):
                     if len(data) > 0:
-                        resolved = json.dumps(data[0])
+                        resolved = json.dumps(data[0], ensure_ascii=False)
                 elif isinstance(data, dict):
                     if len(data) > 0:
                         for key, value in data.items():
-                            resolved = json.dumps({key: value})
+                            resolved = json.dumps({key: value}, ensure_ascii=False)
                             break
                 else:
                     raise Exception("Not what I wanted")

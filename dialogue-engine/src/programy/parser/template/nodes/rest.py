@@ -50,7 +50,7 @@ class TemplateRestNode(TemplateNode):
                 data = json.loads(result)
                 if isinstance(data, list):
                     if len(data) > 1:
-                        resolved = json.dumps(data[1:])
+                        resolved = json.dumps(data[1:], ensure_ascii=False)
                 elif isinstance(data, dict):
                     data_dict = {}
                     is_first = True
@@ -61,7 +61,7 @@ class TemplateRestNode(TemplateNode):
                             else:
                                 data_dict[key] = value
                     if len(data_dict) > 0:
-                        resolved = json.dumps(data_dict)
+                        resolved = json.dumps(data_dict, ensure_ascii=False)
                 else:
                     raise Exception("Not what I wanted")
             except Exception:
