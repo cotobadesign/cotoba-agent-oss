@@ -35,9 +35,9 @@ COTOBA Agent dialogue engineはMac OSX,Linux,Windowsのクロスプラットフ�
         $sudo apt install mecab-ipadic-utf8
 ```
 
-* Windows  
-        See: https://github.com/ikegami-yukino/mecab/releases/tag/v0.996
-
+* Windows(Windows 10)
+WSL (Windows Subsystem for Linux) の Ubuntu をインストールして上記の Linux(Ubuntu)と同じ手順で mecab をセットアップしてください。
+WSL インストールの参考サイト: https://qiita.com/matarillo/items/61a9ead4bfe2868a0b86
 
 ## インストール
 

@@ -33,8 +33,9 @@ You need to install the tokenizer [mecab](https://taku910.github.io/mecab/) for 
         $sudo apt install mecab-ipadic-utf8
 ```
 
-* Windows  
-        See: https://github.com/ikegami-yukino/mecab/releases/tag/v0.996
+* Windows(Windows 10)
+Install Ubuntu of WSL (Windows Subsystem for Linux), then set up mecab as same as the way with Linux(Ubuntu) described above.
+See following site to install WSL: https://qiita.com/matarillo/items/61a9ead4bfe2868a0b86
 
 
 ## Installation
