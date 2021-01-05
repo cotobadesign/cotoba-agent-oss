@@ -19,13 +19,14 @@ The program is written in Python3 and the version is confirmed to work in 3.7 an
 ## Preparation
 You need to install the tokenizer [mecab](https://taku910.github.io/mecab/) for japanese processing.
 
-* Mac OSX
+### macOS
+
 ```
         $brew install mecab
         $brew install mecab-ipadic
 ```
 
-* Linux(Ubuntu)
+### Linux (Ubuntu)
 
 ```
         $sudo apt install mecab
@@ -33,8 +34,9 @@ You need to install the tokenizer [mecab](https://taku910.github.io/mecab/) for 
         $sudo apt install mecab-ipadic-utf8
 ```
 
-* Windows(Windows 10)
+### Windows (Windows 10)
 Install Ubuntu of WSL (Windows Subsystem for Linux), then set up mecab as same as the way with Linux(Ubuntu) described above.
+
 See following site to install WSL: https://qiita.com/matarillo/items/61a9ead4bfe2868a0b86
 
 

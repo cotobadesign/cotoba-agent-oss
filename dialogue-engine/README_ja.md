@@ -21,22 +21,22 @@ COTOBA Agent dialogue engineはMac OSX,Linux,Windowsのクロスプラットフ�
 日本語の分かち書きを行うために、[mecab](https://taku910.github.io/mecab/)をインストールする必要があります。
 
 
-* Mac OSX
+### macOS
 ```
         $brew install mecab
         $brew install mecab-ipadic
 ```
 
-* Linux(Ubuntu)
-
+### Linux (Ubuntu)
 ```
         $sudo apt install mecab
         $sudo apt install libmecab-dev
         $sudo apt install mecab-ipadic-utf8
 ```
 
-* Windows(Windows 10)
+### Windows (Windows 10)
 WSL (Windows Subsystem for Linux) の Ubuntu をインストールして上記の Linux(Ubuntu)と同じ手順で mecab をセットアップしてください。
+
 WSL インストールの参考サイト: https://qiita.com/matarillo/items/61a9ead4bfe2868a0b86
 
 ## インストール
