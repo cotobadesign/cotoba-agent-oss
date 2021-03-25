@@ -5,7 +5,7 @@ wget==3.2
 
 beautifulsoup4==4.9.3
 lxml==4.5.2
-PyYAML==5.3.1
+PyYAML==5.4
 
 httpcore==0.11.1
 httpx==0.15.4
