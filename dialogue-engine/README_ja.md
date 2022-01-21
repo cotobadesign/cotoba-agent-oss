@@ -43,7 +43,7 @@ WSL インストールの参考サイト: https://qiita.com/matarillo/items/61a9
 
 ```
 $ git clone https://github.com/cotobadesign/cotoba-agent-oss.git
-$ cd cotoba-agent-dialogue-engine
+$ cd cotoba-agent-oss/dialogue-engine/
 $ pip3 install -r requirements.txt
 ```
 
