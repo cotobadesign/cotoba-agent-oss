@@ -5,7 +5,7 @@ wget==3.2
 
 beautifulsoup4==4.9.3
 lxml==4.6.2
-PyYAML==5.3.1
+PyYAML==5.4
 
 httpcore==0.11.1
 httpx==0.15.4
@@ -16,7 +16,7 @@ requests==2.24.0
 Flask==1.1.2
 Flask-SocketIO==4.3.1
 Flask-Cors==3.0.9
-sanic==20.9.0
+sanic==20.12.6
 Sanic-Cors==0.10.0.post3
 
 APScheduler==3.6.3
