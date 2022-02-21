@@ -1,0 +1,174 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<aiml version="2.0">
+
+<!--
+    <category>
+        <pattern>
+            ありがとう
+        </pattern>
+        <template>
+            どういたしまして
+        </template>
+    </category>
+-->
+
+<!--
+    <category>
+        <pattern>
+            コーヒーが好きです
+        </pattern>
+        <template>
+            コーヒーに砂糖とミルクを入れますか
+        </template>
+    </category>
+
+    <category>
+        <pattern>
+            いいえ
+        </pattern>
+        <that>
+            コーヒーに砂糖とミルクを入れますか
+        </that>
+        <template>
+            ブラックですね
+        </template>
+    </category>
+-->
+
+<!-- 自由記載 -->
+<!--
+    <category>
+        <pattern>
+            紅茶が好きです
+        </pattern>
+        <template>
+            紅茶にレモンを入れますか
+        </template>
+    </category>
+
+    <category>
+        <pattern>
+            いいえ
+        </pattern>
+        <that>
+            紅茶にレモンを入れますか
+        </that>
+        <template>
+            ストレートですね
+        </template>
+    </category>
+-->
+
+<!--
+    <category>
+        <pattern>
+            釣りは好きですか
+        </pattern>
+        <template>
+            <think>
+                <set name="topic">fishing</set>
+            </think>
+            はい
+        </template>
+    </category>
+
+    <topic name="fishing">
+        <category>
+            <pattern>
+                私も好きです
+            </pattern>
+            <template>
+                釣れたときは気持ちいいですよね
+            </template>
+        </category>
+    </topic>
+-->
+
+<!-- 自由記載 -->
+<!--
+    <category>
+        <pattern>
+            料理は好きですか
+        </pattern>
+        <template>
+            <think>
+                <set name="topic">cooking</set>
+            </think>
+            はい
+        </template>
+    </category>
+
+    <topic name="cooking">
+        <category>
+            <pattern>
+                私も好きです
+            </pattern>
+            <template>
+                材料に手を加えて、食物をととのえ作ることが楽しいですよね
+            </template>
+        </category>
+    </topic>
+
+    <category>
+        <pattern>
+            話を戻します
+        </pattern>
+        <template>
+            <think>
+                <set name="topic">*</set>
+            </think>
+            料理の話は終わりです
+        </template>
+    </category>
+-->
+
+<!--
+    <category>
+        <pattern>
+            私の名前は * です
+        </pattern>
+        <template>
+            <star />さんですね、いい名前ですね
+        </template>
+    </category>
+-->
+
+<!--
+    <category>
+        <pattern>
+            私の名前は * です、覚えていてください
+        </pattern>
+        <template>
+            <think>
+                <set name="username"><star/></set>
+            </think>
+            はい。覚えました
+        </template>
+    </category>
+-->
+
+<!--
+    <category>
+        <pattern>
+            私の名前を覚えていますか
+        </pattern>
+        <template>
+            <get name="username" />さんですね。
+            覚えていますよ
+        </template>
+    </category>
+-->
+
+<!--
+    <category>
+        <pattern>
+            <nlu intent="レストラン検索" />
+        </pattern>
+        <template>
+            レストラン検索ですね
+        </template>
+    </category>
+-->
+
+</aiml>
