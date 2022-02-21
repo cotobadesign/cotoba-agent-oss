@@ -19,7 +19,7 @@ model:
             params:
                 lr: 1e-4
     labels: ./data/intents.json # relative path from cwd() to speficy intent labels to train model.
-    pretrained: bert-base-japanese-char-whole-word-masking  #  see https://huggingface.co/transformers/pretrained_models.html
+    pretrained: cl-tohoku/bert-base-japanese-char-whole-word-masking #  see https://huggingface.co/transformers/pretrained_models.html
 
 hydra:
     run:

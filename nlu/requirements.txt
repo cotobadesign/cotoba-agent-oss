@@ -1,8 +1,7 @@
-camphr==0.5.9
-mecab-python3==0.996.5
-tqdm
+camphr==0.5.23
+tqdm==4.62.3
 docker-compose
-fugashi==0.1.9
+mecab-python3==1.0.5
+fugashi[unidic]==1.1.2
 spacy==2.2.4
-hydra-colorlog==0.1.4
-hydra-core==0.11.3
+Cython==0.29.28

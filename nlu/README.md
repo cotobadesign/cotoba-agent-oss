@@ -1,12 +1,11 @@
 # NLU sample for COTOBA Agent OSS
 
 ## Installation
-
-1. Install MeCab with unidic.
 1. Install Docker. (to run nlu service in localhost.)
-1. Install python 3.7
+1. Install Python 3.7 or 3.8
    - It is recommended to use virtual environment such as venv.
-1. `$ pip install -r requirements.txt`
+1. `$ pip install --upgrade pip && pip install -r requirements.txt`
+1. `$ python -m unidic download`
 
 ## Quick demo
 
