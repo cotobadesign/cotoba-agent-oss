@@ -36,7 +36,6 @@
     </category>
 -->
 
-<!-- 自由記載 -->
 <!--
     <category>
         <pattern>
@@ -105,22 +104,10 @@
                 私も好きです
             </pattern>
             <template>
-                食物をととのえ作ることが楽しいですよね
+                美味しいものができると嬉しいですよね
             </template>
         </category>
     </topic>
-
-    <category>
-        <pattern>
-            話を戻します
-        </pattern>
-        <template>
-            <think>
-                <set name="topic">*</set>
-            </think>
-            料理の話は終わりです
-        </template>
-    </category>
 -->
 
 <!--
@@ -154,11 +141,33 @@
             私の名前を覚えていますか
         </pattern>
         <template>
-            <get name="username" />さんですね。
-            覚えていますよ
+            <get name="username" />さんですね、覚えていますよ
         </template>
     </category>
 -->
+
+<!--
+    <category>
+        <pattern>
+            私の好きな食べ物は*です
+        </pattern>
+        <template>
+            <set name="food"><star/></set>
+            がお好きなんですね
+        </template>
+    </category>
+
+    <category>
+        <pattern>
+            私が好きな食べ物は何ですか
+        </pattern>
+        <template>
+            <get name="food"/>がお好きですよね
+        </template>
+    </category>
+-->
+
+
 
 <!--
     <category>
