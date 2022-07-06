@@ -4,7 +4,7 @@ python-dateutil==2.8.1
 wget==3.2
 
 beautifulsoup4==4.9.3
-lxml==4.6.2
+lxml==4.9.1
 PyYAML==5.4
 
 httpcore==0.11.1
